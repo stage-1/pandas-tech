@@ -14,9 +14,9 @@
         "notes": "React 19 — concurrent features and use() hook available. Pairs well with Supabase Realtime via useEffect subscriptions on the kanban board."
       },
       "tailwindcss": {
-        "version": null,
-        "installed": false,
-        "notes": "Utility-first styling. Mobile-first breakpoints are a priority — RO creation and approval pages must work on a phone in a shop. Design tokens from the Panda Tech design system (docs/designsystem) should be mapped into tailwind.config."
+        "version": "^4",
+        "installed": true,
+        "notes": "Tailwind v4. No tailwind.config.js — configuration lives in globals.css via @theme inline directive. CSS variables from v1Pandas.css are exposed as Tailwind utilities (bg-primary, text-foreground, etc.). Required by shadcn/ui."
       },
       "dnd-kit": {
         "version": null,
@@ -103,10 +103,34 @@
       }
     },
     "ui": {
-      "mui": {
+      "shadcn-ui": {
+        "version": "^4.6",
+        "installed": true,
+        "notes": "shadcn/ui — CLI-based component library built on Radix UI + Tailwind. Components live as source in client/src/components/ui/ and are owned by us (no npm update). Themed via CSS variables in v1Pandas.css — no createTheme() needed. Add components on demand: npx shadcn@latest add <name>. Starter set already added: button, card, input, label, textarea, form, badge, dialog, sheet, dropdown-menu, select, checkbox, radio-group, switch, tabs, table, separator, avatar, tooltip, popover, sonner, skeleton, alert, alert-dialog, scroll-area."
+      },
+      "lucide-react": {
+        "version": "^1",
+        "installed": true,
+        "notes": "Icon library used by shadcn components. Import icons individually (import { Wrench } from 'lucide-react') — never import the whole package."
+      },
+      "next-themes": {
+        "version": "^0.4",
+        "installed": true,
+        "notes": "Dark mode via system preference. ThemeProvider in layout.tsx uses attribute='class', defaultTheme='system', enableSystem. next-themes sets .dark on <html> based on prefers-color-scheme. No UI toggle in MVP — the .dark class wires to v1Pandas dark palette automatically."
+      },
+      "v1Pandas": {
+        "source": "docs/designsystem/tokens/tokens.panda.w3c.json",
+        "artifacts": [
+          "docs/designsystem/v1Pandas.json",
+          "client/src/app/v1Pandas.css"
+        ],
+        "notes": "Single source of truth bridge between the design system and shadcn. Run npm run build:tokens to regenerate after token changes. v1Pandas.css contains :root and .dark CSS variable blocks consumed by shadcn. v1Pandas.json is the alias-resolved JSON for any non-CSS consumer. Both files are generated — do not edit by hand."
+      },
+      "recharts": {
         "version": null,
         "installed": false,
-        "notes": "Component library (@mui/material + @mui/icons-material). Theme must be configured to use Panda Tech design tokens from docs/designsystem/tokens — map color, typography, and radius values into createTheme() so MUI components stay on-brand. If Tailwind is also used, scope Tailwind to layout/spacing only to avoid conflicts with MUI's CSS-in-JS (Emotion). MUI's CssBaseline replaces a global reset."
+        "timeline": "Tier 2 (KPI dashboard)",
+        "notes": "Added via npx shadcn@latest add chart which installs Recharts v3 and the ChartContainer/ChartTooltip wrappers. chart-1 through chart-5 CSS variables in v1Pandas.css are already wired for it."
       }
     }
   }
