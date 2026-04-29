@@ -1,0 +1,113 @@
+{
+  "name": "pandas-tech",
+  "description": "SMB mechanic shop management tool",
+  "stack": {
+    "frontend": {
+      "next": {
+        "version": null,
+        "installed": true,
+        "notes": "App Router with Turbopack. SSR is used for public customer approval pages (no auth required on those routes). Kanban board and RO builder are client components. react-pdf and dnd-kit both require dynamic imports with ssr: false."
+      },
+      "react": {
+        "version": null,
+        "installed": true,
+        "notes": "React 19 — concurrent features and use() hook available. Pairs well with Supabase Realtime via useEffect subscriptions on the kanban board."
+      },
+      "tailwindcss": {
+        "version": null,
+        "installed": false,
+        "notes": "Utility-first styling. Mobile-first breakpoints are a priority — RO creation and approval pages must work on a phone in a shop. Design tokens from the Panda Tech design system (docs/designsystem) should be mapped into tailwind.config."
+      },
+      "dnd-kit": {
+        "version": null,
+        "installed": false,
+        "notes": "Kanban drag-and-drop for the RO board. Must be loaded with next/dynamic + ssr: false — dnd-kit uses browser APIs unavailable during SSR. Use @dnd-kit/core for sensors and @dnd-kit/sortable for column ordering."
+      },
+      "react-pdf": {
+        "version": null,
+        "installed": false,
+        "notes": "Client-side invoice PDF generation directly from RO data — no server involvement. Must be dynamically imported with ssr: false. Alternative: html2canvas if layout fidelity over a React tree is preferred."
+      }
+    },
+    "backend": {
+      "supabase": {
+        "version": null,
+        "installed": false,
+        "services": ["postgres", "auth", "storage", "realtime"],
+        "notes": "Core backend. Row-level security (RLS) scoped to shop_id is the security model for all tables — every policy filters by auth.uid() → shop_id. Two Supabase clients are needed: createServerClient (server components, API routes) and createBrowserClient (client components). Realtime subscriptions power live kanban updates when cards change status. Storage used for DVI photo uploads (Week 2+)."
+      }
+    },
+    "hosting": {
+      "vercel": {
+        "version": null,
+        "installed": false,
+        "notes": "Deploys directly from Git. SUPABASE_URL, SUPABASE_ANON_KEY, and STRIPE_SECRET_KEY must be set in Vercel environment variables. Preview deployments get their own Supabase branch if Supabase branching is enabled."
+      }
+    },
+    "payments": {
+      "stripe": {
+        "version": null,
+        "installed": false,
+        "timeline": "Week 3",
+        "notes": "Stripe Connect (not standard Stripe) — shops are sub-accounts, Pandas Tech takes a platform fee. Requires onboarding flow for each shop owner. Webhooks must be handled for payment confirmation before marking RO as paid."
+      }
+    },
+    "communications": {
+      "twilio": {
+        "version": null,
+        "installed": false,
+        "timeline": "Week 2",
+        "notes": "SMS delivery for customer approval links. MVP bypasses this entirely — shop copies the public URL and pastes it into a text manually. Twilio is additive and does not change the approval page or RO data model."
+      }
+    },
+    "pwa": {
+      "next-pwa": {
+        "version": null,
+        "installed": false,
+        "notes": "Progressive Web App wrapper so techs can add the app to their home screen. Service worker for offline RO viewing. Install prompt should appear on first visit on mobile."
+      }
+    },
+    "analytics": {
+      "posthog": {
+        "version": null,
+        "installed": false,
+        "notes": "Initialize once in a client-side PostHogProvider wrapping the app. Use posthog.identify() on login with shop_id so all events are scoped per shop. Avoid over-tracking — one event per meaningful action.",
+        "events": {
+          "/login": [
+            "shop_signed_up",
+            "shop_logged_in"
+          ],
+          "/board (kanban)": [
+            "ro_created",
+            "ro_status_changed (new→approved, approved→done)"
+          ],
+          "/ro/[id] (RO builder)": [
+            "ro_saved",
+            "approval_link_copied"
+          ],
+          "/approve/[token] (customer page)": [
+            "approval_page_viewed",
+            "ro_approved",
+            "ro_declined"
+          ],
+          "/invoice/[id]": [
+            "invoice_downloaded"
+          ]
+        },
+        "kpis": [
+          "time from signup to first RO saved",
+          "approval rate (approved / approval_page_viewed)",
+          "RO-to-invoice conversion rate",
+          "weekly active shops (shops with ≥1 ro_status_changed in 7 days)"
+        ]
+      }
+    },
+    "ui": {
+      "mui": {
+        "version": null,
+        "installed": false,
+        "notes": "Component library (@mui/material + @mui/icons-material). Theme must be configured to use Panda Tech design tokens from docs/designsystem/tokens — map color, typography, and radius values into createTheme() so MUI components stay on-brand. If Tailwind is also used, scope Tailwind to layout/spacing only to avoid conflicts with MUI's CSS-in-JS (Emotion). MUI's CssBaseline replaces a global reset."
+      }
+    }
+  }
+}
