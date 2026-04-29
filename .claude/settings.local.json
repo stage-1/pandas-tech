@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/swim/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/abe79cbc-e8a0-4459-b7d5-ef2dabb530b9/5f36a0b7-6cc3-45a8-b462-7f180eb523ad/skills/docx/**)",
+      "Bash(pandoc --track-changes=all \"C:\\\\Users\\\\swim\\\\Downloads\\\\mechanic-shop-prd-v2_1.docx\" -o /tmp/prd-out.md)",
+      "Read(//tmp/**)",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\swim\\\\Downloads\\\\mechanic-shop-prd-v2_1.docx\" /tmp/prd-unpacked/)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}
