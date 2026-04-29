@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Iconography</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>html,body{margin:0;padding:0;}
+.card{width:700px;background:#fff;padding:20px;box-sizing:border-box;display:grid;grid-template-columns:repeat(8,1fr);gap:14px;}
+.cell{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--fg2);}
+.cell svg{width:24px;height:24px;}
+.lab{font-family:var(--font-mono);font-size:10px;color:var(--fg3);}
+</style></head><body>
+<div class="card">
+  <div class="cell"><i data-lucide="wrench"></i><div class="lab">wrench</div></div>
+  <div class="cell"><i data-lucide="car"></i><div class="lab">car</div></div>
+  <div class="cell"><i data-lucide="clipboard-list"></i><div class="lab">clipboard</div></div>
+  <div class="cell"><i data-lucide="alert-triangle" style="color:#C01E1E;"></i><div class="lab">critical</div></div>
+  <div class="cell"><i data-lucide="clock" style="color:#C48A08;"></i><div class="lab">medium</div></div>
+  <div class="cell"><i data-lucide="info" style="color:#30597C;"></i><div class="lab">low</div></div>
+  <div class="cell"><i data-lucide="check-circle-2" style="color:#2E8B36;"></i><div class="lab">done</div></div>
+  <div class="cell"><i data-lucide="dollar-sign"></i><div class="lab">total</div></div>
+  <div class="cell"><i data-lucide="printer"></i><div class="lab">printer</div></div>
+  <div class="cell"><i data-lucide="plus"></i><div class="lab">plus</div></div>
+  <div class="cell"><i data-lucide="search"></i><div class="lab">search</div></div>
+  <div class="cell"><i data-lucide="filter"></i><div class="lab">filter</div></div>
+  <div class="cell"><i data-lucide="more-vertical"></i><div class="lab">more</div></div>
+  <div class="cell"><i data-lucide="chevron-right"></i><div class="lab">chevron</div></div>
+  <div class="cell"><i data-lucide="x"></i><div class="lab">x</div></div>
+  <div class="cell"><i data-lucide="user"></i><div class="lab">user</div></div>
+</div>
+<script>lucide.createIcons();</script>
+</body></html>

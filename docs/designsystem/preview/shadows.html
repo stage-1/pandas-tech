@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Shadows</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>html,body{margin:0;padding:0;}
+.card{width:700px;background:#F8F6F2;padding:32px 24px;box-sizing:border-box;display:flex;gap:18px;justify-content:space-between;}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.box{width:90px;height:60px;background:#fff;border-radius:8px;}
+.tok{font-family:var(--font-mono);font-size:11px;color:var(--fg2);}
+.desc{font-family:var(--font-sans);font-size:10px;color:var(--fg3);}
+</style></head><body>
+<div class="card">
+  <div class="col"><div class="box" style="box-shadow:var(--sh-xs);"></div><div class="tok">xs</div><div class="desc">list rows</div></div>
+  <div class="col"><div class="box" style="box-shadow:var(--sh-sm);"></div><div class="tok">sm</div><div class="desc">cards</div></div>
+  <div class="col"><div class="box" style="box-shadow:var(--sh-md);"></div><div class="tok">md</div><div class="desc">raised</div></div>
+  <div class="col"><div class="box" style="box-shadow:var(--sh-lg);"></div><div class="tok">lg</div><div class="desc">drag · popover</div></div>
+  <div class="col"><div class="box" style="box-shadow:var(--sh-inner);background:#F0EDE8;"></div><div class="tok">inner</div><div class="desc">pressed · input</div></div>
+</div>
+</body></html>

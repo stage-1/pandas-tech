@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Colors · Surfaces (light + dark)</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  .card { width: 700px; padding: 20px; box-sizing: border-box; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #fff; }
+  .panel { border-radius: var(--r-lg); padding: 14px; border: 1px solid; }
+  .light { background: #F8F6F2; border-color: #E6E2DB; color: #141412; }
+  .dark  { background: #141412; border-color: #1A3650; color: #F8F6F2; }
+  .panel h4 { margin: 0 0 10px; font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 5px 6px; border-radius: var(--r-sm); margin-bottom: 2px; }
+  .swatch { width: 22px; height: 22px; border-radius: 4px; border: 1px solid; flex-shrink: 0; }
+  .name { font-family: var(--font-sans); font-size: 12px; font-weight: 500; flex: 1; }
+  .hex  { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
+  .tag {
+    font-family: var(--font-sans); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 1px 5px; border-radius: 3px;
+    background: rgba(78,127,173,0.15); color: #30597C;
+  }
+  .dark .tag { background: rgba(199,216,236,0.15); color: #C7D8EC; }
+</style></head><body>
+
+<div class="card">
+  <div class="panel light">
+    <h4>Light · subtle denim</h4>
+    <div class="row"><div class="swatch" style="background:#F8F6F2;border-color:#E6E2DB"></div><span class="name">page</span><span class="hex">F8F6F2</span></div>
+    <div class="row"><div class="swatch" style="background:#FFFFFF;border-color:#E6E2DB"></div><span class="name">surface</span><span class="hex">FFFFFF</span></div>
+    <div class="row"><div class="swatch" style="background:#F0EDE8;border-color:#E6E2DB"></div><span class="name">subtle</span><span class="hex">F0EDE8</span></div>
+    <div class="row" style="background:#F4F7FB;"><div class="swatch" style="background:#F4F7FB;border-color:#E2EAF4"></div><span class="name">surface‑info</span><span class="hex">F4F7FB</span><span class="tag">denim 25</span></div>
+    <div class="row"><div class="swatch" style="background:#EDF2F8;border-color:#C7D8EC"></div><span class="name">subtle‑info</span><span class="hex">EDF2F8</span><span class="tag">denim 50</span></div>
+    <div class="row"><div class="swatch" style="background:#141412;border-color:#141412"></div><span class="name">text primary</span><span class="hex">141412</span></div>
+    <div class="row"><div class="swatch" style="background:#E6E2DB;border-color:#E6E2DB"></div><span class="name">border</span><span class="hex">E6E2DB</span></div>
+  </div>
+  <div class="panel dark">
+    <h4>Dark · denim‑washed</h4>
+    <div class="row"><div class="swatch" style="background:#141412;border-color:#1A3650"></div><span class="name">page</span><span class="hex">141412</span></div>
+    <div class="row"><div class="swatch" style="background:#171A1F;border-color:#1A3650"></div><span class="name">surface</span><span class="hex">171A1F</span><span class="tag">+denim tint</span></div>
+    <div class="row"><div class="swatch" style="background:#1C2230;border-color:#1A3650"></div><span class="name">subtle</span><span class="hex">1C2230</span><span class="tag">+denim tint</span></div>
+    <div class="row"><div class="swatch" style="background:#0D1E2E;border-color:#1A3650"></div><span class="name">surface‑info</span><span class="hex">0D1E2E</span><span class="tag">denim 900</span></div>
+    <div class="row"><div class="swatch" style="background:#1A3650;border-color:#1A3650"></div><span class="name">accent</span><span class="hex">1A3650</span><span class="tag">denim 800</span></div>
+    <div class="row"><div class="swatch" style="background:#F8F6F2;border-color:#F8F6F2"></div><span class="name">text primary</span><span class="hex">F8F6F2</span></div>
+    <div class="row"><div class="swatch" style="background:#1A3650;border-color:#1A3650"></div><span class="name">border</span><span class="hex">1A3650</span></div>
+  </div>
+</div>
+<div style="width:700px;padding:0 20px 16px;box-sizing:border-box;font-family:var(--font-sans);font-size:11px;color:#706D66;">
+  Denim is a supporting voice in surfaces — not the workhorse. Use <span style="font-family:var(--font-mono);">surface‑info</span> / <span style="font-family:var(--font-mono);">subtle‑info</span> behind low‑priority blocks, customer info panels, or tech‑note cards. In dark mode, denim shifts the warm‑black surfaces a hair toward navy — invisible on its own, but it makes red and white pop more.
+</div>
+</body></html>

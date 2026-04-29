@@ -1,0 +1,29 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Buttons</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>html,body{margin:0;padding:0;}
+.card{width:700px;background:#fff;padding:24px;box-sizing:border-box;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:center;}
+.btn{height:44px;padding:0 20px;border-radius:6px;font-family:var(--font-sans);font-size:15px;font-weight:600;letter-spacing:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;}
+.primary{background:#C01E1E;color:#fff;}
+.primary.hover{background:#E03535;}
+.primary.press{background:#7A1010;box-shadow:inset 0 2px 4px rgba(20,20,18,0.2);}
+.secondary{background:#fff;color:#141412;border-color:#B2AFA8;}
+.ghost{background:transparent;color:#141412;}
+.ghost.hover{background:#F0EDE8;}
+.danger{background:transparent;color:#C01E1E;border-color:#F29090;}
+.disabled{background:#F0EDE8;color:#B2AFA8;cursor:not-allowed;}
+.lab{font-family:var(--font-mono);font-size:10px;color:var(--fg3);text-transform:uppercase;letter-spacing:0.04em;text-align:center;}
+.col{display:flex;flex-direction:column;gap:6px;align-items:center;}
+</style></head><body>
+<div class="card">
+  <div class="col"><button class="btn primary">Crear cotización</button><div class="lab">primary · default</div></div>
+  <div class="col"><button class="btn primary hover">Crear cotización</button><div class="lab">primary · hover</div></div>
+  <div class="col"><button class="btn primary press">Crear cotización</button><div class="lab">primary · press</div></div>
+  <div class="col"><button class="btn disabled">Crear cotización</button><div class="lab">disabled</div></div>
+
+  <div class="col"><button class="btn secondary">Cancelar</button><div class="lab">secondary</div></div>
+  <div class="col"><button class="btn ghost">Ver más</button><div class="lab">ghost</div></div>
+  <div class="col"><button class="btn ghost hover">Ver más</button><div class="lab">ghost · hover</div></div>
+  <div class="col"><button class="btn danger">Eliminar</button><div class="lab">danger outline</div></div>
+</div>
+</body></html>

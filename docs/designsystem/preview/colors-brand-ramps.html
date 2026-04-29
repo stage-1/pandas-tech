@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Colors · Brand ramps</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  .card { width: 700px; padding: 20px; background: var(--surface-default); box-sizing: border-box; }
+  .row { display: flex; gap: 6px; margin-bottom: 14px; }
+  .row:last-child { margin-bottom: 0; }
+  .swatch { flex: 1; height: 56px; border-radius: var(--r-md); display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px; box-sizing: border-box; }
+  .swatch .step { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; }
+  .swatch .hex  { font-family: var(--font-mono); font-size: 10px; }
+  .ramp-label { font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--fg2); margin-bottom: 6px; width: 80px; flex-shrink: 0; align-self: center;}
+  .ramp { display: flex; align-items: stretch; gap: 12px; margin-bottom: 12px;}
+  .ramp:last-child { margin-bottom: 0; }
+  .swatches { display: flex; gap: 6px; flex: 1; }
+</style></head><body>
+<div class="card">
+  <div class="ramp">
+    <div class="ramp-label">Red</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#FDEAEA;color:#7A1010"><span class="step">50</span><span class="hex">FDEAEA</span></div>
+      <div class="swatch" style="background:#F9C0C0;color:#7A1010"><span class="step">100</span><span class="hex">F9C0C0</span></div>
+      <div class="swatch" style="background:#F29090;color:#4A0A0A"><span class="step">200</span><span class="hex">F29090</span></div>
+      <div class="swatch" style="background:#E03535;color:#fff"><span class="step">400</span><span class="hex">E03535</span></div>
+      <div class="swatch" style="background:#C01E1E;color:#fff"><span class="step">600</span><span class="hex">C01E1E</span></div>
+      <div class="swatch" style="background:#7A1010;color:#fff"><span class="step">800</span><span class="hex">7A1010</span></div>
+      <div class="swatch" style="background:#4A0A0A;color:#fff"><span class="step">900</span><span class="hex">4A0A0A</span></div>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="ramp-label">Charcoal</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#F2F1EF;color:#222120"><span class="step">50</span><span class="hex">F2F1EF</span></div>
+      <div class="swatch" style="background:#D8D6D2;color:#222120"><span class="step">100</span><span class="hex">D8D6D2</span></div>
+      <div class="swatch" style="background:#B2AFA8;color:#141412"><span class="step">200</span><span class="hex">B2AFA8</span></div>
+      <div class="swatch" style="background:#706D66;color:#fff"><span class="step">400</span><span class="hex">706D66</span></div>
+      <div class="swatch" style="background:#3E3C38;color:#fff"><span class="step">600</span><span class="hex">3E3C38</span></div>
+      <div class="swatch" style="background:#222120;color:#fff"><span class="step">800</span><span class="hex">222120</span></div>
+      <div class="swatch" style="background:#141412;color:#fff"><span class="step">900</span><span class="hex">141412</span></div>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="ramp-label">Denim</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#EDF2F8;color:#0D1E2E"><span class="step">50</span><span class="hex">EDF2F8</span></div>
+      <div class="swatch" style="background:#C7D8EC;color:#0D1E2E"><span class="step">100</span><span class="hex">C7D8EC</span></div>
+      <div class="swatch" style="background:#94B5D8;color:#0D1E2E"><span class="step">200</span><span class="hex">94B5D8</span></div>
+      <div class="swatch" style="background:#4E7FAD;color:#fff"><span class="step">400</span><span class="hex">4E7FAD</span></div>
+      <div class="swatch" style="background:#30597C;color:#fff"><span class="step">600</span><span class="hex">30597C</span></div>
+      <div class="swatch" style="background:#1A3650;color:#fff"><span class="step">800</span><span class="hex">1A3650</span></div>
+      <div class="swatch" style="background:#0D1E2E;color:#fff"><span class="step">900</span><span class="hex">0D1E2E</span></div>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="ramp-label">White</div>
+    <div class="swatches">
+      <div class="swatch" style="background:#FFFFFF;color:#141412;border:1px solid #E6E2DB"><span class="step">pure</span><span class="hex">FFFFFF</span></div>
+      <div class="swatch" style="background:#F8F6F2;color:#141412;border:1px solid #E6E2DB"><span class="step">warm</span><span class="hex">F8F6F2</span></div>
+      <div class="swatch" style="background:#F0EDE8;color:#141412;border:1px solid #E6E2DB"><span class="step">soft</span><span class="hex">F0EDE8</span></div>
+      <div class="swatch" style="background:#E6E2DB;color:#141412"><span class="step">muted</span><span class="hex">E6E2DB</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

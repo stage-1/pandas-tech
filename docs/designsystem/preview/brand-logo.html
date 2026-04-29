@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Brand · Panda</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  .card {
+    width: 700px; height: 240px;
+    background: var(--surface-default);
+    display: flex; align-items: center;
+    padding: var(--sp-6); gap: var(--sp-6);
+    box-sizing: border-box;
+  }
+  .mark {
+    width: 180px; height: 180px; flex-shrink: 0;
+    background: var(--white-soft); border-radius: var(--r-xl);
+    display: grid; place-items: center;
+  }
+  .info { display: flex; flex-direction: column; gap: 8px; }
+  .ribbon {
+    display: inline-block;
+    background: var(--red-600); color: white;
+    padding: 8px 16px;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 28px; letter-spacing: 0.06em;
+    text-transform: uppercase; line-height: 1;
+    align-self: flex-start;
+    position: relative;
+  }
+  .ribbon::before, .ribbon::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 10px;
+    background: var(--red-800);
+  }
+  .ribbon::before { left: -10px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 50%); }
+  .ribbon::after  { right: -10px; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 100%); }
+  .sub {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 13px; letter-spacing: 0.10em;
+    text-transform: uppercase; color: var(--charcoal-600);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark">
+      <!-- Simplified panda mascot · vector recreation in brand colors -->
+      <svg viewBox="0 0 160 160" width="160" height="160" aria-label="Panda mascot">
+        <!-- Ears -->
+        <ellipse cx="44" cy="42" rx="16" ry="17" fill="#141412"/>
+        <ellipse cx="116" cy="42" rx="16" ry="17" fill="#141412"/>
+        <ellipse cx="44" cy="42" rx="7" ry="8" fill="#3E3C38"/>
+        <ellipse cx="116" cy="42" rx="7" ry="8" fill="#3E3C38"/>
+
+        <!-- Head -->
+        <ellipse cx="80" cy="68" rx="40" ry="36" fill="#FFFFFF" stroke="#141412" stroke-width="1.5"/>
+
+        <!-- Goggle strap -->
+        <path d="M 40 56 Q 80 50 120 56" stroke="#C01E1E" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+        <!-- Goggles -->
+        <circle cx="62" cy="58" r="11" fill="#141412"/>
+        <circle cx="98" cy="58" r="11" fill="#141412"/>
+        <circle cx="62" cy="58" r="7"  fill="#706D66"/>
+        <circle cx="98" cy="58" r="7"  fill="#706D66"/>
+        <circle cx="60" cy="56" r="2"  fill="#FFFFFF" opacity="0.85"/>
+        <circle cx="96" cy="56" r="2"  fill="#FFFFFF" opacity="0.85"/>
+        <rect x="73" y="56" width="14" height="3" fill="#141412"/>
+
+        <!-- Eye patches (under goggles, peeking) -->
+        <ellipse cx="62" cy="72" rx="9" ry="7" fill="#141412" opacity="0.85"/>
+        <ellipse cx="98" cy="72" rx="9" ry="7" fill="#141412" opacity="0.85"/>
+
+        <!-- Snout area -->
+        <ellipse cx="80" cy="84" rx="18" ry="13" fill="#FFFFFF"/>
+        <!-- Nose -->
+        <path d="M 74 80 Q 80 76 86 80 Q 86 86 80 88 Q 74 86 74 80 Z" fill="#141412"/>
+        <!-- Mouth -->
+        <path d="M 80 88 L 80 93 M 80 93 Q 76 96 73 95 M 80 93 Q 84 96 87 95"
+              stroke="#141412" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+
+        <!-- Red bandana around neck -->
+        <path d="M 50 100 Q 80 108 110 100 L 116 116 Q 80 124 44 116 Z" fill="#C01E1E"/>
+        <path d="M 70 110 L 90 110 L 86 118 L 74 118 Z" fill="#7A1010" opacity="0.55"/>
+
+        <!-- Body / denim overalls -->
+        <path d="M 36 122 L 36 156 L 124 156 L 124 122 Q 110 130 80 130 Q 50 130 36 122 Z"
+              fill="#30597C"/>
+        <!-- Overall bib -->
+        <rect x="62" y="116" width="36" height="22" rx="3" fill="#30597C"/>
+        <!-- Straps -->
+        <rect x="60" y="106" width="6" height="20" rx="2" fill="#1A3650"/>
+        <rect x="94" y="106" width="6" height="20" rx="2" fill="#1A3650"/>
+        <!-- Buttons -->
+        <circle cx="63" cy="124" r="2" fill="#FAD888"/>
+        <circle cx="97" cy="124" r="2" fill="#FAD888"/>
+        <!-- Pocket stitching -->
+        <rect x="68" y="124" width="24" height="12" rx="1.5" fill="none" stroke="#1A3650" stroke-width="1" stroke-dasharray="2 2"/>
+        <!-- Wrench in pocket -->
+        <g transform="translate(74 122) rotate(-15)">
+          <rect x="0" y="0" width="3" height="14" fill="#B2AFA8"/>
+          <circle cx="1.5" cy="-1" r="3" fill="none" stroke="#B2AFA8" stroke-width="1.4"/>
+        </g>
+      </svg>
+    </div>
+    <div class="info">
+      <div class="ribbon">Panda Automotriz</div>
+      <div class="sub">Centro de mantenimiento</div>
+      <div class="body-sm" style="color: var(--fg2); margin-top: 8px; max-width: 360px;">
+        Repair-order management for small mechanic shops. Mobile-first, one-handed, sunlit-bay-ready.
+      </div>
+    </div>
+  </div>
+</body>
+</html>

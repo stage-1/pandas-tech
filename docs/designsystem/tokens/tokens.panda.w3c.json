@@ -1,0 +1,262 @@
+{
+  "$metadata": {
+    "name": "Panda Automotriz Design System",
+    "version": "1.0.0",
+    "description": "Design tokens for Panda Automotriz — Centro de Mantenimiento. Extracted from brand logo: panda red, charcoal, white, denim blue."
+  },
+  "color": {
+    "$type": "group",
+    "brand": {
+      "red": {
+        "$description": "Panda Red — banner, gloves, primary action",
+        "50":  { "$type": "color", "$value": "#FDEAEA" },
+        "100": { "$type": "color", "$value": "#F9C0C0" },
+        "200": { "$type": "color", "$value": "#F29090" },
+        "400": { "$type": "color", "$value": "#E03535" },
+        "600": { "$type": "color", "$value": "#C01E1E" },
+        "800": { "$type": "color", "$value": "#7A1010" },
+        "900": { "$type": "color", "$value": "#4A0A0A" }
+      },
+      "charcoal": {
+        "$description": "Panda Charcoal — fur blacks, text, structure",
+        "50":  { "$type": "color", "$value": "#F2F1EF" },
+        "100": { "$type": "color", "$value": "#D8D6D2" },
+        "200": { "$type": "color", "$value": "#B2AFA8" },
+        "400": { "$type": "color", "$value": "#706D66" },
+        "600": { "$type": "color", "$value": "#3E3C38" },
+        "800": { "$type": "color", "$value": "#222120" },
+        "900": { "$type": "color", "$value": "#141412" }
+      },
+      "white": {
+        "$description": "Panda White — fur white, warm off-white surfaces",
+        "pure":  { "$type": "color", "$value": "#FFFFFF" },
+        "warm":  { "$type": "color", "$value": "#F8F6F2" },
+        "soft":  { "$type": "color", "$value": "#F0EDE8" },
+        "muted": { "$type": "color", "$value": "#E6E2DB" }
+      },
+      "denim": {
+        "$description": "Denim Blue — overalls, secondary UI elements",
+        "50":  { "$type": "color", "$value": "#EDF2F8" },
+        "100": { "$type": "color", "$value": "#C7D8EC" },
+        "200": { "$type": "color", "$value": "#94B5D8" },
+        "400": { "$type": "color", "$value": "#4E7FAD" },
+        "600": { "$type": "color", "$value": "#30597C" },
+        "800": { "$type": "color", "$value": "#1A3650" },
+        "900": { "$type": "color", "$value": "#0D1E2E" }
+      }
+    },
+    "semantic": {
+      "critical": {
+        "$description": "Maps to Panda Red — highest urgency, critical repairs",
+        "bg":     { "$type": "color", "$value": "#FDEAEA" },
+        "border": { "$type": "color", "$value": "#F29090" },
+        "text":   { "$type": "color", "$value": "#7A1010" },
+        "icon":   { "$type": "color", "$value": "#C01E1E" }
+      },
+      "medium": {
+        "$description": "Warm amber — medium priority repairs",
+        "bg":     { "$type": "color", "$value": "#FFF6E6" },
+        "border": { "$type": "color", "$value": "#FAD888" },
+        "text":   { "$type": "color", "$value": "#7A5205" },
+        "icon":   { "$type": "color", "$value": "#C48A08" }
+      },
+      "low": {
+        "$description": "Denim blue — low priority, informational",
+        "bg":     { "$type": "color", "$value": "#EDF2F8" },
+        "border": { "$type": "color", "$value": "#94B5D8" },
+        "text":   { "$type": "color", "$value": "#1A3650" },
+        "icon":   { "$type": "color", "$value": "#30597C" }
+      },
+      "success": {
+        "bg":     { "$type": "color", "$value": "#EDF7EE" },
+        "border": { "$type": "color", "$value": "#9DD4A2" },
+        "text":   { "$type": "color", "$value": "#1D5C22" },
+        "icon":   { "$type": "color", "$value": "#2E8B36" }
+      }
+    },
+    "surface": {
+      "page":     { "$type": "color", "$value": "#F8F6F2", "$description": "Warm panda-white page background" },
+      "default":  { "$type": "color", "$value": "#FFFFFF" },
+      "subtle":   { "$type": "color", "$value": "#F0EDE8" },
+      "raised":   { "$type": "color", "$value": "#FFFFFF" },
+      "inverted": { "$type": "color", "$value": "#141412" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "#141412" },
+      "secondary": { "$type": "color", "$value": "#3E3C38" },
+      "tertiary":  { "$type": "color", "$value": "#706D66" },
+      "disabled":  { "$type": "color", "$value": "#B2AFA8" },
+      "inverted":  { "$type": "color", "$value": "#F8F6F2" },
+      "link":      { "$type": "color", "$value": "#C01E1E" }
+    },
+    "border": {
+      "default": { "$type": "color", "$value": "#E6E2DB" },
+      "strong":  { "$type": "color", "$value": "#B2AFA8" },
+      "subtle":  { "$type": "color", "$value": "#F0EDE8" },
+      "focus":   { "$type": "color", "$value": "#E03535" }
+    }
+  },
+  "typography": {
+    "$type": "group",
+    "fontFamily": {
+      "sans":    { "$type": "fontFamily", "$value": ["'DM Sans'", "system-ui", "sans-serif"] },
+      "display": { "$type": "fontFamily", "$value": ["'Barlow Condensed'", "sans-serif"], "$description": "Matches the condensed uppercase feel of the Panda Automotriz wordmark" },
+      "mono":    { "$type": "fontFamily", "$value": ["'JetBrains Mono'", "monospace"] }
+    },
+    "fontSize": {
+      "xs":   { "$type": "dimension", "$value": "11px" },
+      "sm":   { "$type": "dimension", "$value": "13px" },
+      "md":   { "$type": "dimension", "$value": "15px" },
+      "base": { "$type": "dimension", "$value": "16px" },
+      "lg":   { "$type": "dimension", "$value": "18px" },
+      "xl":   { "$type": "dimension", "$value": "22px" },
+      "2xl":  { "$type": "dimension", "$value": "28px" },
+      "3xl":  { "$type": "dimension", "$value": "36px" },
+      "4xl":  { "$type": "dimension", "$value": "48px" }
+    },
+    "fontWeight": {
+      "regular":  { "$type": "fontWeight", "$value": 400 },
+      "medium":   { "$type": "fontWeight", "$value": 500 },
+      "semibold": { "$type": "fontWeight", "$value": 600 },
+      "bold":     { "$type": "fontWeight", "$value": 700 }
+    },
+    "lineHeight": {
+      "tight":   { "$type": "dimension", "$value": "1.2" },
+      "snug":    { "$type": "dimension", "$value": "1.4" },
+      "base":    { "$type": "dimension", "$value": "1.6" },
+      "relaxed": { "$type": "dimension", "$value": "1.75" }
+    },
+    "letterSpacing": {
+      "tight":  { "$type": "dimension", "$value": "-0.02em" },
+      "normal": { "$type": "dimension", "$value": "0" },
+      "wide":   { "$type": "dimension", "$value": "0.04em" },
+      "widest": { "$type": "dimension", "$value": "0.10em", "$description": "Matches CENTRO DE MANTENIMIENTO tracking" }
+    }
+  },
+  "spacing": {
+    "$type": "group",
+    "0":  { "$type": "dimension", "$value": "0px" },
+    "1":  { "$type": "dimension", "$value": "4px" },
+    "2":  { "$type": "dimension", "$value": "8px" },
+    "3":  { "$type": "dimension", "$value": "12px" },
+    "4":  { "$type": "dimension", "$value": "16px" },
+    "5":  { "$type": "dimension", "$value": "20px" },
+    "6":  { "$type": "dimension", "$value": "24px" },
+    "8":  { "$type": "dimension", "$value": "32px" },
+    "10": { "$type": "dimension", "$value": "40px" },
+    "12": { "$type": "dimension", "$value": "48px" },
+    "16": { "$type": "dimension", "$value": "64px" },
+    "20": { "$type": "dimension", "$value": "80px" },
+    "24": { "$type": "dimension", "$value": "96px" }
+  },
+  "borderRadius": {
+    "$type": "group",
+    "none": { "$type": "dimension", "$value": "0px" },
+    "sm":   { "$type": "dimension", "$value": "4px" },
+    "md":   { "$type": "dimension", "$value": "6px" },
+    "lg":   { "$type": "dimension", "$value": "8px" },
+    "xl":   { "$type": "dimension", "$value": "12px" },
+    "2xl":  { "$type": "dimension", "$value": "16px" },
+    "full": { "$type": "dimension", "$value": "9999px" }
+  },
+  "shadow": {
+    "$type": "group",
+    "none":  { "$type": "shadow", "$value": "none" },
+    "xs":    { "$type": "shadow", "$value": "0 1px 2px rgba(20,20,18,0.06)" },
+    "sm":    { "$type": "shadow", "$value": "0 1px 3px rgba(20,20,18,0.10), 0 1px 2px rgba(20,20,18,0.06)" },
+    "md":    { "$type": "shadow", "$value": "0 4px 6px rgba(20,20,18,0.08), 0 2px 4px rgba(20,20,18,0.05)" },
+    "lg":    { "$type": "shadow", "$value": "0 10px 15px rgba(20,20,18,0.10), 0 4px 6px rgba(20,20,18,0.05)" },
+    "inner": { "$type": "shadow", "$value": "inset 0 2px 4px rgba(20,20,18,0.06)" }
+  },
+  "notification": {
+    "$type": "group",
+    "critical": {
+      "bg":     { "$type": "color", "$value": "{color.semantic.critical.bg}" },
+      "border": { "$type": "color", "$value": "{color.semantic.critical.border}" },
+      "text":   { "$type": "color", "$value": "{color.semantic.critical.text}" },
+      "icon":   { "$type": "color", "$value": "{color.semantic.critical.icon}" },
+      "label":  { "$type": "string", "$value": "Critical" }
+    },
+    "warning": {
+      "bg":     { "$type": "color", "$value": "{color.semantic.medium.bg}" },
+      "border": { "$type": "color", "$value": "{color.semantic.medium.border}" },
+      "text":   { "$type": "color", "$value": "{color.semantic.medium.text}" },
+      "icon":   { "$type": "color", "$value": "{color.semantic.medium.icon}" },
+      "label":  { "$type": "string", "$value": "Medium priority" }
+    },
+    "info": {
+      "bg":     { "$type": "color", "$value": "{color.semantic.low.bg}" },
+      "border": { "$type": "color", "$value": "{color.semantic.low.border}" },
+      "text":   { "$type": "color", "$value": "{color.semantic.low.text}" },
+      "icon":   { "$type": "color", "$value": "{color.semantic.low.icon}" },
+      "label":  { "$type": "string", "$value": "Low priority" }
+    },
+    "success": {
+      "bg":     { "$type": "color", "$value": "{color.semantic.success.bg}" },
+      "border": { "$type": "color", "$value": "{color.semantic.success.border}" },
+      "text":   { "$type": "color", "$value": "{color.semantic.success.text}" },
+      "icon":   { "$type": "color", "$value": "{color.semantic.success.icon}" },
+      "label":  { "$type": "string", "$value": "Done" }
+    }
+  },
+  "card": {
+    "$type": "group",
+    "default": {
+      "bg":           { "$type": "color", "$value": "{color.surface.default}" },
+      "border":       { "$type": "color", "$value": "{color.border.default}" },
+      "borderRadius": { "$type": "dimension", "$value": "{borderRadius.xl}" },
+      "padding":      { "$type": "dimension", "$value": "{spacing.6}" },
+      "shadow":       { "$type": "shadow", "$value": "{shadow.sm}" }
+    },
+    "raised": {
+      "bg":           { "$type": "color", "$value": "{color.surface.raised}" },
+      "border":       { "$type": "color", "$value": "{color.border.strong}" },
+      "borderRadius": { "$type": "dimension", "$value": "{borderRadius.xl}" },
+      "padding":      { "$type": "dimension", "$value": "{spacing.6}" },
+      "shadow":       { "$type": "shadow", "$value": "{shadow.md}" }
+    },
+    "subtle": {
+      "bg":           { "$type": "color", "$value": "{color.surface.subtle}" },
+      "border":       { "$type": "color", "$value": "{color.border.subtle}" },
+      "borderRadius": { "$type": "dimension", "$value": "{borderRadius.lg}" },
+      "padding":      { "$type": "dimension", "$value": "{spacing.4}" },
+      "shadow":       { "$type": "shadow", "$value": "{shadow.none}" }
+    }
+  },
+  "icon": {
+    "$type": "group",
+    "size": {
+      "xs": { "$type": "dimension", "$value": "12px" },
+      "sm": { "$type": "dimension", "$value": "16px" },
+      "md": { "$type": "dimension", "$value": "20px" },
+      "lg": { "$type": "dimension", "$value": "24px" },
+      "xl": { "$type": "dimension", "$value": "32px" }
+    },
+    "color": {
+      "default":  { "$type": "color", "$value": "{color.text.secondary}" },
+      "muted":    { "$type": "color", "$value": "{color.text.tertiary}" },
+      "inverted": { "$type": "color", "$value": "{color.text.inverted}" },
+      "critical": { "$type": "color", "$value": "{color.semantic.critical.icon}" },
+      "warning":  { "$type": "color", "$value": "{color.semantic.medium.icon}" },
+      "info":     { "$type": "color", "$value": "{color.semantic.low.icon}" },
+      "success":  { "$type": "color", "$value": "{color.semantic.success.icon}" }
+    }
+  },
+  "mode": {
+    "$type": "group",
+    "light": {
+      "surface":     { "$type": "color", "$value": "#FFFFFF" },
+      "background":  { "$type": "color", "$value": "#F8F6F2" },
+      "textPrimary": { "$type": "color", "$value": "#141412" },
+      "textMuted":   { "$type": "color", "$value": "#3E3C38" },
+      "borderBase":  { "$type": "color", "$value": "#E6E2DB" }
+    },
+    "dark": {
+      "surface":     { "$type": "color", "$value": "#1C1B19" },
+      "background":  { "$type": "color", "$value": "#141412" },
+      "textPrimary": { "$type": "color", "$value": "#F8F6F2" },
+      "textMuted":   { "$type": "color", "$value": "#9A9790" },
+      "borderBase":  { "$type": "color", "$value": "#35332F" }
+    }
+  }
+}

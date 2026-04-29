@@ -1,0 +1,224 @@
+/* =========================================================================
+   Panda Automotriz — Colors & Type
+   Source of truth: tokens/tokens.panda.w3c.json + DESIGN_BRIEF.md
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=JetBrains+Mono:wght@400&display=swap');
+
+/* Brand font — Montserrat (uploaded by team). Static cuts preferred; variable fallbacks kept for browsers that prefer them. */
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Thin.ttf')           format('truetype'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-ThinItalic.ttf')     format('truetype'); font-weight: 100; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-ExtraLight.ttf')     format('truetype'); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-ExtraLightItalic.ttf') format('truetype'); font-weight: 200; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Light.ttf')          format('truetype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-LightItalic.ttf')    format('truetype'); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Regular.ttf')        format('truetype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Italic.ttf')         format('truetype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Medium.ttf')         format('truetype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-MediumItalic.ttf')   format('truetype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-SemiBold.ttf')       format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-SemiBoldItalic.ttf') format('truetype'); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Bold.ttf')           format('truetype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-BoldItalic.ttf')     format('truetype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-ExtraBold.ttf')      format('truetype'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-ExtraBoldItalic.ttf') format('truetype'); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-Black.ttf')          format('truetype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Montserrat'; src: url('fonts/Montserrat-BlackItalic.ttf')    format('truetype'); font-weight: 900; font-style: italic; font-display: swap; }
+
+:root {
+  /* ---- Brand ramps ---- */
+  --red-50:  #FDEAEA;
+  --red-100: #F9C0C0;
+  --red-200: #F29090;
+  --red-400: #E03535;
+  --red-600: #C01E1E;
+  --red-800: #7A1010;
+  --red-900: #4A0A0A;
+
+  --charcoal-50:  #F2F1EF;
+  --charcoal-100: #D8D6D2;
+  --charcoal-200: #B2AFA8;
+  --charcoal-400: #706D66;
+  --charcoal-600: #3E3C38;
+  --charcoal-800: #222120;
+  --charcoal-900: #141412;
+
+  --white-pure:  #FFFFFF;
+  --white-warm:  #F8F6F2;
+  --white-soft:  #F0EDE8;
+  --white-muted: #E6E2DB;
+
+  --denim-50:  #EDF2F8;
+  --denim-100: #C7D8EC;
+  --denim-200: #94B5D8;
+  --denim-400: #4E7FAD;
+  --denim-600: #30597C;
+  --denim-800: #1A3650;
+  --denim-900: #0D1E2E;
+
+  /* ---- Semantic / status ---- */
+  --critical-bg: #FDEAEA;  --critical-border: #F29090;  --critical-text: #7A1010;  --critical-icon: #C01E1E;
+  --medium-bg:   #FFF6E6;  --medium-border:   #FAD888;  --medium-text:   #7A5205;  --medium-icon:   #C48A08;
+  --low-bg:      #EDF2F8;  --low-border:      #94B5D8;  --low-text:      #1A3650;  --low-icon:      #30597C;
+  --success-bg:  #EDF7EE;  --success-border:  #9DD4A2;  --success-text:  #1D5C22;  --success-icon:  #2E8B36;
+
+  /* ---- Surfaces (light) ---- */
+  --surface-page:     #F8F6F2;
+  --surface-default:  #FFFFFF;
+  --surface-subtle:   #F0EDE8;
+  --surface-raised:   #FFFFFF;
+  --surface-inverted: #141412;
+
+  /* ---- Text (light) ---- */
+  --fg1: #141412; /* primary  */
+  --fg2: #3E3C38; /* secondary */
+  --fg3: #706D66; /* tertiary / labels */
+  --fg-disabled: #B2AFA8;
+  --fg-inverted: #F8F6F2;
+  --fg-link: #C01E1E;
+
+  /* ---- Borders ---- */
+  --border-default: #E6E2DB;
+  --border-strong:  #B2AFA8;
+  --border-subtle:  #F0EDE8;
+  --border-focus:   #E03535;
+
+  /* Denim-tinted surfaces — supporting voice for info/low-priority blocks */
+  --surface-info:        #F4F7FB; /* light · ~25% denim wash */
+  --surface-subtle-info: #EDF2F8; /* light · denim-50 */
+
+  /* ---- Type ---- */
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-sans:    'Montserrat', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  --fs-xs: 11px;  --fs-sm: 13px;  --fs-md: 15px;  --fs-base: 16px;
+  --fs-lg: 18px;  --fs-xl: 22px;  --fs-2xl: 28px; --fs-3xl: 36px; --fs-4xl: 48px;
+
+  --fw-regular: 400; --fw-medium: 500; --fw-semibold: 600; --fw-bold: 700;
+
+  --lh-tight: 1.2; --lh-snug: 1.4; --lh-base: 1.6; --lh-relaxed: 1.75;
+
+  --tr-tight: -0.02em; --tr-normal: 0; --tr-wide: 0.04em; --tr-widest: 0.10em;
+  --tr-display: 0.06em; /* Barlow display lockup */
+
+  /* ---- Spacing (4px grid) ---- */
+  --sp-0: 0;     --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px; --sp-12: 48px;
+  --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+
+  /* ---- Radii ---- */
+  --r-none: 0;  --r-sm: 4px;  --r-md: 6px;  --r-lg: 8px;
+  --r-xl: 12px; --r-2xl: 16px; --r-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --sh-xs:    0 1px 2px rgba(20,20,18,0.06);
+  --sh-sm:    0 1px 3px rgba(20,20,18,0.10), 0 1px 2px rgba(20,20,18,0.06);
+  --sh-md:    0 4px 6px rgba(20,20,18,0.08), 0 2px 4px rgba(20,20,18,0.05);
+  --sh-lg:    0 10px 15px rgba(20,20,18,0.10), 0 4px 6px rgba(20,20,18,0.05);
+  --sh-inner: inset 0 2px 4px rgba(20,20,18,0.06);
+
+  /* ---- Touch targets ---- */
+  --hit-min: 44px;
+}
+
+/* Dark mode overrides — apply via [data-theme="dark"] on root, or .dark wrapper */
+[data-theme="dark"], .dark {
+  --surface-page:    #141412;
+  --surface-default: #171A1F; /* warm black with subtle denim tint */
+  --surface-subtle:  #1C2230; /* denim-washed */
+  --surface-raised:  #222831;
+  --surface-info:        #0D1E2E; /* denim-900 */
+  --surface-subtle-info: #1A3650; /* denim-800 */
+
+  --fg1: #F8F6F2;
+  --fg2: #9A9790;
+  --fg3: #606060;
+  --fg-disabled: #35332F;
+  --fg-link: #F29090;
+
+  --border-default: #35332F;
+  --border-strong:  #4A4843;
+  --border-subtle:  #2A2926;
+}
+
+/* =========================================================================
+   Semantic type styles — use as classes
+   ========================================================================= */
+
+html, body { background: var(--surface-page); color: var(--fg1); }
+
+body, .body, p {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-base);
+  letter-spacing: var(--tr-normal);
+  color: var(--fg1);
+}
+
+/* Display headings — Barlow Condensed, condensed + tracked, often UPPERCASE */
+.h-display, h1.display {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-4xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-display);
+  text-transform: uppercase;
+  color: var(--fg1);
+}
+.h-display-sm {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-display);
+  text-transform: uppercase;
+}
+
+/* UI headings — DM Sans medium */
+h1, .h1 { font-family: var(--font-sans); font-size: var(--fs-2xl); font-weight: var(--fw-medium); line-height: var(--lh-tight); letter-spacing: var(--tr-tight); color: var(--fg1); }
+h2, .h2 { font-family: var(--font-sans); font-size: var(--fs-xl); font-weight: var(--fw-medium); line-height: var(--lh-snug); color: var(--fg1); }
+h3, .h3 { font-family: var(--font-sans); font-size: var(--fs-lg); font-weight: var(--fw-medium); line-height: var(--lh-snug); color: var(--fg1); }
+
+/* Body / meta */
+.body-md { font-family: var(--font-sans); font-size: var(--fs-md); font-weight: var(--fw-regular); line-height: var(--lh-base); color: var(--fg2); }
+.body-sm { font-family: var(--font-sans); font-size: var(--fs-sm); font-weight: var(--fw-regular); line-height: var(--lh-snug); color: var(--fg2); }
+
+/* Labels — small, tracked, often UPPERCASE for table headers / overline */
+.label, .meta {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-wide);
+  color: var(--fg3);
+  text-transform: uppercase;
+}
+.label-xs {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tr-wide);
+  color: var(--fg3);
+  text-transform: uppercase;
+}
+
+/* Brand subtitle — under the wordmark, e.g. "CENTRO DE MANTENIMIENTO" */
+.brand-subtitle {
+  font-family: var(--font-display);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tr-widest);
+  text-transform: uppercase;
+  color: var(--fg2);
+}
+
+/* Code / VIN / part numbers */
+code, .code, .mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--fg1);
+}
+
+a { color: var(--fg-link); text-decoration: none; }
+a:hover { color: var(--red-400); }

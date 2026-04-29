@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Card variants</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>html,body{margin:0;padding:0;}
+.card{width:700px;background:#F8F6F2;padding:20px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.c{padding:16px;border-radius:12px;}
+.default{background:#fff;border:1px solid #E6E2DB;box-shadow:var(--sh-sm);}
+.raised{background:#fff;border:1px solid #B2AFA8;box-shadow:var(--sh-md);}
+.subtle{background:#F0EDE8;border-radius:8px;padding:12px 16px;}
+.brand{background:#C01E1E;color:#fff;}
+.title{font-family:var(--font-sans);font-size:15px;font-weight:600;margin:0 0 4px;}
+.meta{font-family:var(--font-sans);font-size:12px;color:var(--fg3);margin:0;}
+.brand .title,.brand .meta{color:#fff;}
+.brand .meta{color:#FDEAEA;}
+.label{font-family:var(--font-display);font-size:10px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--fg3);margin-bottom:6px;}
+.brand .label{color:#FDEAEA;}
+</style></head><body>
+<div class="card">
+  <div class="c default"><div class="label">Default</div><div class="title">Pastillas cerámicas</div><p class="meta">Línea estándar · $ 240.000</p></div>
+  <div class="c raised"><div class="label">Raised</div><div class="title">Total</div><p class="meta">$ 1.840.000 · 6 ítems</p></div>
+  <div class="c subtle"><div class="label">Subtle</div><div class="title">Nota técnica</div><p class="meta">Disco delantero a punto de mínimo legal.</p></div>
+  <div class="c brand"><div class="label">Brand accent</div><div class="title">Pago pendiente</div><p class="meta">Vence hoy · cobrar al entregar</p></div>
+</div>
+</body></html>

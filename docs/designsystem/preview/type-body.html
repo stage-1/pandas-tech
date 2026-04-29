@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Type · UI / Body</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>html,body{margin:0;padding:0;}
+.card{width:700px;background:#fff;padding:24px;box-sizing:border-box;}
+.row{display:flex;align-items:baseline;gap:16px;padding:6px 0;border-bottom:1px solid var(--border-default);}
+.row:last-child{border-bottom:0;}
+.spec{font-family:var(--font-mono);font-size:11px;color:var(--fg3);width:200px;flex-shrink:0;}
+.weights{display:flex;flex-wrap:wrap;gap:18px;align-items:baseline;font-family:var(--font-sans);}
+.w span{font-size:11px;color:var(--fg3);display:block;font-family:var(--font-mono);margin-top:2px;}
+</style></head><body>
+<div class="card">
+  <div class="row"><div class="spec">Montserrat 28 / 500</div><div class="h1">Cotizaciones activas</div></div>
+  <div class="row"><div class="spec">Montserrat 22 / 500</div><div class="h2">Frenos delanteros</div></div>
+  <div class="row"><div class="spec">Montserrat 18 / 500</div><div class="h3">Pastillas cerámicas</div></div>
+  <div class="row"><div class="spec">Montserrat 16 / 400</div><div>Cambio de pastillas y revisión de discos. Incluye pruebas de frenado.</div></div>
+  <div class="row"><div class="spec">Montserrat 13 / 500 · +0.04em</div><div class="label">Prioridad · Técnico · VIN</div></div>
+  <div class="row"><div class="spec">Montserrat 14 / 400 · italic</div><div style="font-style:italic;color:var(--fg2);">"Disco delantero a punto de mínimo legal."</div></div>
+  <div class="row"><div class="spec">JetBrains 13 / 400</div><div class="mono">1HGBH41JXMN109186 · ABC-123</div></div>
+  <div class="row"><div class="spec">Weight ramp</div>
+    <div class="weights">
+      <div class="w" style="font-weight:300;font-size:18px;">Aa<span>300</span></div>
+      <div class="w" style="font-weight:400;font-size:18px;">Aa<span>400</span></div>
+      <div class="w" style="font-weight:500;font-size:18px;">Aa<span>500</span></div>
+      <div class="w" style="font-weight:600;font-size:18px;">Aa<span>600</span></div>
+      <div class="w" style="font-weight:700;font-size:18px;">Aa<span>700</span></div>
+      <div class="w" style="font-weight:800;font-size:18px;">Aa<span>800</span></div>
+      <div class="w" style="font-weight:900;font-size:18px;">Aa<span>900</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

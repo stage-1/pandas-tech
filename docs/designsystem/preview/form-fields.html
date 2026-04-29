@@ -1,0 +1,21 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Form fields</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>html,body{margin:0;padding:0;}
+.card{width:700px;background:#fff;padding:24px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.lab{font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--fg3);}
+.input{height:44px;padding:0 14px;border:1px solid #E6E2DB;border-radius:6px;font-family:var(--font-sans);font-size:15px;color:#141412;background:#fff;}
+.input.focus{border-color:#E03535;outline:2px solid #E03535;outline-offset:0;}
+.input.error{border-color:#C01E1E;}
+.err{font-family:var(--font-sans);font-size:12px;color:#C01E1E;}
+.input.mono{font-family:var(--font-mono);font-size:14px;}
+.helper{font-family:var(--font-sans);font-size:12px;color:var(--fg3);}
+</style></head><body>
+<div class="card">
+  <div class="field"><div class="lab">Cliente</div><div class="input" style="line-height:42px;">Diego Restrepo</div><div class="helper">Default</div></div>
+  <div class="field"><div class="lab">Placa</div><div class="input mono focus" style="line-height:42px;">ABC-123</div><div class="helper">Focused · 2px red ring</div></div>
+  <div class="field"><div class="lab">VIN</div><div class="input mono error" style="line-height:42px;">1HGBH41JXMN1</div><div class="err">VIN inválido. Debe tener 17 caracteres.</div></div>
+  <div class="field"><div class="lab">Notas</div><div class="input" style="height:80px;padding:12px 14px;color:var(--fg3);">Notas para el técnico…</div><div class="helper">Textarea · placeholder</div></div>
+</div>
+</body></html>

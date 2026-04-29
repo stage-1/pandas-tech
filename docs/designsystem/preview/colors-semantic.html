@@ -1,0 +1,57 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Colors · Semantic / status</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; }
+  .card { width: 700px; padding: 20px; background: var(--surface-default); box-sizing: border-box; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .group { border: 1px solid var(--border-default); border-radius: var(--r-lg); overflow: hidden; }
+  .head { padding: 8px 12px; display: flex; align-items: center; gap: 8px; }
+  .head .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .head .name { font-family: var(--font-sans); font-size: 13px; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .sw { padding: 8px 10px; font-family: var(--font-mono); font-size: 10px; height: 38px; display: flex; flex-direction: column; justify-content: space-between; }
+  .sw .role { font-family: var(--font-sans); font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.85; }
+</style></head><body>
+<div class="card">
+
+  <div class="group">
+    <div class="head" style="background:#FDEAEA;color:#7A1010"><div class="dot" style="background:#C01E1E"></div><div class="name">Critical</div></div>
+    <div class="grid">
+      <div class="sw" style="background:#FDEAEA;color:#7A1010"><span class="role">bg</span>FDEAEA</div>
+      <div class="sw" style="background:#F29090;color:#4A0A0A"><span class="role">border</span>F29090</div>
+      <div class="sw" style="background:#7A1010;color:#fff"><span class="role">text</span>7A1010</div>
+      <div class="sw" style="background:#C01E1E;color:#fff"><span class="role">icon</span>C01E1E</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="head" style="background:#FFF6E6;color:#7A5205"><div class="dot" style="background:#C48A08"></div><div class="name">Medium</div></div>
+    <div class="grid">
+      <div class="sw" style="background:#FFF6E6;color:#7A5205"><span class="role">bg</span>FFF6E6</div>
+      <div class="sw" style="background:#FAD888;color:#7A5205"><span class="role">border</span>FAD888</div>
+      <div class="sw" style="background:#7A5205;color:#fff"><span class="role">text</span>7A5205</div>
+      <div class="sw" style="background:#C48A08;color:#fff"><span class="role">icon</span>C48A08</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="head" style="background:#EDF2F8;color:#1A3650"><div class="dot" style="background:#30597C"></div><div class="name">Low</div></div>
+    <div class="grid">
+      <div class="sw" style="background:#EDF2F8;color:#1A3650"><span class="role">bg</span>EDF2F8</div>
+      <div class="sw" style="background:#94B5D8;color:#0D1E2E"><span class="role">border</span>94B5D8</div>
+      <div class="sw" style="background:#1A3650;color:#fff"><span class="role">text</span>1A3650</div>
+      <div class="sw" style="background:#30597C;color:#fff"><span class="role">icon</span>30597C</div>
+    </div>
+  </div>
+
+  <div class="group">
+    <div class="head" style="background:#EDF7EE;color:#1D5C22"><div class="dot" style="background:#2E8B36"></div><div class="name">Done · Success</div></div>
+    <div class="grid">
+      <div class="sw" style="background:#EDF7EE;color:#1D5C22"><span class="role">bg</span>EDF7EE</div>
+      <div class="sw" style="background:#9DD4A2;color:#1D5C22"><span class="role">border</span>9DD4A2</div>
+      <div class="sw" style="background:#1D5C22;color:#fff"><span class="role">text</span>1D5C22</div>
+      <div class="sw" style="background:#2E8B36;color:#fff"><span class="role">icon</span>2E8B36</div>
+    </div>
+  </div>
+
+</div></body></html>
