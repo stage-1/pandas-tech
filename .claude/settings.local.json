@@ -7,7 +7,21 @@
       "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\swim\\\\Downloads\\\\mechanic-shop-prd-v2_1.docx\" /tmp/prd-unpacked/)",
       "Bash(python -c ' *)",
       "Bash(npm install *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://localhost:3002/dashboard)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__select_browser",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__resize_window",
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "Bash(curl -sI http://localhost:3002/dashboard)",
+      "Bash(curl -sv http://localhost:3002/dashboard)",
+      "mcp__Claude_in_Chrome__find",
+      "Bash(curl -sI http://localhost:3002/fonts/Montserrat-VariableFont_wght.ttf)",
+      "Bash(npx next *)",
+      "mcp__Claude_in_Chrome__read_console_messages",
+      "mcp__Claude_in_Chrome__read_network_requests"
     ]
   }
 }

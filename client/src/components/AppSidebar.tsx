@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Users, Settings } from 'lucide-react'
 import { UserButton } from '@clerk/nextjs'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import {
   Sidebar,
   SidebarContent,
@@ -63,11 +64,14 @@ export function AppSidebar() {
       <SidebarSeparator />
 
       <SidebarFooter className="px-4 py-3">
-        <UserButton
-          appearance={{
-            elements: { avatarBox: 'size-8' },
-          }}
-        />
+        <div className="flex items-center gap-2">
+          <UserButton
+            appearance={{
+              elements: { avatarBox: 'size-8' },
+            }}
+          />
+          <ThemeToggle />
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

@@ -1,9 +1,5 @@
-import { SignIn } from '@clerk/nextjs'
+import { SignInClient } from './sign-in-client'
 
 export default function Page() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <SignIn />
-    </div>
-  )
+  return <SignInClient />
 }

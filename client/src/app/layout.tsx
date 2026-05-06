@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { Barlow_Condensed, JetBrains_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "./providers";
-
-// Montserrat — shipped locally in docs/designsystem/fonts/
-const montserrat = localFont({
-  src: [
-    {
-      path: "../fonts/Montserrat-VariableFont_wght.ttf",
-      style: "normal",
-    },
-    {
-      path: "../fonts/Montserrat-Italic-VariableFont_wght.ttf",
-      style: "italic",
-    },
-  ],
-  variable: "--font-sans",
-  display: "swap",
-});
 
 // Barlow Condensed — display/heading font
 const barlowCondensed = Barlow_Condensed({
@@ -48,12 +31,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
   return (
-    <ClerkProvider>
+    <ClerkProvider publishableKey={publishableKey}>
       <html
         lang="en"
         suppressHydrationWarning
-        className={`${montserrat.variable} ${barlowCondensed.variable} ${jetbrainsMono.variable}`}
+        className={`${barlowCondensed.variable} ${jetbrainsMono.variable}`}
       >
         <body>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
