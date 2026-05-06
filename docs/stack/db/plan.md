@@ -8,6 +8,8 @@ The repo is a fresh Next.js 15 + Supabase project (no DB layer yet) implementing
 
 The user explicitly asked: vehicles as their own table with a UUID PK + VIN — yes, and the plan goes further with an ownership-history table so vehicles outlive any single customer (sales, transfers, fleets).
 
+**Auth:** Supabase GoTrue (auth.uid(), auth.users) is replaced by Clerk. The DB layer uses `current_setting('app.user_id', true)` instead, set per-transaction by the tRPC middleware. Supabase Postgres remains the host; `anon`/`authenticated` roles already exist and are unchanged.
+
 ### Confirmed design decisions
 
 | # | Decision | Why |
@@ -103,7 +105,7 @@ comment on table public.shops is 'Tenant root. country_code drives fiscal/compli
 comment on column public.shops.tax_id is 'NIT (CO), RFC (MX), RUT (CL), EIN (US). No format validation in DB; validate client-side per country.';
 
 create table public.users (
-  id          uuid primary key references auth.users(id) on delete cascade,
+  id          text primary key,  -- Clerk userId (e.g. "user_2abc..."); synced via webhook
   email       citext not null,
   full_name   text,
   avatar_url  text,
@@ -115,7 +117,7 @@ create type public.shop_role as enum ('owner', 'tech');
 
 create table public.shop_memberships (
   id          uuid primary key default gen_random_uuid(),
-  user_id     uuid not null references public.users(id) on delete cascade,
+  user_id     text not null references public.users(id) on delete cascade,  -- Clerk userId (text)
   shop_id     uuid not null references public.shops(id) on delete cascade,
   role        public.shop_role not null default 'tech',
   created_at  timestamptz not null default now(),
@@ -341,36 +343,39 @@ alter table public.line_items         enable row level security;
 alter table public.invoices           enable row level security;
 alter table public.payments           enable row level security;
 
--- STABLE helper: lets the planner cache the membership lookup per query
+-- STABLE helper: lets the planner cache the membership lookup per query.
+-- Uses current_setting('app.user_id', true) set by tRPC protectedProcedure middleware.
+-- Return type is setof uuid because shop_id is uuid; user_id is now text.
 create or replace function public.current_user_shop_ids()
 returns setof uuid language sql stable security invoker
 set search_path = public, pg_temp as $$
-  select shop_id from public.shop_memberships where user_id = auth.uid();
+  select shop_id from public.shop_memberships
+  where user_id = current_setting('app.user_id', true);
 $$;
 
 -- users: self
-create policy users_self_select on public.users for select to authenticated using (id = auth.uid());
-create policy users_self_update on public.users for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
+create policy users_self_select on public.users for select to authenticated using (id = current_setting('app.user_id', true));
+create policy users_self_update on public.users for update to authenticated using (id = current_setting('app.user_id', true)) with check (id = current_setting('app.user_id', true));
 
 -- shops: members read; owners update; INSERT only via create_shop_for_owner RPC
 create policy shops_member_select on public.shops for select to authenticated
   using (id in (select public.current_user_shop_ids()));
 create policy shops_owner_update on public.shops for update to authenticated
-  using (id in (select shop_id from public.shop_memberships where user_id = auth.uid() and role = 'owner'))
-  with check (id in (select shop_id from public.shop_memberships where user_id = auth.uid() and role = 'owner'));
+  using (id in (select shop_id from public.shop_memberships where user_id = current_setting('app.user_id', true) and role = 'owner'))
+  with check (id in (select shop_id from public.shop_memberships where user_id = current_setting('app.user_id', true) and role = 'owner'));
 
 -- shop_memberships: see own + everyone in shops you own; owners manage
 create policy memberships_self_select on public.shop_memberships for select to authenticated
   using (
-    user_id = auth.uid()
-    or shop_id in (select shop_id from public.shop_memberships where user_id = auth.uid() and role = 'owner')
+    user_id = current_setting('app.user_id', true)
+    or shop_id in (select shop_id from public.shop_memberships where user_id = current_setting('app.user_id', true) and role = 'owner')
   );
 create policy memberships_owner_insert on public.shop_memberships for insert to authenticated
-  with check (shop_id in (select shop_id from public.shop_memberships where user_id = auth.uid() and role = 'owner'));
+  with check (shop_id in (select shop_id from public.shop_memberships where user_id = current_setting('app.user_id', true) and role = 'owner'));
 create policy memberships_owner_update on public.shop_memberships for update to authenticated
-  using (shop_id in (select shop_id from public.shop_memberships where user_id = auth.uid() and role = 'owner'));
+  using (shop_id in (select shop_id from public.shop_memberships where user_id = current_setting('app.user_id', true) and role = 'owner'));
 create policy memberships_owner_delete on public.shop_memberships for delete to authenticated
-  using (shop_id in (select shop_id from public.shop_memberships where user_id = auth.uid() and role = 'owner'));
+  using (shop_id in (select shop_id from public.shop_memberships where user_id = current_setting('app.user_id', true) and role = 'owner'));
 
 -- Generic shop-scoped pattern: IDENTICAL predicates to customers_* below for vehicles, repair_orders, invoices,
 -- payments (payments: omit DELETE policy).
@@ -419,21 +424,8 @@ create trigger trg_line_items_updated_at    before update on public.line_items  
 create trigger trg_invoices_updated_at      before update on public.invoices      for each row execute function public.set_updated_at();
 create trigger trg_payments_updated_at      before update on public.payments      for each row execute function public.set_updated_at();
 
--- Mirror auth.users -> public.users
-create or replace function public.handle_new_user()
-returns trigger language plpgsql security definer
-set search_path = public, pg_temp as $$
-begin
-  insert into public.users (id, email, full_name, avatar_url)
-  values (new.id, new.email,
-          new.raw_user_meta_data->>'full_name',
-          new.raw_user_meta_data->>'avatar_url')
-  on conflict (id) do nothing;
-  return new;
-end; $$;
-
-create trigger on_auth_user_created
-  after insert on auth.users for each row execute function public.handle_new_user();
+-- handle_new_user trigger removed. User sync is handled by Clerk webhook
+-- (POST /api/webhooks/clerk) which upserts into public.users on user.created/updated.
 
 -- Country-aware shop creation. Caller passes country_code; defaults derived from it.
 create or replace function public.create_shop_for_owner(
@@ -446,13 +438,13 @@ create or replace function public.create_shop_for_owner(
 language plpgsql security definer
 set search_path = public, pg_temp as $$
 declare
-  v_user_id  uuid := auth.uid();
+  v_user_id  text := current_setting('app.user_id', true);  -- set by tRPC protectedProcedure
   v_tz       text;
   v_curr     char(3);
   v_rate     numeric;
   v_shop     public.shops;
 begin
-  if v_user_id is null then raise exception 'not authenticated'; end if;
+  if v_user_id is null or v_user_id = '' then raise exception 'not authenticated'; end if;
 
   -- per-country defaults
   v_tz   := coalesce(p_timezone, case p_country_code
