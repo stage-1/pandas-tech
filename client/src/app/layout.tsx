@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Barlow_Condensed, JetBrains_Mono } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Providers } from "./providers";
 
 // Montserrat — shipped locally in docs/designsystem/fonts/
 const montserrat = localFont({
@@ -21,7 +23,7 @@ const montserrat = localFont({
   display: "swap",
 });
 
-// Barlow Condensed — display/heading font (not in local files, fetched at build time)
+// Barlow Condensed — display/heading font
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -47,16 +49,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${montserrat.variable} ${barlowCondensed.variable} ${jetbrainsMono.variable}`}
-    >
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TooltipProvider>{children}</TooltipProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${montserrat.variable} ${barlowCondensed.variable} ${jetbrainsMono.variable}`}
+      >
+        <body>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <TooltipProvider>
+              <Providers>{children}</Providers>
+            </TooltipProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

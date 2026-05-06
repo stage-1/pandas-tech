@@ -5,7 +5,9 @@
       "Bash(pandoc --track-changes=all \"C:\\\\Users\\\\swim\\\\Downloads\\\\mechanic-shop-prd-v2_1.docx\" -o /tmp/prd-out.md)",
       "Read(//tmp/**)",
       "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\swim\\\\Downloads\\\\mechanic-shop-prd-v2_1.docx\" /tmp/prd-unpacked/)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)"
     ]
   }
 }
