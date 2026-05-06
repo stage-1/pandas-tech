@@ -51,8 +51,7 @@ The schema captures this with a `country_code` on `shops`, defaults selected at 
 ## §3 File Layout
 
 ```
-supabase/
-├── config.toml                       (created by `supabase init`)
+db/
 ├── migrations/
 │   ├── 0001_init_shops_users.sql
 │   ├── 0002_customers_vehicles.sql
@@ -63,6 +62,8 @@ supabase/
 │   └── 0007_indexes.sql
 └── seed.sql                          (optional local-dev seed)
 ```
+
+Migrations live in `db/` (not `supabase/`) so the data layer is host-agnostic — works with Supabase, RDS, or any Postgres. No `supabase init` required. Apply via Supabase MCP, `psql --db-url`, or any migration runner pointed at `db/migrations/`.
 
 One concern per migration. Order: tables → policies → triggers → indexes.
 
@@ -699,22 +700,17 @@ create index payments_status_idx             on public.payments (shop_id, status
 ## §8 Setup
 
 ```bash
-# one-time
-npm i -g supabase
-supabase init               # creates supabase/ + config.toml
-supabase start              # local Postgres + Studio at localhost:54323
+# Apply migrations (no supabase init needed)
+# Via psql:
+psql "$DATABASE_URL" -f db/migrations/0001_init_shops_users.sql
+# ... repeat per file in order, or loop:
+for f in db/migrations/*.sql; do psql "$DATABASE_URL" -f "$f"; done
 
-# author migrations under supabase/migrations/ in the order above
-supabase db reset           # nukes local DB, re-runs all migrations + seed.sql
-
-# generate TS types into the Next.js app
-supabase gen types typescript --local > client/src/types/database.ts
-
-# push to cloud when ready
-supabase login
-supabase link --project-ref <your-project-ref>
-supabase db push
+# Generate TS types (requires supabase CLI, but no project init)
+npx supabase gen types typescript --db-url "$DATABASE_URL" > client/src/types/database.ts
 ```
+
+`DATABASE_URL` = Postgres connection string from your host (Supabase: Settings → Database → Connection string → URI).
 
 **Client wiring (informational):** Use `@supabase/ssr` for App Router. The public approval page uses the **anon** client so the SECURITY DEFINER RPC is the only path in. Authenticated routes use the SSR client; RLS does the rest.
 
@@ -824,11 +820,11 @@ select country_code, compliance_provider, compliance_status from public.invoices
 
 ## Critical Files To Create
 
-- [supabase/migrations/0001_init_shops_users.sql](supabase/migrations/0001_init_shops_users.sql)
-- [supabase/migrations/0002_customers_vehicles.sql](supabase/migrations/0002_customers_vehicles.sql)
-- [supabase/migrations/0003_repair_orders_line_items.sql](supabase/migrations/0003_repair_orders_line_items.sql)
-- [supabase/migrations/0004_invoices_payments.sql](supabase/migrations/0004_invoices_payments.sql)
-- [supabase/migrations/0005_rls_policies.sql](supabase/migrations/0005_rls_policies.sql)
-- [supabase/migrations/0006_triggers_functions.sql](supabase/migrations/0006_triggers_functions.sql)
-- [supabase/migrations/0007_indexes.sql](supabase/migrations/0007_indexes.sql)
-- [client/src/types/database.ts](client/src/types/database.ts) (generated via `supabase gen types`)
+- [db/migrations/0001_init_shops_users.sql](db/migrations/0001_init_shops_users.sql)
+- [db/migrations/0002_customers_vehicles.sql](db/migrations/0002_customers_vehicles.sql)
+- [db/migrations/0003_repair_orders_line_items.sql](db/migrations/0003_repair_orders_line_items.sql)
+- [db/migrations/0004_invoices_payments.sql](db/migrations/0004_invoices_payments.sql)
+- [db/migrations/0005_rls_policies.sql](db/migrations/0005_rls_policies.sql)
+- [db/migrations/0006_triggers_functions.sql](db/migrations/0006_triggers_functions.sql)
+- [db/migrations/0007_indexes.sql](db/migrations/0007_indexes.sql)
+- [client/src/types/database.ts](client/src/types/database.ts) (generated via `supabase gen types --db-url`)
