@@ -156,7 +156,48 @@ Recommended approach: `next-intl` with `es` and `en` locale files. Colombian Spa
 
 ---
 
-## 10. Deferred Integrations (roadmap)
+## 10. Future Feature: SOAT & Tecnomecánica Expiry Alerts (Colombia)
+
+**Status:** Deferred — post-MVP. Colombia-only.
+
+Colombian vehicles are required by law to carry two annual documents:
+- **SOAT** (Seguro Obligatorio de Accidentes de Tránsito) — mandatory road insurance
+- **Revisión Tecnomecánica** — roadworthiness inspection (Centros de Diagnóstico Automotor)
+
+Both expire annually and carry fines if a vehicle is driven with an expired certificate.
+
+### Behavior
+
+**Customer notification** (primary):
+- Email (MVP) or in-app push (later) sent at configurable thresholds before expiry: e.g. 30 days, 7 days, 1 day
+- Message includes the document type, expiry date, and a CTA to book a service appointment
+
+**Shop notification** (non-invasive, secondary):
+- No push/email to the shop — surfaces passively as a counter or badge in the vehicle list and customer profile (e.g. "3 vehicles with expiring docs this month")
+- Optionally: a weekly summary report for owner role
+
+### Data requirements
+
+Two new nullable fields on `vehicles`, Colombia-only in practice:
+- `soat_expires_at TIMESTAMPTZ`
+- `tecnicomecanica_expires_at TIMESTAMPTZ`
+
+Notification delivery via existing SMS/email infrastructure (Twilio/MessageBird). No new provider needed.
+
+### Plug-in points
+
+- Schema: add `soat_expires_at` + `tecnicomecanica_expires_at` to `vehicles` in a new migration
+- Scheduled job (cron edge function or pg_cron): query vehicles where expiry is within N days, enqueue notification
+- UI: badge on vehicle list + vehicle detail; count widget on dashboard
+- Opt-out: customer-level notification preference flag
+
+### Scope gate
+
+Only relevant when `shops.country_code = 'CO'`. Other markets: hide fields, skip job. No schema branching needed — fields are nullable and ignored outside CO.
+
+---
+
+## 11. Deferred Integrations (roadmap)
 
 | Integration | Market | When |
 |---|---|---|
