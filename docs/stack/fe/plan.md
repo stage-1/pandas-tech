@@ -30,3 +30,18 @@ const InvoicePDF = dynamic(() => import('@/components/InvoicePDF'), { ssr: false
 
 ## Realtime
 No live updates in MVP. Invalidate React Query cache on mutation for optimistic UI.
+
+## Forms — Enter key convention
+All forms that include custom selection UI (card pickers, toggle groups, radio-card grids) **must** handle Enter key at the form level so keyboard-only users can advance without tabbing to the submit button.
+
+Pattern (add `onKeyDown` to the `<form>`):
+```tsx
+function handleKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+  if (e.key !== 'Enter') return
+  const tag = (e.target as HTMLElement).tagName.toLowerCase()
+  if (tag === 'input' || tag === 'textarea') return // already handled natively
+  e.preventDefault()
+  // call next() / submit() if canContinue
+}
+```
+This applies to: wizard steps with card pickers, filter panels with toggle chips, any step where the primary interaction is clicking a card rather than typing in an input.
