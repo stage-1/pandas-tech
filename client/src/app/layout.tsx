@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "./providers";
+import { AuthLogger } from "@/components/AuthLogger";
 
 // Barlow Condensed — display/heading font
 const barlowCondensed = Barlow_Condensed({
@@ -42,7 +43,10 @@ export default function RootLayout({
         <body>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <TooltipProvider>
-              <Providers>{children}</Providers>
+              <Providers>
+                <AuthLogger />
+                {children}
+              </Providers>
             </TooltipProvider>
           </ThemeProvider>
         </body>

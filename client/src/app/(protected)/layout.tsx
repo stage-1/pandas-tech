@@ -1,4 +1,5 @@
 import { AppSidebar } from '@/components/AppSidebar'
+import { ShopGate } from '@/components/ShopGate'
 import {
   SidebarInset,
   SidebarProvider,
@@ -17,7 +18,9 @@ export default function ProtectedLayout({
         <header className="sticky top-0 z-10 flex h-12 items-center gap-2 border-b border-border bg-background px-4">
           <SidebarTrigger className="-ml-1" />
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6">
+          <ShopGate>{children}</ShopGate>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )
