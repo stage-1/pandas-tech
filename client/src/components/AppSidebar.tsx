@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { LayoutDashboard, Users, Settings } from 'lucide-react'
 import { UserButton } from '@clerk/nextjs'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { trpc } from '@/lib/trpc'
 import {
   Sidebar,
   SidebarContent,
@@ -16,13 +17,15 @@ import {
 } from '@/components/ui/sidebar'
 
 const navItems = [
-  { label: 'Board', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Customers', href: '/customers', icon: Users, disabled: true },
-  { label: 'Settings', href: '/settings', icon: Settings, disabled: true },
+  { label: 'Home', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Customers', href: '/customers', icon: Users },
+  { label: 'Settings', href: '/settings', icon: Settings },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { data: shop } = trpc.shops.mine.useQuery()
+  const userAttachedToShop = Boolean(shop)
 
   return (
     <Sidebar>
@@ -36,9 +39,9 @@ export function AppSidebar() {
 
       <SidebarContent className="px-2 py-2">
         <SidebarMenu>
-          {navItems.map(({ label, href, icon: Icon, disabled }) => (
+          {navItems.map(({ label, href, icon: Icon }) => (
             <SidebarMenuItem key={href}>
-              {disabled ? (
+              {!userAttachedToShop ? (
                 <SidebarMenuButton
                   tooltip={label}
                   className="opacity-40 cursor-not-allowed"
