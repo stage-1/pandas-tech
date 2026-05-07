@@ -10,6 +10,7 @@ import {
 // resolves to a 404 and the viewport stays blank (see x-clerk-auth-reason).
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
+  '/onboard(.*)',
   '/customers(.*)',
   '/settings(.*)',
   '/api/trpc(.*)',
