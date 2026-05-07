@@ -18,7 +18,7 @@ const labels: Record<Theme, string> = {
   system: 'System',
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
 
   function cycle() {
@@ -34,7 +34,7 @@ export function ThemeToggle() {
       <TooltipTrigger
         onClick={cycle}
         aria-label={`Theme: ${labels[current]}. Click to switch.`}
-        className="inline-flex size-8 items-center justify-center rounded-md text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        className={className ?? "inline-flex size-8 items-center justify-center rounded-md text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"}
       >
         {icons[current]}
       </TooltipTrigger>
