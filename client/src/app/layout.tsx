@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "./providers";
 import { AuthLogger } from "@/components/AuthLogger";
+import { Analytics } from "@vercel/analytics/next";
 
 // Barlow Condensed — display/heading font
 const barlowCondensed = Barlow_Condensed({
@@ -49,6 +50,7 @@ export default function RootLayout({
               </Providers>
             </TooltipProvider>
           </ThemeProvider>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
