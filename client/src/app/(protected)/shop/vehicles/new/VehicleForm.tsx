@@ -189,6 +189,7 @@ export function VehicleForm() {
   const router = useRouter()
   const isMobile = useIsMobile()
   const [step, setStep] = useState(0)
+  const [submitBlocked, setSubmitBlocked] = useState(false)
 
   const {
     register,
@@ -245,7 +246,11 @@ export function VehicleForm() {
   async function handleMobileNext() {
     const fields = MOBILE_STEPS[step].fields as unknown as (keyof CreateVehicleFormValues)[]
     const valid = await trigger(fields)
-    if (valid) setStep((s) => s + 1)
+    if (valid) {
+      setSubmitBlocked(true)
+      setStep((s) => s + 1)
+      setTimeout(() => setSubmitBlocked(false), 400)
+    }
   }
 
   const isLastStep = step === MOBILE_STEPS.length - 1
@@ -458,7 +463,7 @@ export function VehicleForm() {
                 </Button>
               )}
               {isLastStep ? (
-                <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+                <Button type="submit" disabled={createVehicle.isPending || submitBlocked} className="min-w-36">
                   {submitLabel}
                 </Button>
               ) : (
