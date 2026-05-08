@@ -12,7 +12,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { FieldError } from '@/components/ui/field-error'
-import { DenimBg } from './denim-bg'
+import dynamic from 'next/dynamic'
+
+const DenimBg = dynamic(() => import('./denim-bg').then(m => m.DenimBg), { ssr: false })
 
 const DEV = process.env.NODE_ENV === 'development'
 const log = (...args: unknown[]) => { if (DEV) console.log('[sign-in]', ...args) }
@@ -53,7 +55,7 @@ export function SignInClient() {
 
   if (!authLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
         <span className="text-sm text-white/50">Loading…</span>
       </div>
     )
@@ -61,7 +63,7 @@ export function SignInClient() {
 
   if (isSignedIn) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
         <span className="text-sm text-white/50">Opening dashboard…</span>
       </div>
     )
@@ -133,7 +135,7 @@ export function SignInClient() {
       <DenimBg />
       <div
         className="min-h-screen flex items-center justify-center px-4"
-        style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}
       >
       <div className="relative w-full max-w-sm">
       <Card
@@ -189,7 +191,7 @@ export function SignInClient() {
             <Button
               type="submit"
               disabled={isSubmitting || fetchStatus === 'fetching'}
-              className="w-full bg-red-600 hover:bg-red-500 text-white border-0"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white border-0"
             >
               {isSubmitting || fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
             </Button>
@@ -226,7 +228,17 @@ export function SignInClient() {
         </CardFooter>
       </Card>
 
-        <div className="absolute bottom-3 right-3">
+        <div className="absolute bottom-3 right-3 flex items-center gap-2">
+          <a
+            href="?clerk=1"
+            tabIndex={-1}
+            aria-label="Clerk sign-in"
+            className="opacity-20 hover:opacity-60 transition-opacity"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M21.47 20.829a.614.614 0 0 1-.57.171l-3.118-.685a.624.624 0 0 1-.31-.168 7.51 7.51 0 0 0-5.463-2.312 7.51 7.51 0 0 0-5.462 2.312.624.624 0 0 1-.311.168l-3.118.685a.614.614 0 0 1-.57-.171.59.59 0 0 1-.114-.572l1.093-3.083a.603.603 0 0 1 .183-.271A11.93 11.93 0 0 1 12.01 14c3.078 0 5.878 1.16 7.979 3.072.088.08.15.183.183.271l1.093 3.083a.59.59 0 0 1-.115.572v.001ZM12.009 12.5a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Z" fill="currentColor" className="text-white"/>
+            </svg>
+          </a>
           <button
             type="button"
             onClick={() => { setShowBypass(v => !v); setBypassInput('') }}
