@@ -13,7 +13,7 @@ import {
   type CreateVehicleInput,
   MOBILE_STEPS,
 } from '@/lib/vehicles'
-import { MAKES, MODELS_BY_MAKE, YEAR_RANGE_BY_MAKE } from '@/lib/vehicle-data'
+import { MAKES, MODELS_BY_MAKE } from '@/lib/vehicle-data'
 import { cn } from '@/lib/utils'
 import { FieldError } from '@/components/ui/field-error'
 import { Card, CardContent } from '@/components/ui/card'
@@ -216,7 +216,11 @@ export function VehicleForm() {
     () => (selectedMake ? (MODELS_BY_MAKE[selectedMake] ?? []) : []),
     [selectedMake],
   )
-  const yearRange = selectedMake ? YEAR_RANGE_BY_MAKE[selectedMake] : null
+  const selectedYear = watch('year')
+  const yearOptions = useMemo(() => {
+    const currentYear = new Date().getFullYear()
+    return Array.from({ length: currentYear - 1901 + 1 }, (_, i) => String(currentYear - i))
+  }, [])
 
   const createVehicle = trpc.vehicles.create.useMutation({
     onSuccess: () => router.push('/shop/vehicles'),
@@ -330,15 +334,16 @@ export function VehicleForm() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <Label htmlFor="year">Año</Label>
-                <Input
-                  id="year"
-                  type="number"
-                  placeholder="Ej: 2020"
-                  min={yearRange?.first}
-                  max={yearRange?.last}
-                  {...register('year')}
-                  className="mt-1.5"
-                />
+                <div className="mt-1.5">
+                  <VehiclePicker
+                    id="year"
+                    options={yearOptions}
+                    value={selectedYear ? String(selectedYear) : null}
+                    placeholder="Seleccionar año"
+                    onChange={(v) => setValue('year', v ? Number(v) : undefined)}
+                  />
+                </div>
+                <FieldError message={errors.year?.message} />
               </div>
               <div>
                 <Label htmlFor="make_picker">Marca</Label>
