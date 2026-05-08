@@ -32,7 +32,7 @@ type FormValues = z.input<typeof schema>
 
 export function SignInClient() {
   const { isSignedIn, isLoaded: authLoaded } = useAuth()
-  const { signIn, setActive, isLoaded: signInLoaded } = useSignIn()
+  const { signIn, fetchStatus } = useSignIn()
   const [formError, setFormError] = useState<string | null>(null)
   const [showBypass, setShowBypass] = useState(false)
   const [bypassInput, setBypassInput] = useState('')
@@ -51,7 +51,7 @@ export function SignInClient() {
     }
   }, [authLoaded, isSignedIn])
 
-  if (!authLoaded || !signInLoaded) {
+  if (!authLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}>
         <span className="text-sm text-white/50">Loading…</span>
@@ -68,58 +68,49 @@ export function SignInClient() {
   }
 
   async function onSubmit(values: FormValues) {
-    if (!signIn || !setActive) return
     setFormError(null)
-    log('submit — identifier:', values.email)
-    try {
-      const result = await signIn.create({
-        identifier: values.email,
-        password: values.password,
+    log('submit — email:', values.email)
+
+    const { error } = await signIn.password({ emailAddress: values.email, password: values.password })
+
+    if (error) {
+      log('password error:', JSON.stringify(error))
+      const param = (error as { meta?: { paramName?: string } }).meta?.paramName
+      if (param === 'identifier' || param === 'email_address') {
+        setError('email', { message: error.message })
+      } else if (param === 'password') {
+        setError('password', { message: error.message })
+      } else {
+        setFormError(error.message ?? 'Something went wrong. Please try again.')
+      }
+      return
+    }
+
+    log('password ok — status:', signIn.status)
+
+    if (signIn.status === 'complete') {
+      const { error: finalizeError } = await signIn.finalize({
+        navigate: ({ decorateUrl }) => window.location.assign(decorateUrl('/dashboard')),
       })
-
-      log('create result — status:', result.status, 'sessionId:', result.createdSessionId)
-
-      if (result.status === 'complete') {
-        log('complete — calling setActive, then redirecting to /dashboard')
-        await setActive({ session: result.createdSessionId })
-        window.location.assign('/dashboard')
-      } else {
-        log('unexpected status after create:', result.status, '— supportedFirstFactors:', result.supportedFirstFactors)
-        setFormError('Sign-in could not be completed. Please try again.')
+      if (finalizeError) {
+        log('finalize error:', finalizeError)
+        setFormError(finalizeError.message ?? 'Sign-in could not be completed. Please try again.')
       }
-    } catch (err: unknown) {
-      const clerkErr = err as { errors?: { code: string; message: string; meta?: { paramName?: string } }[] }
-      log('clerk error:', JSON.stringify(clerkErr?.errors))
-      if (clerkErr?.errors?.length) {
-        for (const e of clerkErr.errors) {
-          const param = e.meta?.paramName
-          log('  →', e.code, 'param:', param, 'message:', e.message)
-          if (param === 'identifier' || param === 'email_address') {
-            setError('email', { message: e.message })
-          } else if (param === 'password') {
-            setError('password', { message: e.message })
-          } else {
-            setFormError(e.message)
-          }
-        }
-      } else {
-        log('non-clerk error:', err)
-        setFormError('Something went wrong. Please try again.')
-      }
+    } else {
+      log('unexpected status after password:', signIn.status)
+      setFormError('Sign-in could not be completed. Please try again.')
     }
   }
 
   async function onGoogleSignIn() {
-    if (!signIn) return
-    log('initiating google oauth redirect')
-    try {
-      await signIn.authenticateWithRedirect({
-        strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/dashboard',
-      })
-    } catch (err) {
-      log('google oauth error:', err)
+    log('initiating google oauth')
+    const { error } = await signIn.sso({
+      strategy: 'oauth_google',
+      redirectUrl: '/dashboard',
+      redirectCallbackUrl: '/sso-callback',
+    })
+    if (error) {
+      log('google oauth error:', error)
       setFormError('Google sign-in failed. Please try again.')
     }
   }
@@ -197,10 +188,10 @@ export function SignInClient() {
 
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || fetchStatus === 'fetching'}
               className="w-full bg-red-600 hover:bg-red-500 text-white border-0"
             >
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
+              {isSubmitting || fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
             </Button>
           </form>
 
