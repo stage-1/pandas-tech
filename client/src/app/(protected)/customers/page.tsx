@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, Users } from 'lucide-react'
+import { Plus, Trash2, Users } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -14,9 +14,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 export default function CustomersPage() {
   const { data: customers, isPending } = trpc.customers.list.useQuery()
+  const utils = trpc.useUtils()
+  const deleteCustomer = trpc.customers.delete.useMutation({
+    onSuccess: () => utils.customers.list.invalidate(),
+  })
 
   if (isPending) {
     return (
@@ -74,6 +89,7 @@ export default function CustomersPage() {
                 <TableHead>Nombre</TableHead>
                 <TableHead className="hidden sm:table-cell">Email</TableHead>
                 <TableHead className="hidden md:table-cell">Teléfono</TableHead>
+                <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -85,6 +101,29 @@ export default function CustomersPage() {
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">
                     {c.phone ?? '—'}
+                  </TableCell>
+                  <TableCell className="w-10 text-right">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon-sm" disabled={deleteCustomer.isPending}>
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>¿Eliminar cliente?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => deleteCustomer.mutate({ id: c.id })}>
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               ))}

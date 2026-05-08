@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, Car } from 'lucide-react'
+import { Plus, Car, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -14,9 +14,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 export default function VehiclesPage() {
   const { data: vehicles, isPending } = trpc.vehicles.list.useQuery()
+  const utils = trpc.useUtils()
+  const deleteVehicle = trpc.vehicles.delete.useMutation({
+    onSuccess: () => utils.vehicles.list.invalidate(),
+  })
 
   if (isPending) {
     return (
@@ -76,6 +91,7 @@ export default function VehiclesPage() {
                 <TableHead>Marca / Modelo</TableHead>
                 <TableHead className="hidden sm:table-cell">Placa</TableHead>
                 <TableHead className="hidden md:table-cell">Cliente</TableHead>
+                <TableHead className="w-10" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -95,6 +111,29 @@ export default function VehiclesPage() {
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {v.customer_name ?? '—'}
+                  </TableCell>
+                  <TableCell className="w-10 text-right">
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon-sm" disabled={deleteVehicle.isPending}>
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>¿Eliminar vehículo?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => deleteVehicle.mutate({ id: v.id })}>
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               ))}

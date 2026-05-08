@@ -43,6 +43,19 @@ export const vehiclesRouter = router({
       return vehicle
     }),
 
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const shopId = await resolveShopId(ctx.db, ctx.userId)
+      await ctx.db`
+        UPDATE public.vehicles
+        SET deleted_at = NOW()
+        WHERE id = ${input.id}
+          AND shop_id = ${shopId}
+          AND deleted_at IS NULL
+      `
+    }),
+
   customers: protectedProcedure
     .input(z.object({ search: z.string().optional() }))
     .query(async ({ ctx, input }) => {
