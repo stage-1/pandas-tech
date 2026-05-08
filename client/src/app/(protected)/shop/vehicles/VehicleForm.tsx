@@ -33,6 +33,7 @@ export type Vehicle = {
   model: string | null
   trim: string | null
   color: string | null
+  odometer: number | null
   license_plate: string | null
   notes: string | null
   current_customer_id: string | null
@@ -62,6 +63,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       model: vehicle?.model ?? '',
       trim: vehicle?.trim ?? '',
       color: vehicle?.color ?? '',
+      odometer: vehicle?.odometer ?? undefined,
       license_plate: vehicle?.license_plate ?? '',
       notes: vehicle?.notes ?? '',
       customer_id: vehicle?.current_customer_id ?? undefined,
@@ -97,6 +99,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       model: data.model || null,
       trim: data.trim || null,
       color: data.color || null,
+      odometer: data.odometer ?? null,
       license_plate: data.license_plate || null,
       notes: data.notes || null,
       customer_id: data.customer_id || null,
@@ -243,6 +246,19 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                   {...register('color')}
                   className="mt-1.5"
                 />
+              </div>
+              <div>
+                <Label htmlFor="odometer">Kilometraje</Label>
+                <Input
+                  id="odometer"
+                  type="number"
+                  min={0}
+                  placeholder="Ej: 150000"
+                  {...register('odometer')}
+                  aria-invalid={!!errors.odometer}
+                  className="mt-1.5"
+                />
+                <FieldError message={errors.odometer?.message} />
               </div>
             </div>
           </div>

@@ -22,12 +22,12 @@ export const vehiclesRouter = router({
 
       const [vehicle] = await ctx.db`
         INSERT INTO public.vehicles (
-          shop_id, vin, year, make, model, trim, color, license_plate, notes,
+          shop_id, vin, year, make, model, trim, color, odometer, license_plate, notes,
           current_customer_id
         ) VALUES (
           ${shopId}, ${input.vin}, ${input.year ?? null}, ${input.make ?? null},
           ${input.model ?? null}, ${input.trim ?? null}, ${input.color ?? null},
-          ${input.license_plate ?? null}, ${input.notes ?? null},
+          ${input.odometer ?? null}, ${input.license_plate ?? null}, ${input.notes ?? null},
           ${input.customer_id ?? null}
         )
         RETURNING *
@@ -70,6 +70,7 @@ export const vehiclesRouter = router({
           model               = ${input.model ?? null},
           trim                = ${input.trim ?? null},
           color               = ${input.color ?? null},
+          odometer            = ${input.odometer ?? null},
           notes               = ${input.notes ?? null},
           current_customer_id = ${input.customer_id ?? null},
           updated_at          = NOW()

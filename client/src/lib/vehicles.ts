@@ -8,6 +8,7 @@ export const createVehicleSchema = z.object({
   model:         z.string().max(60).nullish(),
   trim:          z.string().max(60).nullish(),
   color:         z.string().max(30).nullish(),
+  odometer:      z.coerce.number().int().min(0).max(9_999_999).nullish(),
   license_plate: z.string().max(20).nullish(),
   notes:         z.string().max(2000).nullish(),
   customer_id:   z.string().uuid().nullish(),
@@ -26,6 +27,6 @@ export type UpdateVehicleFormValues = input<typeof updateVehicleSchema>
 
 export const MOBILE_STEPS = [
   { label: 'Identificación', fields: ['vin', 'license_plate'] as const },
-  { label: 'Detalles',       fields: ['year', 'make', 'model', 'trim', 'color'] as const },
+  { label: 'Detalles',       fields: ['year', 'make', 'model', 'trim', 'color', 'odometer'] as const },
   { label: 'Adicional',      fields: ['customer_id', 'notes'] as const },
 ] as const
