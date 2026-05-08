@@ -26,7 +26,7 @@ type FormValues = z.input<typeof schema>
 export function SignInClient() {
   const { isSignedIn, isLoaded: authLoaded } = useAuth()
   const { setActive } = useClerk()
-  const { signIn, isLoaded: signInLoaded } = useSignIn()
+  const { signIn } = useSignIn()
   const [formError, setFormError] = useState<string | null>(null)
 
   const {
@@ -43,7 +43,7 @@ export function SignInClient() {
     }
   }, [authLoaded, isSignedIn])
 
-  if (!authLoaded || !signInLoaded) {
+  if (!authLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}>
         <span className="text-sm text-white/50">Loading…</span>
@@ -67,7 +67,6 @@ export function SignInClient() {
       const result = await signIn.create({
         identifier: values.email,
         password: values.password,
-        strategy: 'password',
       })
       log('create result status:', result.status)
       if (result.status === 'complete') {
