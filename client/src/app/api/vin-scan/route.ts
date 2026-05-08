@@ -16,6 +16,8 @@ export async function POST(req: Request) {
   const image = formData.get('image') as File | null
   if (!image) return Response.json({ error: 'No image provided' }, { status: 400 })
 
+  console.log('[vin-scan] received image', { type: image.type, sizeKb: Math.round(image.size / 1024) })
+
   const bytes = await image.arrayBuffer()
   const base64 = Buffer.from(bytes).toString('base64')
   const dataUrl = `data:${image.type};base64,${base64}`
@@ -39,6 +41,8 @@ export async function POST(req: Request) {
       },
     ],
   })
+
+  console.log('[vin-scan] result', { vin: object.vin, confidence: object.confidence })
 
   return Response.json(object)
 }

@@ -40,6 +40,7 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    console.log('[vin-scanner] file selected', { name: file.name, type: file.type, sizeKb: Math.round(file.size / 1024) })
     revokePreview(phase)
     const previewUrl = URL.createObjectURL(file)
     setPhase({ name: 'previewing', file, previewUrl })
@@ -50,6 +51,7 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
     if (phase.name !== 'previewing') return
     const { file, previewUrl } = phase
     setPhase({ name: 'scanning', previewUrl })
+    console.log('[vin-scanner] sending to API')
 
     const formData = new FormData()
     formData.append('image', file)
@@ -61,8 +63,11 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
       const vin = data.vin.toUpperCase()
       const { confidence } = data
 
+      console.log('[vin-scanner] API response', { vin, confidence, threshold: CONFIDENCE_THRESHOLD })
+
       // Auto-confirm and close on high confidence
       if (confidence >= CONFIDENCE_THRESHOLD) {
+        console.log('[vin-scanner] auto-confirming (high confidence)')
         onConfirm(vin)
         URL.revokeObjectURL(previewUrl)
         setOpen(false)
@@ -70,8 +75,10 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
         return
       }
 
+      console.log('[vin-scanner] showing result (low confidence)')
       setPhase({ name: 'result', vin, confidence, previewUrl })
-    } catch {
+    } catch (err) {
+      console.error('[vin-scanner] API error', err)
       setPhase({ name: 'error', message: 'No se pudo analizar la imagen. Intenta de nuevo.' })
     }
   }
