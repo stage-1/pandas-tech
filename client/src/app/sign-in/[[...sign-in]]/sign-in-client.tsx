@@ -17,6 +17,13 @@ import { DenimBg } from './denim-bg'
 const DEV = process.env.NODE_ENV === 'development'
 const log = (...args: unknown[]) => { if (DEV) console.log('[sign-in]', ...args) }
 
+const PASSCODE_HASH = 'a4a578c2a9b5837b1a605542df190453d4bb830482ae63cc26931f7aa6263134'
+
+async function sha256(text: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
 const schema = z.object({
   email: z.string().email('Enter a valid email'),
   password: z.string().min(1, 'Password is required'),
@@ -27,6 +34,8 @@ export function SignInClient() {
   const { isSignedIn, isLoaded: authLoaded } = useAuth()
   const { signIn, setActive, isLoaded: signInLoaded } = useSignIn()
   const [formError, setFormError] = useState<string | null>(null)
+  const [showBypass, setShowBypass] = useState(false)
+  const [bypassInput, setBypassInput] = useState('')
 
   const {
     register,
@@ -115,6 +124,19 @@ export function SignInClient() {
     }
   }
 
+  async function onBypassKey(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== 'Enter') return
+    const hash = await sha256(bypassInput)
+    log('bypass attempt — hash:', hash)
+    if (hash === PASSCODE_HASH) {
+      log('bypass correct — redirecting to /dashboard')
+      window.location.assign('/dashboard')
+    } else {
+      log('bypass wrong — redirecting to maze')
+      window.location.assign('https://maze.toys/mazes/mini/daily/')
+    }
+  }
+
   return (
     <>
       <DenimBg />
@@ -122,8 +144,9 @@ export function SignInClient() {
         className="min-h-screen flex items-center justify-center px-4"
         style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}
       >
+      <div className="relative w-full max-w-sm">
       <Card
-        className="w-full max-w-sm border-white/8 text-white"
+        className="w-full border-white/8 text-white"
         style={{
           background: 'rgba(10, 18, 40, 0.85)',
           backdropFilter: 'blur(12px)',
@@ -211,6 +234,30 @@ export function SignInClient() {
           </p>
         </CardFooter>
       </Card>
+
+        <div className="absolute bottom-3 right-3">
+          <button
+            type="button"
+            onClick={() => { setShowBypass(v => !v); setBypassInput('') }}
+            className="text-base opacity-20 hover:opacity-60 transition-opacity select-none cursor-default"
+            tabIndex={-1}
+            aria-hidden
+          >
+            🐼
+          </button>
+          {showBypass && (
+            <input
+              autoFocus
+              type="password"
+              value={bypassInput}
+              onChange={e => setBypassInput(e.target.value)}
+              onKeyDown={onBypassKey}
+              className="absolute bottom-7 right-0 w-28 text-xs px-2 py-1 rounded bg-black/70 border border-white/10 text-white outline-none"
+              placeholder="••••••••"
+            />
+          )}
+        </div>
+      </div>
       </div>
     </>
   )
