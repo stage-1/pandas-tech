@@ -19,7 +19,7 @@ const navItems = [
   { label: 'Home', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Taller', href: '/shop', icon: Store },
   { label: 'Vehículos', href: '/shop/vehicles', icon: Car },
-  { label: 'Customers', href: '/customers', icon: Users },
+  { label: 'Clientes', href: '/customers', icon: Users },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]
 

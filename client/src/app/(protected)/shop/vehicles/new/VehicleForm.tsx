@@ -14,6 +14,7 @@ import {
   MOBILE_STEPS,
 } from '@/lib/vehicles'
 import { cn } from '@/lib/utils'
+import { FieldError } from '@/components/ui/field-error'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -29,11 +30,6 @@ import {
   CommandItem,
 } from '@/components/ui/command'
 
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null
-  return <p className="text-xs text-destructive mt-1">{message}</p>
-}
-
 function CustomerPicker({
   value,
   onChange,
@@ -44,6 +40,7 @@ function CustomerPicker({
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [selectedName, setSelectedName] = useState<string | null>(null)
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300)
@@ -55,13 +52,13 @@ function CustomerPicker({
     { enabled: open },
   )
 
-  const selectedName = customers?.find((c) => c.id === value)?.name
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
+        id="customer_picker"
         className={cn(
-          'flex h-8 w-full items-center justify-between rounded-lg border border-input bg-transparent px-2.5 text-sm',
+          'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs',
+          'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           !value && 'text-muted-foreground',
         )}
       >
@@ -83,7 +80,13 @@ function CustomerPicker({
                   key={c.id}
                   value={c.id}
                   onSelect={() => {
-                    onChange(c.id === value ? null : c.id)
+                    if (c.id === value) {
+                      onChange(null)
+                      setSelectedName(null)
+                    } else {
+                      onChange(c.id)
+                      setSelectedName(c.name)
+                    }
                     setOpen(false)
                   }}
                 >
@@ -138,18 +141,17 @@ export function VehicleForm() {
   })
 
   function onSubmit(data: CreateVehicleInput) {
-    const clean = {
+    createVehicle.mutate({
       ...data,
-      year: data.year || undefined,
-      make: data.make || undefined,
-      model: data.model || undefined,
-      trim: data.trim || undefined,
-      color: data.color || undefined,
-      license_plate: data.license_plate || undefined,
-      notes: data.notes || undefined,
-      customer_id: data.customer_id || undefined,
-    }
-    createVehicle.mutate(clean)
+      year: data.year || null,
+      make: data.make || null,
+      model: data.model || null,
+      trim: data.trim || null,
+      color: data.color || null,
+      license_plate: data.license_plate || null,
+      notes: data.notes || null,
+      customer_id: data.customer_id || null,
+    })
   }
 
   async function handleMobileNext() {
@@ -159,6 +161,15 @@ export function VehicleForm() {
   }
 
   const isLastStep = step === MOBILE_STEPS.length - 1
+
+  const submitLabel = createVehicle.isPending ? (
+    <span className="flex items-center gap-2">
+      <Loader2 className="size-4 animate-spin" />
+      Guardando…
+    </span>
+  ) : (
+    'Guardar vehículo'
+  )
 
   return (
     <Card>
@@ -296,7 +307,7 @@ export function VehicleForm() {
             )}
             <div className="grid gap-4">
               <div>
-                <Label>Cliente (opcional)</Label>
+                <Label htmlFor="customer_picker">Cliente (opcional)</Label>
                 <div className="mt-1.5">
                   <CustomerPicker
                     value={customerId}
@@ -345,14 +356,7 @@ export function VehicleForm() {
               )}
               {isLastStep ? (
                 <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
-                  {createVehicle.isPending ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="size-4 animate-spin" />
-                      Guardando…
-                    </span>
-                  ) : (
-                    'Guardar vehículo'
-                  )}
+                  {submitLabel}
                 </Button>
               ) : (
                 <Button type="button" onClick={handleMobileNext}>
@@ -363,14 +367,7 @@ export function VehicleForm() {
           ) : (
             <div className="flex justify-end pt-2">
               <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
-                {createVehicle.isPending ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="size-4 animate-spin" />
-                    Guardando…
-                  </span>
-                ) : (
-                  'Guardar vehículo'
-                )}
+                {submitLabel}
               </Button>
             </div>
           )}
