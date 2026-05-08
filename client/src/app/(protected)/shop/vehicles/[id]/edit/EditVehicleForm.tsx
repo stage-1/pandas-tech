@@ -8,9 +8,9 @@ import { Loader2 } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { trpc } from '@/lib/trpc'
 import {
-  createVehicleSchema,
-  type CreateVehicleFormValues,
-  type CreateVehicleInput,
+  updateVehicleSchema,
+  type UpdateVehicleFormValues,
+  type UpdateVehicleInput,
   MOBILE_STEPS,
 } from '@/lib/vehicles'
 import { MAKES, MODELS_BY_MAKE } from '@/lib/vehicle-data'
@@ -23,7 +23,21 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { VehiclePicker, CustomerPicker } from '@/components/vehicles/vehicle-pickers'
 
-export function VehicleForm() {
+export type Vehicle = {
+  id: string
+  vin: string | null
+  year: number | null
+  make: string | null
+  model: string | null
+  trim: string | null
+  color: string | null
+  license_plate: string | null
+  notes: string | null
+  current_customer_id: string | null
+  customer_name: string | null
+}
+
+export function EditVehicleForm({ vehicle }: { vehicle: Vehicle }) {
   const router = useRouter()
   const isMobile = useIsMobile()
   const [step, setStep] = useState(0)
@@ -36,18 +50,18 @@ export function VehicleForm() {
     watch,
     trigger,
     formState: { errors },
-  } = useForm<CreateVehicleFormValues, unknown, CreateVehicleInput>({
-    resolver: zodResolver(createVehicleSchema),
+  } = useForm<UpdateVehicleFormValues, unknown, UpdateVehicleInput>({
+    resolver: zodResolver(updateVehicleSchema),
     defaultValues: {
-      vin: '',
-      year: undefined,
-      make: '',
-      model: '',
-      trim: '',
-      color: '',
-      license_plate: '',
-      notes: '',
-      customer_id: undefined,
+      id: vehicle.id,
+      year: vehicle.year ?? undefined,
+      make: vehicle.make ?? '',
+      model: vehicle.model ?? '',
+      trim: vehicle.trim ?? '',
+      color: vehicle.color ?? '',
+      license_plate: vehicle.license_plate ?? '',
+      notes: vehicle.notes ?? '',
+      customer_id: vehicle.current_customer_id ?? undefined,
     },
   })
 
@@ -63,12 +77,12 @@ export function VehicleForm() {
     return Array.from({ length: currentYear - 1901 + 1 }, (_, i) => String(currentYear - i))
   }, [])
 
-  const createVehicle = trpc.vehicles.create.useMutation({
+  const updateVehicle = trpc.vehicles.update.useMutation({
     onSuccess: () => router.push('/shop/vehicles'),
   })
 
-  function onSubmit(data: CreateVehicleInput) {
-    createVehicle.mutate({
+  function onSubmit(data: UpdateVehicleInput) {
+    updateVehicle.mutate({
       ...data,
       year: data.year || null,
       make: data.make || null,
@@ -82,7 +96,7 @@ export function VehicleForm() {
   }
 
   async function handleMobileNext() {
-    const fields = MOBILE_STEPS[step].fields as unknown as (keyof CreateVehicleFormValues)[]
+    const fields = MOBILE_STEPS[step].fields as unknown as (keyof UpdateVehicleFormValues)[]
     const valid = await trigger(fields)
     if (valid) {
       setSubmitBlocked(true)
@@ -93,19 +107,18 @@ export function VehicleForm() {
 
   const isLastStep = step === MOBILE_STEPS.length - 1
 
-  const submitLabel = createVehicle.isPending ? (
+  const submitLabel = updateVehicle.isPending ? (
     <span className="flex items-center gap-2">
       <Loader2 className="size-4 animate-spin" />
       Guardando…
     </span>
   ) : (
-    'Guardar vehículo'
+    'Guardar cambios'
   )
 
   return (
     <Card>
       <CardContent className="p-5 sm:p-6">
-        {/* Mobile step indicator */}
         {isMobile && (
           <div className="flex items-center justify-between mb-6">
             <span className="text-sm font-medium text-foreground">
@@ -130,10 +143,7 @@ export function VehicleForm() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {/* Step 1: Identificación */}
           <div className={cn(isMobile && step !== 0 && 'hidden')}>
             {!isMobile && (
@@ -143,16 +153,13 @@ export function VehicleForm() {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Label htmlFor="vin">VIN *</Label>
+                <Label htmlFor="vin">VIN</Label>
                 <Input
                   id="vin"
-                  placeholder="Ej: 1HGBH41JXMN109186"
-                  {...register('vin')}
-                  aria-invalid={!!errors.vin}
+                  value={vehicle.vin ?? ''}
+                  disabled
                   className="mt-1.5 uppercase"
-                  autoFocus
                 />
-                <FieldError message={errors.vin?.message} />
               </div>
               <div>
                 <Label htmlFor="license_plate">Placa</Label>
@@ -257,7 +264,8 @@ export function VehicleForm() {
                 <div className="mt-1.5">
                   <CustomerPicker
                     value={customerId}
-                    onChange={(id) => setValue('customer_id', id)}
+                    onChange={(id) => setValue('customer_id', id ?? undefined)}
+                    initialName={vehicle.customer_name}
                   />
                 </div>
               </div>
@@ -274,19 +282,17 @@ export function VehicleForm() {
             </div>
           </div>
 
-          {/* Error */}
-          {createVehicle.error && (
+          {updateVehicle.error && (
             <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2">
               <p className="text-sm font-medium text-destructive">
-                Error al registrar el vehículo
+                Error al actualizar el vehículo
               </p>
               <p className="text-xs text-destructive/80 mt-0.5">
-                {createVehicle.error.message}
+                {updateVehicle.error.message}
               </p>
             </div>
           )}
 
-          {/* Actions */}
           {isMobile ? (
             <div className={cn('flex items-center gap-3', step > 0 ? 'justify-between' : 'justify-end')}>
               {step > 0 && (
@@ -294,14 +300,14 @@ export function VehicleForm() {
                   type="button"
                   variant="ghost"
                   onClick={() => setStep((s) => s - 1)}
-                  disabled={createVehicle.isPending}
+                  disabled={updateVehicle.isPending}
                   className="text-muted-foreground"
                 >
                   Atrás
                 </Button>
               )}
               {isLastStep ? (
-                <Button type="submit" disabled={createVehicle.isPending || submitBlocked} className="min-w-36">
+                <Button type="submit" disabled={updateVehicle.isPending || submitBlocked} className="min-w-36">
                   {submitLabel}
                 </Button>
               ) : (
@@ -312,7 +318,7 @@ export function VehicleForm() {
             </div>
           ) : (
             <div className="flex justify-end pt-2">
-              <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+              <Button type="submit" disabled={updateVehicle.isPending} className="min-w-36">
                 {submitLabel}
               </Button>
             </div>

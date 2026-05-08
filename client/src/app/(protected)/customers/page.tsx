@@ -104,10 +104,8 @@ export default function CustomersPage() {
                   </TableCell>
                   <TableCell className="w-10 text-right">
                     <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon-sm" disabled={deleteCustomer.isPending}>
-                          <Trash2 className="size-4 text-destructive" />
-                        </Button>
+                      <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" disabled={deleteCustomer.isPending} />}>
+                        <Trash2 className="size-4 text-destructive" />
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>

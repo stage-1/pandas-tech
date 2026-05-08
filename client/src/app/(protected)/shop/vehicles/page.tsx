@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, Car, Trash2 } from 'lucide-react'
+import { Plus, Car, Pencil, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -91,7 +91,7 @@ export default function VehiclesPage() {
                 <TableHead>Marca / Modelo</TableHead>
                 <TableHead className="hidden sm:table-cell">Placa</TableHead>
                 <TableHead className="hidden md:table-cell">Cliente</TableHead>
-                <TableHead className="w-10" />
+                <TableHead className="w-20" />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -112,12 +112,17 @@ export default function VehiclesPage() {
                   <TableCell className="hidden md:table-cell">
                     {v.customer_name ?? '—'}
                   </TableCell>
-                  <TableCell className="w-10 text-right">
+                  <TableCell className="w-20 text-right">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      render={<Link href={`/shop/vehicles/${v.id}/edit`} />}
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
                     <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon-sm" disabled={deleteVehicle.isPending}>
-                          <Trash2 className="size-4 text-destructive" />
-                        </Button>
+                      <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" disabled={deleteVehicle.isPending} />}>
+                        <Trash2 className="size-4 text-destructive" />
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
