@@ -1,0 +1,381 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2, ChevronsUpDown, Check } from 'lucide-react'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { trpc } from '@/lib/trpc'
+import {
+  createVehicleSchema,
+  type CreateVehicleFormValues,
+  type CreateVehicleInput,
+  MOBILE_STEPS,
+} from '@/lib/vehicles'
+import { cn } from '@/lib/utils'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from '@/components/ui/command'
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null
+  return <p className="text-xs text-destructive mt-1">{message}</p>
+}
+
+function CustomerPicker({
+  value,
+  onChange,
+}: {
+  value: string | null | undefined
+  onChange: (id: string | null) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(t)
+  }, [search])
+
+  const { data: customers } = trpc.vehicles.customers.useQuery(
+    { search: debouncedSearch || undefined },
+    { enabled: open },
+  )
+
+  const selectedName = customers?.find((c) => c.id === value)?.name
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        className={cn(
+          'flex h-8 w-full items-center justify-between rounded-lg border border-input bg-transparent px-2.5 text-sm',
+          !value && 'text-muted-foreground',
+        )}
+      >
+        {selectedName ?? 'Seleccionar cliente'}
+        <ChevronsUpDown className="ml-2 size-3.5 shrink-0 opacity-50" />
+      </PopoverTrigger>
+      <PopoverContent className="w-[--anchor-width] p-0" align="start">
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Buscar cliente…"
+            value={search}
+            onValueChange={setSearch}
+          />
+          <CommandList>
+            <CommandEmpty>Sin resultados.</CommandEmpty>
+            <CommandGroup>
+              {customers?.map((c) => (
+                <CommandItem
+                  key={c.id}
+                  value={c.id}
+                  onSelect={() => {
+                    onChange(c.id === value ? null : c.id)
+                    setOpen(false)
+                  }}
+                >
+                  {c.name}
+                  <Check
+                    className={cn(
+                      'ml-auto size-4',
+                      value === c.id ? 'opacity-100' : 'opacity-0',
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+export function VehicleForm() {
+  const router = useRouter()
+  const isMobile = useIsMobile()
+  const [step, setStep] = useState(0)
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useForm<CreateVehicleFormValues, unknown, CreateVehicleInput>({
+    resolver: zodResolver(createVehicleSchema),
+    defaultValues: {
+      vin: '',
+      year: undefined,
+      make: '',
+      model: '',
+      trim: '',
+      color: '',
+      license_plate: '',
+      notes: '',
+      customer_id: undefined,
+    },
+  })
+
+  const customerId = watch('customer_id')
+
+  const createVehicle = trpc.vehicles.create.useMutation({
+    onSuccess: () => router.push('/shop/vehicles'),
+  })
+
+  function onSubmit(data: CreateVehicleInput) {
+    const clean = {
+      ...data,
+      year: data.year || undefined,
+      make: data.make || undefined,
+      model: data.model || undefined,
+      trim: data.trim || undefined,
+      color: data.color || undefined,
+      license_plate: data.license_plate || undefined,
+      notes: data.notes || undefined,
+      customer_id: data.customer_id || undefined,
+    }
+    createVehicle.mutate(clean)
+  }
+
+  async function handleMobileNext() {
+    const fields = MOBILE_STEPS[step].fields as unknown as (keyof CreateVehicleFormValues)[]
+    const valid = await trigger(fields)
+    if (valid) setStep((s) => s + 1)
+  }
+
+  const isLastStep = step === MOBILE_STEPS.length - 1
+
+  return (
+    <Card>
+      <CardContent className="p-5 sm:p-6">
+        {/* Mobile step indicator */}
+        {isMobile && (
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-sm font-medium text-foreground">
+              {MOBILE_STEPS[step].label}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">
+                Paso {step + 1} de {MOBILE_STEPS.length}
+              </span>
+              <div className="flex gap-1.5">
+                {MOBILE_STEPS.map((_, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      'h-1.5 w-1.5 rounded-full transition-colors',
+                      i <= step ? 'bg-primary' : 'bg-border',
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-6"
+        >
+          {/* Step 1: Identificación */}
+          <div className={cn(isMobile && step !== 0 && 'hidden')}>
+            {!isMobile && (
+              <h3 className="text-sm font-medium text-muted-foreground mb-4">
+                Identificación
+              </h3>
+            )}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <Label htmlFor="vin">VIN *</Label>
+                <Input
+                  id="vin"
+                  placeholder="Ej: 1HGBH41JXMN109186"
+                  {...register('vin')}
+                  aria-invalid={!!errors.vin}
+                  className="mt-1.5 uppercase"
+                  autoFocus
+                />
+                <FieldError message={errors.vin?.message} />
+              </div>
+              <div>
+                <Label htmlFor="license_plate">Placa</Label>
+                <Input
+                  id="license_plate"
+                  placeholder="Ej: ABC-123"
+                  {...register('license_plate')}
+                  className="mt-1.5 uppercase"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Step 2: Detalles */}
+          <div className={cn(isMobile && step !== 1 && 'hidden')}>
+            {!isMobile && (
+              <>
+                <div className="border-t border-border my-2" />
+                <h3 className="text-sm font-medium text-muted-foreground mb-4 mt-4">
+                  Detalles del vehículo
+                </h3>
+              </>
+            )}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="year">Año</Label>
+                <Input
+                  id="year"
+                  type="number"
+                  placeholder="Ej: 2020"
+                  {...register('year')}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="make">Marca</Label>
+                <Input
+                  id="make"
+                  placeholder="Ej: Toyota"
+                  {...register('make')}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="model">Modelo</Label>
+                <Input
+                  id="model"
+                  placeholder="Ej: Corolla"
+                  {...register('model')}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="trim">Versión</Label>
+                <Input
+                  id="trim"
+                  placeholder="Ej: SE, XLE"
+                  {...register('trim')}
+                  className="mt-1.5"
+                />
+              </div>
+              <div>
+                <Label htmlFor="color">Color</Label>
+                <Input
+                  id="color"
+                  placeholder="Ej: Blanco"
+                  {...register('color')}
+                  className="mt-1.5"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Step 3: Adicional */}
+          <div className={cn(isMobile && step !== 2 && 'hidden')}>
+            {!isMobile && (
+              <>
+                <div className="border-t border-border my-2" />
+                <h3 className="text-sm font-medium text-muted-foreground mb-4 mt-4">
+                  Adicional
+                </h3>
+              </>
+            )}
+            <div className="grid gap-4">
+              <div>
+                <Label>Cliente (opcional)</Label>
+                <div className="mt-1.5">
+                  <CustomerPicker
+                    value={customerId}
+                    onChange={(id) => setValue('customer_id', id)}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="notes">Notas</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Notas adicionales sobre el vehículo…"
+                  rows={3}
+                  {...register('notes')}
+                  className="mt-1.5"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Error */}
+          {createVehicle.error && (
+            <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2">
+              <p className="text-sm font-medium text-destructive">
+                Error al registrar el vehículo
+              </p>
+              <p className="text-xs text-destructive/80 mt-0.5">
+                {createVehicle.error.message}
+              </p>
+            </div>
+          )}
+
+          {/* Actions */}
+          {isMobile ? (
+            <div className={cn('flex items-center gap-3', step > 0 ? 'justify-between' : 'justify-end')}>
+              {step > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setStep((s) => s - 1)}
+                  disabled={createVehicle.isPending}
+                  className="text-muted-foreground"
+                >
+                  Atrás
+                </Button>
+              )}
+              {isLastStep ? (
+                <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+                  {createVehicle.isPending ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="size-4 animate-spin" />
+                      Guardando…
+                    </span>
+                  ) : (
+                    'Guardar vehículo'
+                  )}
+                </Button>
+              ) : (
+                <Button type="button" onClick={handleMobileNext}>
+                  Continuar
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="flex justify-end pt-2">
+              <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+                {createVehicle.isPending ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="size-4 animate-spin" />
+                    Guardando…
+                  </span>
+                ) : (
+                  'Guardar vehículo'
+                )}
+              </Button>
+            </div>
+          )}
+        </form>
+      </CardContent>
+    </Card>
+  )
+}

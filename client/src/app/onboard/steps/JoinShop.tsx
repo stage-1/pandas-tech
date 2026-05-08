@@ -2,29 +2,29 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { StepHeader } from './StepHeader'
 
-interface ShopNameProps {
+interface JoinShopProps {
   value: string
   onChange: (value: string) => void
 }
 
-export function ShopName({ value, onChange }: ShopNameProps) {
+export function JoinShop({ value, onChange }: JoinShopProps) {
   return (
     <div className="flex flex-col gap-6">
       <StepHeader
-        title="¿Cómo se llama tu taller?"
-        description="Este nombre aparecerá en tus órdenes de trabajo y facturas."
+        title="Unirse a un taller"
+        description="Ingresa el código de invitación que te compartió el dueño del taller."
       />
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="shop-name" className="text-sm font-medium">
-          Nombre del taller
+        <Label htmlFor="invite-code" className="text-sm font-medium">
+          Código de invitación
         </Label>
         <Input
-          id="shop-name"
+          id="invite-code"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Taller Mecánico García..."
-          className="h-12 text-base focus-visible:ring-secondary focus-visible:border-secondary"
+          placeholder="ej. ABC-1234-XYZ"
+          className="h-12 font-mono text-base tracking-wide focus-visible:ring-secondary focus-visible:border-secondary"
           autoFocus
           autoComplete="off"
         />

@@ -1,5 +1,6 @@
 import { AppSidebar } from '@/components/AppSidebar'
 import { ShopGate } from '@/components/ShopGate'
+import { UserProfileDialog } from '@/components/UserProfileDialog'
 import {
   SidebarInset,
   SidebarProvider,
@@ -21,6 +22,7 @@ export default function ProtectedLayout({
         <main className="flex-1 p-6">
           <ShopGate>{children}</ShopGate>
         </main>
+        <UserProfileDialog />
       </SidebarInset>
     </SidebarProvider>
   )

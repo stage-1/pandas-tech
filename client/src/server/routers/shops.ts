@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '../trpc'
 
 export const shopsRouter = router({
@@ -22,11 +23,11 @@ export const shopsRouter = router({
       country_code: z.enum(['CO', 'MX', 'CL', 'US']),
       tax_id:       z.string().max(30).optional(),
       tax_id_type:  z.string().max(20).optional(),
+      role:         z.enum(['owner', 'tech']).default('owner'),
     }))
     .mutation(async ({ ctx, input }) => {
       console.log('[SHOP_CREATE] Starting for userId:', ctx.userId, 'input:', input)
       try {
-        // Ensure user row exists (email now nullable — webhook fills it in production).
         await ctx.db`
           INSERT INTO public.users (id) VALUES (${ctx.userId})
           ON CONFLICT (id) DO NOTHING
@@ -34,7 +35,12 @@ export const shopsRouter = router({
         console.log('[SHOP_CREATE] User upsert done')
 
         const [shop] = await ctx.db`
-          SELECT * FROM public.create_shop_for_owner(${input.name}, ${input.country_code})
+          SELECT * FROM public.create_shop_for_owner(
+            ${input.name},
+            ${input.country_code},
+            NULL, NULL, NULL,
+            ${input.role}
+          )
         `
         console.log('[SHOP_CREATE] Shop created:', shop?.id, shop?.name)
 
@@ -53,5 +59,11 @@ export const shopsRouter = router({
         console.error('[SHOP_CREATE] Failed:', err)
         throw err
       }
+    }),
+
+  join: protectedProcedure
+    .input(z.object({ invite_code: z.string().min(1) }))
+    .mutation(async () => {
+      throw new TRPCError({ code: 'METHOD_NOT_SUPPORTED', message: 'El sistema de invitaciones estará disponible próximamente.' })
     }),
 })

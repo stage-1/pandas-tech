@@ -3,12 +3,14 @@
 import { useEffect, useRef } from 'react'
 import { useUser } from '@clerk/nextjs'
 
+const IS_DEV = process.env.NODE_ENV !== 'production'
+
 export function AuthLogger() {
   const { user, isLoaded, isSignedIn } = useUser()
   const prevSignedIn = useRef<boolean | null>(null)
 
   useEffect(() => {
-    if (!isLoaded) return
+    if (!IS_DEV || !isLoaded) return
 
     if (isSignedIn && user) {
       console.log('[AUTH] Signed in —', {
@@ -21,9 +23,8 @@ export function AuthLogger() {
     }
   }, [isLoaded, isSignedIn, user])
 
-  // Log sign-in / sign-out transitions (not the initial load)
   useEffect(() => {
-    if (!isLoaded) return
+    if (!IS_DEV || !isLoaded) return
     if (prevSignedIn.current === null) {
       prevSignedIn.current = isSignedIn ?? false
       return

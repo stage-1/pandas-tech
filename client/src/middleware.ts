@@ -11,6 +11,7 @@ import {
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
   '/onboard(.*)',
+  '/shop(.*)',
   '/customers(.*)',
   '/settings(.*)',
   '/api/trpc(.*)',

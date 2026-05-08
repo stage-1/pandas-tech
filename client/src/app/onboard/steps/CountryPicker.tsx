@@ -1,5 +1,6 @@
 import { COUNTRY_CONFIG, CountryCode, AVAILABLE_COUNTRIES } from '@/lib/onboard'
 import { cn } from '@/lib/utils'
+import { StepHeader } from './StepHeader'
 
 const COUNTRY_ORDER: CountryCode[] = ['CO', 'MX', 'CL', 'US']
 
@@ -11,14 +12,10 @@ interface CountryPickerProps {
 export function CountryPicker({ value, onChange }: CountryPickerProps) {
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-wide text-foreground">
-          ¿En qué país operas?
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Define tu moneda, impuestos y requisitos de facturación.
-        </p>
-      </div>
+      <StepHeader
+        title="¿En qué país operas?"
+        description="Define tu moneda, impuestos y requisitos de facturación."
+      />
 
       <div className="grid grid-cols-2 gap-3">
         {COUNTRY_ORDER.map((code) => {

@@ -24,17 +24,17 @@ export function ShopGate({ children }: { children: React.ReactNode }) {
     return (
       <Card className="max-w-xl">
         <CardHeader>
-          <CardTitle>Shop required</CardTitle>
+          <CardTitle>Taller requerido</CardTitle>
           <CardDescription>
-            Create a shop first to access this section.
+            Crea un taller primero para acceder a esta sección.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex items-center gap-3">
-          <Button asChild variant="secondary">
-            <Link href="/dashboard">Go to Home</Link>
+          <Button render={<Link href="/dashboard" />} variant="secondary">
+            Ir al inicio
           </Button>
-          <Button asChild>
-            <Link href="/onboard">Create Shop</Link>
+          <Button render={<Link href="/onboard" />}>
+            Crear taller
           </Button>
         </CardContent>
       </Card>

@@ -1,9 +1,16 @@
 import { COUNTRY_CONFIG, CountryCode } from '@/lib/onboard'
+import { StepHeader } from './StepHeader'
+
+const ROLE_LABELS: Record<string, string> = {
+  owner: 'Dueño',
+  tech: 'Técnico',
+}
 
 interface ConfirmProps {
   name: string
   country: CountryCode
   taxId: string
+  role: 'owner' | 'tech'
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -15,21 +22,18 @@ function Row({ label, value }: { label: string; value: string }) {
   )
 }
 
-export function Confirm({ name, country, taxId }: ConfirmProps) {
+export function Confirm({ name, country, taxId, role }: ConfirmProps) {
   const config = COUNTRY_CONFIG[country]
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-wide text-foreground">
-          Resumen
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Confirma los datos de tu taller antes de continuar.
-        </p>
-      </div>
+      <StepHeader
+        title="Resumen"
+        description="Confirma los datos de tu taller antes de continuar."
+      />
 
       <div className="rounded-lg border border-border bg-muted/40 px-4">
+        <Row label="Rol"       value={ROLE_LABELS[role] ?? role} />
         <Row label="Taller"    value={name} />
         <Row label="País"      value={`${config.flag} ${config.name}`} />
         <Row label="Moneda"    value={config.currency} />

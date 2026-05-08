@@ -21,13 +21,8 @@ export const publicProcedure = t.procedure
 export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
   if (!ctx.userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
 
-  try {
-    return await sql.begin(async (tx) => {
-      await tx`SELECT set_config('app.user_id', ${ctx.userId!}, true)`
-      return next({ ctx: { ...ctx, userId: ctx.userId!, db: tx } })
-    })
-  } catch (err) {
-    console.error('[DB] protectedProcedure error:', err)
-    throw err
-  }
+  return sql.begin(async (tx) => {
+    await tx`SELECT set_config('app.user_id', ${ctx.userId!}, true)`
+    return next({ ctx: { ...ctx, userId: ctx.userId!, db: tx } })
+  })
 })

@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { COUNTRY_CONFIG, CountryCode } from '@/lib/onboard'
+import { StepHeader } from './StepHeader'
 
 interface TaxIdProps {
   country: CountryCode
@@ -13,14 +14,10 @@ export function TaxId({ country, value, onChange }: TaxIdProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <h2 className="font-display text-2xl sm:text-3xl font-bold uppercase tracking-wide text-foreground">
-          {config.label} de tu taller
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Requerido para emitir facturas electrónicas.
-        </p>
-      </div>
+      <StepHeader
+        title={`${config.label} de tu taller`}
+        description="Requerido para emitir facturas electrónicas."
+      />
 
       <div className="flex flex-col gap-2">
         <Label htmlFor="tax-id" className="text-sm font-medium">
