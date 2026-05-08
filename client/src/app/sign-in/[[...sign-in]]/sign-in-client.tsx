@@ -25,7 +25,7 @@ type FormValues = z.input<typeof schema>
 
 export function SignInClient() {
   const { isSignedIn, isLoaded: authLoaded } = useAuth()
-  const { signIn } = useSignIn()
+  const { signIn, setActive, isLoaded: signInLoaded } = useSignIn()
   const [formError, setFormError] = useState<string | null>(null)
 
   const {
@@ -37,12 +37,12 @@ export function SignInClient() {
 
   useEffect(() => {
     if (authLoaded && isSignedIn) {
-      log('already signed in, redirecting to /dashboard')
+      log('already signed in — redirecting to /dashboard')
       window.location.assign('/dashboard')
     }
   }, [authLoaded, isSignedIn])
 
-  if (!authLoaded) {
+  if (!authLoaded || !signInLoaded) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}>
         <span className="text-sm text-white/50">Loading…</span>
@@ -59,36 +59,32 @@ export function SignInClient() {
   }
 
   async function onSubmit(values: FormValues) {
-    if (!signIn) return
+    if (!signIn || !setActive) return
     setFormError(null)
-    log('submit', values.email)
+    log('submit — identifier:', values.email)
     try {
-      const result = await signIn.password({
+      const result = await signIn.create({
         identifier: values.email,
         password: values.password,
       })
-      if (result.error) {
-        throw result.error
-      }
 
-      log('password result status:', signIn.status)
-      if (signIn.status === 'complete') {
-        const finalizeResult = await signIn.finalize()
-        if (finalizeResult.error) {
-          throw finalizeResult.error
-        }
-        log('session active, redirecting')
+      log('create result — status:', result.status, 'sessionId:', result.createdSessionId)
+
+      if (result.status === 'complete') {
+        log('complete — calling setActive, then redirecting to /dashboard')
+        await setActive({ session: result.createdSessionId })
         window.location.assign('/dashboard')
       } else {
-        log('unexpected status:', signIn.status)
+        log('unexpected status after create:', result.status, '— supportedFirstFactors:', result.supportedFirstFactors)
         setFormError('Sign-in could not be completed. Please try again.')
       }
     } catch (err: unknown) {
       const clerkErr = err as { errors?: { code: string; message: string; meta?: { paramName?: string } }[] }
-      log('clerk error:', clerkErr?.errors)
+      log('clerk error:', JSON.stringify(clerkErr?.errors))
       if (clerkErr?.errors?.length) {
         for (const e of clerkErr.errors) {
           const param = e.meta?.paramName
+          log('  →', e.code, 'param:', param, 'message:', e.message)
           if (param === 'identifier' || param === 'email_address') {
             setError('email', { message: e.message })
           } else if (param === 'password') {
@@ -98,6 +94,7 @@ export function SignInClient() {
           }
         }
       } else {
+        log('non-clerk error:', err)
         setFormError('Something went wrong. Please try again.')
       }
     }
@@ -105,16 +102,13 @@ export function SignInClient() {
 
   async function onGoogleSignIn() {
     if (!signIn) return
-    log('initiating google oauth')
+    log('initiating google oauth redirect')
     try {
-      const result = await signIn.sso({
+      await signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/dashboard',
-        redirectCallbackUrl: '/sso-callback',
+        redirectUrl: '/sso-callback',
+        redirectUrlComplete: '/dashboard',
       })
-      if (result.error) {
-        throw result.error
-      }
     } catch (err) {
       log('google oauth error:', err)
       setFormError('Google sign-in failed. Please try again.')
@@ -181,7 +175,7 @@ export function SignInClient() {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white border-0"
+              className="w-full bg-red-600 hover:bg-red-500 text-white border-0"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
             </Button>
