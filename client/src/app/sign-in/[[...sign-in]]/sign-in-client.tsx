@@ -138,7 +138,7 @@ export function SignInClient() {
       <DenimBg />
       {/* Card layer — z:2, above canvas */}
       <div
-        className="relative min-h-screen flex items-center justify-center px-4"
+        className="relative min-h-screen flex items-center justify-center px-8 lg:px-4"
         style={{ zIndex: 2 }}
       >
       <div className="relative w-full max-w-sm">
