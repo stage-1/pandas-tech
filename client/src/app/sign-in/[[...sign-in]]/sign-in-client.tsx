@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignIn, useAuth } from '@clerk/nextjs'
+import { useSignIn, useAuth, useClerk } from '@clerk/nextjs'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,7 +25,8 @@ type FormValues = z.input<typeof schema>
 
 export function SignInClient() {
   const { isSignedIn, isLoaded: authLoaded } = useAuth()
-  const { signIn, setActive, isLoaded: signInLoaded } = useSignIn()
+  const { setActive } = useClerk()
+  const { signIn, isLoaded: signInLoaded } = useSignIn()
   const [formError, setFormError] = useState<string | null>(null)
 
   const {
