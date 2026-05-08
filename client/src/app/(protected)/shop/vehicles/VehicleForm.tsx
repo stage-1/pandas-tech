@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
+import { Camera, Loader2 } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { trpc } from '@/lib/trpc'
 import {
@@ -24,6 +24,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { VehiclePicker, CustomerPicker } from '@/components/vehicles/vehicle-pickers'
+import { VinScanner } from '@/components/vehicles/vin-scanner'
 
 export type Vehicle = {
   id: string
@@ -151,13 +152,26 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Label htmlFor="vin">VIN {!isEdit && '*'}</Label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label htmlFor="vin">VIN {!isEdit && '*'}</Label>
+                  {!isEdit && (
+                    <VinScanner
+                      onConfirm={(vin) => { setValue('vin', vin); trigger('vin') }}
+                      trigger={
+                        <Button type="button" variant="ghost" size="xs" className="gap-1 text-muted-foreground">
+                          <Camera className="size-3.5" />
+                          Escanear
+                        </Button>
+                      }
+                    />
+                  )}
+                </div>
                 <Input
                   id="vin"
                   placeholder="Ej: 1HGBH41JXMN109186"
                   {...register('vin')}
                   aria-invalid={!!errors.vin}
-                  className="mt-1.5 uppercase"
+                  className="uppercase"
                   autoFocus={!isEdit}
                   disabled={isEdit}
                 />
