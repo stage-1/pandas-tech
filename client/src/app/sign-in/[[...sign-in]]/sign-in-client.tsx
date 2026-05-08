@@ -55,7 +55,7 @@ export function SignInClient() {
 
   if (!authLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
         <span className="text-sm text-white/50">Loading…</span>
       </div>
     )
@@ -63,7 +63,7 @@ export function SignInClient() {
 
   if (isSignedIn) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
         <span className="text-sm text-white/50">Opening dashboard…</span>
       </div>
     )
@@ -132,10 +132,14 @@ export function SignInClient() {
 
   return (
     <>
+      {/* Base gradient — fixed, lowest layer */}
+      <div className="fixed inset-0" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)', zIndex: 0 }} />
+      {/* Three.js canvas — z:1, 50% opacity, above gradient */}
       <DenimBg />
+      {/* Card layer — z:2, above canvas */}
       <div
-        className="min-h-screen flex items-center justify-center px-4"
-        style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}
+        className="relative min-h-screen flex items-center justify-center px-4"
+        style={{ zIndex: 2 }}
       >
       <div className="relative w-full max-w-sm">
       <Card
@@ -155,7 +159,7 @@ export function SignInClient() {
             viewBox="0 0 100 100"
             fill="white"
             aria-hidden
-            className="mb-1"
+            className="mb-1 mx-auto"
           >
             {/* Ears */}
             <circle cx="22" cy="22" r="16" />

@@ -111,8 +111,8 @@ export function DenimBg() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-10"
-      style={{ opacity: 0.5 }}
+      className="fixed inset-0 pointer-events-none"
+      style={{ opacity: 0.5, zIndex: 1 }}
     />
   )
 }
