@@ -147,15 +147,38 @@ export function SignInClient() {
           border: '1px solid rgba(255,255,255,0.08)',
         }}
       >
-        <CardHeader>
+        <CardHeader className="items-center text-center">
+          {/* Panda SVG — white only */}
+          <svg
+            width="52"
+            height="52"
+            viewBox="0 0 100 100"
+            fill="white"
+            aria-hidden
+            className="mb-1"
+          >
+            {/* Ears */}
+            <circle cx="22" cy="22" r="16" />
+            <circle cx="78" cy="22" r="16" />
+            {/* Head */}
+            <circle cx="50" cy="52" r="36" />
+            {/* Eye patches */}
+            <ellipse cx="35" cy="46" rx="11" ry="10" fill="#0a1228" />
+            <ellipse cx="65" cy="46" rx="11" ry="10" fill="#0a1228" />
+            {/* Eyes */}
+            <circle cx="35" cy="46" r="5" />
+            <circle cx="65" cy="46" r="5" />
+            {/* Nose */}
+            <ellipse cx="50" cy="60" rx="7" ry="5" fill="#0a1228" />
+          </svg>
           <CardTitle className="text-white text-lg">Sign in</CardTitle>
           <CardDescription className="text-white/50">
             Enter your email and password to continue
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <CardContent className="text-center">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 text-left">
             <div className="flex flex-col gap-1">
               <Label htmlFor="email" className="text-white/80">Email</Label>
               <Input
@@ -191,7 +214,7 @@ export function SignInClient() {
             <Button
               type="submit"
               disabled={isSubmitting || fetchStatus === 'fetching'}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white border-0"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white border-0 h-10 sm:h-9 font-bold sm:font-semibold"
             >
               {isSubmitting || fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
             </Button>
@@ -211,7 +234,7 @@ export function SignInClient() {
           <Button
             type="button"
             variant="outline"
-            className="w-full border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white"
+            className="w-full border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white h-10 sm:h-9 font-bold sm:font-semibold"
             onClick={onGoogleSignIn}
           >
             Continue with Google
