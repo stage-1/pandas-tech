@@ -1,6 +1,7 @@
 'use client'
 
 import { useSignIn, useAuth } from '@clerk/nextjs'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -11,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { FieldError } from '@/components/ui/field-error'
+import { DenimBg } from './denim-bg'
 
 const DEV = process.env.NODE_ENV === 'development'
 const log = (...args: unknown[]) => { if (DEV) console.log('[sign-in]', ...args) }
@@ -111,10 +113,12 @@ export function SignInClient() {
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}
-    >
+    <>
+      <DenimBg />
+      <div
+        className="min-h-screen flex items-center justify-center px-4"
+        style={{ background: 'linear-gradient(135deg, #1a2744 0%, #2e4a8a 50%, #1e3a6e 100%)' }}
+      >
       <Card
         className="w-full max-w-sm border-white/8 text-white"
         style={{
@@ -198,12 +202,13 @@ export function SignInClient() {
         <CardFooter className="justify-center border-t border-white/8 bg-transparent">
           <p className="text-xs text-white/30">
             Don&apos;t have an account?{' '}
-            <a href="/sign-up" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
+            <Link href="/sign-up" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
               Sign up
-            </a>
+            </Link>
           </p>
         </CardFooter>
       </Card>
-    </div>
+      </div>
+    </>
   )
 }
