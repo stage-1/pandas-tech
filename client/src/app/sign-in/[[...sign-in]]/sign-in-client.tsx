@@ -218,7 +218,7 @@ export function SignInClient() {
             <Button
               type="submit"
               disabled={isSubmitting || fetchStatus === 'fetching'}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white border-0 h-10 sm:h-9 font-bold sm:font-semibold"
+              className="w-full bg-red-600 hover:bg-red-500 text-white border-0 h-10 sm:h-9 font-bold sm:font-semibold"
             >
               {isSubmitting || fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
             </Button>
