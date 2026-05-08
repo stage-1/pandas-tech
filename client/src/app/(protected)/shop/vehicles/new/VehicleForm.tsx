@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,6 +13,7 @@ import {
   type CreateVehicleInput,
   MOBILE_STEPS,
 } from '@/lib/vehicles'
+import { MAKES, MODELS_BY_MAKE, YEAR_RANGE_BY_MAKE } from '@/lib/vehicle-data'
 import { cn } from '@/lib/utils'
 import { FieldError } from '@/components/ui/field-error'
 import { Card, CardContent } from '@/components/ui/card'
@@ -29,6 +30,81 @@ import {
   CommandGroup,
   CommandItem,
 } from '@/components/ui/command'
+
+function VehiclePicker({
+  options,
+  value,
+  onChange,
+  placeholder,
+  id,
+  disabled,
+}: {
+  options: string[]
+  value: string | null | undefined
+  onChange: (v: string | null) => void
+  placeholder: string
+  id?: string
+  disabled?: boolean
+}) {
+  const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
+
+  const filtered = useMemo(
+    () =>
+      search
+        ? options.filter((o) => o.toLowerCase().includes(search.toLowerCase()))
+        : options,
+    [options, search],
+  )
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        id={id}
+        disabled={disabled}
+        className={cn(
+          'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs',
+          'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+          !value && 'text-muted-foreground',
+        )}
+      >
+        {value ?? placeholder}
+        <ChevronsUpDown className="ml-2 size-3.5 shrink-0 opacity-50" />
+      </PopoverTrigger>
+      <PopoverContent className="w-[--anchor-width] p-0" align="start">
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder={`Buscar…`}
+            value={search}
+            onValueChange={setSearch}
+          />
+          <CommandList>
+            <CommandEmpty>Sin resultados.</CommandEmpty>
+            <CommandGroup>
+              {filtered.map((opt) => (
+                <CommandItem
+                  key={opt}
+                  value={opt}
+                  onSelect={() => {
+                    onChange(opt === value ? null : opt)
+                    setSearch('')
+                    setOpen(false)
+                  }}
+                >
+                  {opt}
+                  <Check
+                    className={cn('ml-auto size-4', value === opt ? 'opacity-100' : 'opacity-0')}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
 
 function CustomerPicker({
   value,
@@ -135,6 +211,12 @@ export function VehicleForm() {
   })
 
   const customerId = watch('customer_id')
+  const selectedMake = watch('make')
+  const modelOptions = useMemo(
+    () => (selectedMake ? (MODELS_BY_MAKE[selectedMake] ?? []) : []),
+    [selectedMake],
+  )
+  const yearRange = selectedMake ? YEAR_RANGE_BY_MAKE[selectedMake] : null
 
   const createVehicle = trpc.vehicles.create.useMutation({
     onSuccess: () => router.push('/shop/vehicles'),
@@ -252,27 +334,41 @@ export function VehicleForm() {
                   id="year"
                   type="number"
                   placeholder="Ej: 2020"
+                  min={yearRange?.first}
+                  max={yearRange?.last}
                   {...register('year')}
                   className="mt-1.5"
                 />
               </div>
               <div>
-                <Label htmlFor="make">Marca</Label>
-                <Input
-                  id="make"
-                  placeholder="Ej: Toyota"
-                  {...register('make')}
-                  className="mt-1.5"
-                />
+                <Label htmlFor="make_picker">Marca</Label>
+                <div className="mt-1.5">
+                  <VehiclePicker
+                    id="make_picker"
+                    options={MAKES}
+                    value={selectedMake}
+                    placeholder="Seleccionar marca"
+                    onChange={(v) => {
+                      setValue('make', v ?? '')
+                      setValue('model', '')
+                    }}
+                  />
+                </div>
+                <FieldError message={errors.make?.message} />
               </div>
               <div>
-                <Label htmlFor="model">Modelo</Label>
-                <Input
-                  id="model"
-                  placeholder="Ej: Corolla"
-                  {...register('model')}
-                  className="mt-1.5"
-                />
+                <Label htmlFor="model_picker">Modelo</Label>
+                <div className="mt-1.5">
+                  <VehiclePicker
+                    id="model_picker"
+                    options={modelOptions}
+                    value={watch('model') || null}
+                    placeholder={selectedMake ? 'Seleccionar modelo' : 'Selecciona marca primero'}
+                    disabled={!selectedMake}
+                    onChange={(v) => setValue('model', v ?? '')}
+                  />
+                </div>
+                <FieldError message={errors.model?.message} />
               </div>
               <div>
                 <Label htmlFor="trim">Versión</Label>
