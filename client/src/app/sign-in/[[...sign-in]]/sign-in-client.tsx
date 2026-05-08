@@ -1,6 +1,6 @@
 'use client'
 
-import { useSignIn, useAuth, useClerk } from '@clerk/nextjs'
+import { useSignIn, useAuth } from '@clerk/nextjs'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -25,7 +25,6 @@ type FormValues = z.input<typeof schema>
 
 export function SignInClient() {
   const { isSignedIn, isLoaded: authLoaded } = useAuth()
-  const { setActive } = useClerk()
   const { signIn } = useSignIn()
   const [formError, setFormError] = useState<string | null>(null)
 
@@ -64,17 +63,24 @@ export function SignInClient() {
     setFormError(null)
     log('submit', values.email)
     try {
-      const result = await signIn.create({
+      const result = await signIn.password({
         identifier: values.email,
         password: values.password,
       })
-      log('create result status:', result.status)
-      if (result.status === 'complete') {
-        await setActive!({ session: result.createdSessionId })
+      if (result.error) {
+        throw result.error
+      }
+
+      log('password result status:', signIn.status)
+      if (signIn.status === 'complete') {
+        const finalizeResult = await signIn.finalize()
+        if (finalizeResult.error) {
+          throw finalizeResult.error
+        }
         log('session active, redirecting')
         window.location.assign('/dashboard')
       } else {
-        log('unexpected status:', result.status)
+        log('unexpected status:', signIn.status)
         setFormError('Sign-in could not be completed. Please try again.')
       }
     } catch (err: unknown) {
@@ -101,11 +107,14 @@ export function SignInClient() {
     if (!signIn) return
     log('initiating google oauth')
     try {
-      await signIn.authenticateWithRedirect({
+      const result = await signIn.sso({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/dashboard',
+        redirectUrl: '/dashboard',
+        redirectCallbackUrl: '/sso-callback',
       })
+      if (result.error) {
+        throw result.error
+      }
     } catch (err) {
       log('google oauth error:', err)
       setFormError('Google sign-in failed. Please try again.')
