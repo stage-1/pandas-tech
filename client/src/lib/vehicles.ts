@@ -18,6 +18,12 @@ export type CreateVehicleInput = z.infer<typeof createVehicleSchema>
 /** React Hook Form values before resolver coercion (schema input). */
 export type CreateVehicleFormValues = input<typeof createVehicleSchema>
 
+export const updateVehicleSchema = createVehicleSchema.omit({ vin: true }).extend({
+  id: z.string().uuid(),
+})
+export type UpdateVehicleInput = z.infer<typeof updateVehicleSchema>
+export type UpdateVehicleFormValues = input<typeof updateVehicleSchema>
+
 export const MOBILE_STEPS = [
   { label: 'Identificación', fields: ['vin', 'license_plate'] as const },
   { label: 'Detalles',       fields: ['year', 'make', 'model', 'trim', 'color'] as const },
