@@ -60,6 +60,7 @@ function VehiclePicker({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
+        type="button"
         id={id}
         disabled={disabled}
         className={cn(
@@ -131,6 +132,7 @@ function CustomerPicker({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
+        type="button"
         id="customer_picker"
         className={cn(
           'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs',
