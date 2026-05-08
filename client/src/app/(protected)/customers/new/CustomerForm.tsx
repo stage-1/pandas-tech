@@ -9,6 +9,8 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { trpc } from '@/lib/trpc'
 import { createCustomerSchema, type CreateCustomerFormValues, MOBILE_STEPS } from '@/lib/customers'
 import { cn } from '@/lib/utils'
+import { FormErrorBlock } from '@/components/ui/form-error-block'
+import { MobileStepIndicator } from '@/components/ui/mobile-step-indicator'
 import { FieldError } from '@/components/ui/field-error'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -64,30 +66,7 @@ export function CustomerForm() {
   return (
     <Card>
       <CardContent className="p-5 sm:p-6">
-        {/* Mobile step indicator */}
-        {isMobile && (
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-sm font-medium text-foreground">
-              {MOBILE_STEPS[step].label}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">
-                Paso {step + 1} de {MOBILE_STEPS.length}
-              </span>
-              <div className="flex gap-1.5">
-                {MOBILE_STEPS.map((_, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      'h-1.5 w-1.5 rounded-full transition-colors',
-                      i <= step ? 'bg-primary' : 'bg-border',
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+        {isMobile && <MobileStepIndicator step={step} steps={MOBILE_STEPS} />}
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {/* Step 1: Contacto */}
@@ -159,16 +138,11 @@ export function CustomerForm() {
             </div>
           </div>
 
-          {/* Error */}
           {createCustomer.error && (
-            <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2">
-              <p className="text-sm font-medium text-destructive">
-                Error al registrar el cliente
-              </p>
-              <p className="text-xs text-destructive/80 mt-0.5">
-                {createCustomer.error.message}
-              </p>
-            </div>
+            <FormErrorBlock
+              title="Error al registrar el cliente"
+              message={createCustomer.error.message}
+            />
           )}
 
           {/* Actions */}

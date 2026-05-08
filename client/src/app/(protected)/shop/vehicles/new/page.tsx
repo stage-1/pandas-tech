@@ -1,4 +1,4 @@
-import { VehicleForm } from './VehicleForm'
+import { VehicleForm } from '../VehicleForm'
 
 export default function NewVehiclePage() {
   return (

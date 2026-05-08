@@ -15,6 +15,8 @@ import {
 } from '@/lib/vehicles'
 import { MAKES, MODELS_BY_MAKE } from '@/lib/vehicle-data'
 import { cn } from '@/lib/utils'
+import { FormErrorBlock } from '@/components/ui/form-error-block'
+import { MobileStepIndicator } from '@/components/ui/mobile-step-indicator'
 import { FieldError } from '@/components/ui/field-error'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -23,7 +25,22 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { VehiclePicker, CustomerPicker } from '@/components/vehicles/vehicle-pickers'
 
-export function VehicleForm() {
+export type Vehicle = {
+  id: string
+  vin: string | null
+  year: number | null
+  make: string | null
+  model: string | null
+  trim: string | null
+  color: string | null
+  license_plate: string | null
+  notes: string | null
+  current_customer_id: string | null
+  customer_name: string | null
+}
+
+export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
+  const isEdit = !!vehicle
   const router = useRouter()
   const isMobile = useIsMobile()
   const [step, setStep] = useState(0)
@@ -39,15 +56,15 @@ export function VehicleForm() {
   } = useForm<CreateVehicleFormValues, unknown, CreateVehicleInput>({
     resolver: zodResolver(createVehicleSchema),
     defaultValues: {
-      vin: '',
-      year: undefined,
-      make: '',
-      model: '',
-      trim: '',
-      color: '',
-      license_plate: '',
-      notes: '',
-      customer_id: undefined,
+      vin: vehicle?.vin ?? '',
+      year: vehicle?.year ?? undefined,
+      make: vehicle?.make ?? '',
+      model: vehicle?.model ?? '',
+      trim: vehicle?.trim ?? '',
+      color: vehicle?.color ?? '',
+      license_plate: vehicle?.license_plate ?? '',
+      notes: vehicle?.notes ?? '',
+      customer_id: vehicle?.current_customer_id ?? undefined,
     },
   })
 
@@ -66,10 +83,15 @@ export function VehicleForm() {
   const createVehicle = trpc.vehicles.create.useMutation({
     onSuccess: () => router.push('/shop/vehicles'),
   })
+  const updateVehicle = trpc.vehicles.update.useMutation({
+    onSuccess: () => router.push('/shop/vehicles'),
+  })
+
+  const isPending = isEdit ? updateVehicle.isPending : createVehicle.isPending
+  const mutationError = isEdit ? updateVehicle.error : createVehicle.error
 
   function onSubmit(data: CreateVehicleInput) {
-    createVehicle.mutate({
-      ...data,
+    const nullified = {
       year: data.year || null,
       make: data.make || null,
       model: data.model || null,
@@ -78,7 +100,12 @@ export function VehicleForm() {
       license_plate: data.license_plate || null,
       notes: data.notes || null,
       customer_id: data.customer_id || null,
-    })
+    }
+    if (isEdit) {
+      updateVehicle.mutate({ id: vehicle!.id, ...nullified })
+    } else {
+      createVehicle.mutate({ vin: data.vin, ...nullified })
+    }
   }
 
   async function handleMobileNext() {
@@ -93,11 +120,13 @@ export function VehicleForm() {
 
   const isLastStep = step === MOBILE_STEPS.length - 1
 
-  const submitLabel = createVehicle.isPending ? (
+  const submitLabel = isPending ? (
     <span className="flex items-center gap-2">
       <Loader2 className="size-4 animate-spin" />
       Guardando…
     </span>
+  ) : isEdit ? (
+    'Guardar cambios'
   ) : (
     'Guardar vehículo'
   )
@@ -105,35 +134,11 @@ export function VehicleForm() {
   return (
     <Card>
       <CardContent className="p-5 sm:p-6">
-        {/* Mobile step indicator */}
         {isMobile && (
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-sm font-medium text-foreground">
-              {MOBILE_STEPS[step].label}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">
-                Paso {step + 1} de {MOBILE_STEPS.length}
-              </span>
-              <div className="flex gap-1.5">
-                {MOBILE_STEPS.map((_, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      'h-1.5 w-1.5 rounded-full transition-colors',
-                      i <= step ? 'bg-primary' : 'bg-border',
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <MobileStepIndicator step={step} steps={MOBILE_STEPS} />
         )}
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {/* Step 1: Identificación */}
           <div className={cn(isMobile && step !== 0 && 'hidden')}>
             {!isMobile && (
@@ -143,16 +148,17 @@ export function VehicleForm() {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Label htmlFor="vin">VIN *</Label>
+                <Label htmlFor="vin">VIN {!isEdit && '*'}</Label>
                 <Input
                   id="vin"
                   placeholder="Ej: 1HGBH41JXMN109186"
                   {...register('vin')}
                   aria-invalid={!!errors.vin}
                   className="mt-1.5 uppercase"
-                  autoFocus
+                  autoFocus={!isEdit}
+                  disabled={isEdit}
                 />
-                <FieldError message={errors.vin?.message} />
+                {!isEdit && <FieldError message={errors.vin?.message} />}
               </div>
               <div>
                 <Label htmlFor="license_plate">Placa</Label>
@@ -257,7 +263,8 @@ export function VehicleForm() {
                 <div className="mt-1.5">
                   <CustomerPicker
                     value={customerId}
-                    onChange={(id) => setValue('customer_id', id)}
+                    onChange={(id) => setValue('customer_id', id ?? undefined)}
+                    initialName={vehicle?.customer_name}
                   />
                 </div>
               </div>
@@ -274,19 +281,13 @@ export function VehicleForm() {
             </div>
           </div>
 
-          {/* Error */}
-          {createVehicle.error && (
-            <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2">
-              <p className="text-sm font-medium text-destructive">
-                Error al registrar el vehículo
-              </p>
-              <p className="text-xs text-destructive/80 mt-0.5">
-                {createVehicle.error.message}
-              </p>
-            </div>
+          {mutationError && (
+            <FormErrorBlock
+              title={isEdit ? 'Error al actualizar el vehículo' : 'Error al registrar el vehículo'}
+              message={mutationError.message}
+            />
           )}
 
-          {/* Actions */}
           {isMobile ? (
             <div className={cn('flex items-center gap-3', step > 0 ? 'justify-between' : 'justify-end')}>
               {step > 0 && (
@@ -294,14 +295,14 @@ export function VehicleForm() {
                   type="button"
                   variant="ghost"
                   onClick={() => setStep((s) => s - 1)}
-                  disabled={createVehicle.isPending}
+                  disabled={isPending}
                   className="text-muted-foreground"
                 >
                   Atrás
                 </Button>
               )}
               {isLastStep ? (
-                <Button type="submit" disabled={createVehicle.isPending || submitBlocked} className="min-w-36">
+                <Button type="submit" disabled={isPending || submitBlocked} className="min-w-36">
                   {submitLabel}
                 </Button>
               ) : (
@@ -312,7 +313,7 @@ export function VehicleForm() {
             </div>
           ) : (
             <div className="flex justify-end pt-2">
-              <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+              <Button type="submit" disabled={isPending} className="min-w-36">
                 {submitLabel}
               </Button>
             </div>

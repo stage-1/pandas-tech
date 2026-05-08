@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { EditVehicleForm, type Vehicle } from './EditVehicleForm'
+import { VehicleForm, type Vehicle } from '../../VehicleForm'
 
 export default function EditVehiclePage({ params }: { params: { id: string } }) {
   const { data: vehicle, isPending } = trpc.vehicles.byId.useQuery({ id: params.id })
@@ -44,7 +44,7 @@ export default function EditVehiclePage({ params }: { params: { id: string } }) 
           Volver
         </Button>
       </div>
-      <EditVehicleForm vehicle={vehicle as unknown as Vehicle} />
+      <VehicleForm vehicle={vehicle as unknown as Vehicle} />
     </div>
   )
 }
