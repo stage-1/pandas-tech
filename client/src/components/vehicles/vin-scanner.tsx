@@ -21,6 +21,7 @@ type Phase =
   | { name: 'scanning'; previewUrl: string }
   | { name: 'result'; vin: string; confidence: number; previewUrl: string }
   | { name: 'decoding'; vin: string; previewUrl: string }
+  | { name: 'funny'; previewUrl: string; comment: string }
   | { name: 'error'; message: string }
 
 interface VinScannerProps {
@@ -36,7 +37,7 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
   const fileRef = useRef<HTMLInputElement>(null)
 
   function revokePreview(p: Phase) {
-    if (p.name === 'previewing' || p.name === 'scanning' || p.name === 'result' || p.name === 'decoding') {
+    if (p.name === 'previewing' || p.name === 'scanning' || p.name === 'result' || p.name === 'decoding' || p.name === 'funny') {
       URL.revokeObjectURL(p.previewUrl)
     }
   }
@@ -63,11 +64,16 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
     try {
       const res = await fetch('/api/vin-scan', { method: 'POST', body: formData })
       if (!res.ok) throw new Error('Error del servidor')
-      const data = await res.json() as { vin: string; confidence: number }
+      const data = await res.json() as { vin: string; confidence: number; funnyComment?: string }
       const vin = data.vin.toUpperCase()
-      const { confidence } = data
+      const { confidence, funnyComment } = data
 
-      console.log('[vin-scanner] scan result', { vin, confidence, threshold: CONFIDENCE_THRESHOLD })
+      console.log('[vin-scanner] scan result', { vin, confidence, funnyComment, threshold: CONFIDENCE_THRESHOLD })
+
+      if (funnyComment) {
+        setPhase({ name: 'funny', previewUrl, comment: funnyComment })
+        return
+      }
 
       if (confidence >= CONFIDENCE_THRESHOLD) {
         console.log('[vin-scanner] auto-confirming (high confidence), starting decode')
@@ -254,6 +260,18 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
           </>
         )}
 
+        {/* funny — clearly not a VIN */}
+        {phase.name === 'funny' && (
+          <div className="flex flex-col gap-3">
+            <img
+              src={phase.previewUrl}
+              alt="No es un VIN"
+              className="w-full rounded-lg object-cover max-h-56"
+            />
+            <p className="text-sm text-center">{phase.comment}</p>
+          </div>
+        )}
+
         {/* error */}
         {phase.name === 'error' && (
           <p className="text-sm text-destructive py-1">{phase.message}</p>
@@ -270,6 +288,11 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
           <DialogFooter>
             <Button variant="outline" onClick={handleReset}>Reintentar</Button>
             <Button variant="secondary" onClick={handleConfirm}>Usar de todas formas</Button>
+          </DialogFooter>
+        )}
+        {phase.name === 'funny' && (
+          <DialogFooter>
+            <Button variant="outline" onClick={handleReset} className="w-full">Reintentar</Button>
           </DialogFooter>
         )}
         {phase.name === 'error' && (
