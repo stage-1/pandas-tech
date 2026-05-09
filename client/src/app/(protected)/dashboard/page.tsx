@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { trpc } from '@/lib/trpc'
+import { useWelcomeTag } from '@/lib/welcome/use-welcome-tag'
 
 export default function DashboardPage() {
   const { data: shop, isPending } = trpc.shops.mine.useQuery()
+  const welcomeTag = useWelcomeTag()
 
   if (isPending) {
     return (
@@ -29,7 +31,7 @@ export default function DashboardPage() {
             {shop.name}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Bienvenido a tu taller. Próximamente verás métricas y actividad reciente aquí.
+            {welcomeTag.long}
           </p>
         </div>
       </div>
