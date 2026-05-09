@@ -134,6 +134,21 @@ export function SignInClient() {
     <>
       {/* Base gradient — fixed, lowest layer */}
       <div className="fixed inset-0" style={{ background: 'linear-gradient(135deg, #fef9ef 0%, #fde4b0 45%, #f5a855 75%, #e8773a 100%)', zIndex: 0 }} />
+      {/* Shadow overlay — large rectangle from top-right, diagonal toward center */}
+      <div
+        className="fixed pointer-events-none"
+        style={{
+          width: '50vw',
+          height: '62vh',
+          top: '-10vh',
+          right: '-8vw',
+          background: 'rgba(0, 0, 0, 0.18)',
+          transform: 'rotate(-35deg)',
+          transformOrigin: 'top right',
+          filter: 'blur(45px)',
+          zIndex: 0,
+        }}
+      />
       {/* Three.js canvas — z:1, 50% opacity, above gradient */}
       <DenimBg />
       {/* Card layer — z:2, above canvas */}
