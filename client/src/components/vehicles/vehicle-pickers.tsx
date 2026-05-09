@@ -145,18 +145,20 @@ export function CustomerPicker({
         </PopoverTrigger>
         <PopoverContent className="w-[--anchor-width] p-0" align="start">
           <Command shouldFilter={false}>
-            <div className="flex items-center border-b">
-              <CommandInput
-                placeholder="Buscar cliente…"
-                value={search}
-                onValueChange={setSearch}
-                className="flex-1 border-0 focus:ring-0"
-              />
+            <div className="flex min-w-0 items-center border-b">
+              <div className="min-w-0 flex-1">
+                <CommandInput
+                  placeholder="Buscar cliente…"
+                  value={search}
+                  onValueChange={setSearch}
+                  className="border-0 focus:ring-0"
+                />
+              </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon-sm"
-                className="mr-1 shrink-0 text-muted-foreground hover:text-foreground"
+                className="mr-1 size-7 shrink-0 text-muted-foreground hover:text-foreground"
                 onClick={openCreate}
                 title="Crear cliente"
               >
