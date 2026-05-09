@@ -55,7 +55,7 @@ export function SignInClient() {
 
   if (!authLoaded) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #fef9ef 0%, #fde4b0 45%, #f5a855 75%, #e8773a 100%)' }}>
         <span className="text-sm text-white/50">Loading…</span>
       </div>
     )
@@ -63,7 +63,7 @@ export function SignInClient() {
 
   if (isSignedIn) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)' }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #fef9ef 0%, #fde4b0 45%, #f5a855 75%, #e8773a 100%)' }}>
         <span className="text-sm text-white/50">Opening dashboard…</span>
       </div>
     )
@@ -133,7 +133,7 @@ export function SignInClient() {
   return (
     <>
       {/* Base gradient — fixed, lowest layer */}
-      <div className="fixed inset-0" style={{ background: 'linear-gradient(135deg, #111b2e 0%, #1f3464 40%, #142a52 70%, #0d1117 100%)', zIndex: 0 }} />
+      <div className="fixed inset-0" style={{ background: 'linear-gradient(135deg, #fef9ef 0%, #fde4b0 45%, #f5a855 75%, #e8773a 100%)', zIndex: 0 }} />
       {/* Three.js canvas — z:1, 50% opacity, above gradient */}
       <DenimBg />
       {/* Card layer — z:2, above canvas */}
@@ -176,9 +176,6 @@ export function SignInClient() {
             <ellipse cx="50" cy="60" rx="7" ry="5" fill="#0a1228" />
           </svg>
           <CardTitle className="text-white text-lg">Sign in</CardTitle>
-          <CardDescription className="text-white/50">
-            Enter your email and password to continue
-          </CardDescription>
         </CardHeader>
 
         <CardContent className="text-center">
