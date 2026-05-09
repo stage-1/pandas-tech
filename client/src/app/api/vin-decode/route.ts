@@ -146,9 +146,11 @@ export async function POST(req: Request) {
     console.log('[vin-decode] parsed map keys:', Object.keys(map))
 
     const specs = mapToSpecs(map)
-    console.log('[vin-decode] parsed specs %o', specs)
+    const hasData = Object.values(specs).some((v) => v != null)
+    const specsOrNull = hasData ? specs : null
+    console.log('[vin-decode] parsed specs %o hasData=%s', specsOrNull, hasData)
 
-    return Response.json({ specs, raw: data })
+    return Response.json({ specs: specsOrNull, raw: data })
   } catch (err) {
     console.error('[vin-decode] error %o', err)
     return Response.json({ specs: null, raw: null })

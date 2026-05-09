@@ -21,6 +21,7 @@ type Phase =
   | { name: 'scanning'; previewUrl: string }
   | { name: 'result'; vin: string; confidence: number; previewUrl: string }
   | { name: 'decoding'; vin: string; previewUrl: string }
+  | { name: 'decode-failed'; vin: string; previewUrl: string }
   | { name: 'funny'; previewUrl: string; comment: string }
   | { name: 'error'; message: string }
 
@@ -35,9 +36,24 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
   const [decodeEnabled, setDecodeEnabled] = useState(false)
   const cameraRef = useRef<HTMLInputElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const decodeFailedCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function clearDecodeFailedCloseTimer() {
+    if (decodeFailedCloseTimerRef.current != null) {
+      clearTimeout(decodeFailedCloseTimerRef.current)
+      decodeFailedCloseTimerRef.current = null
+    }
+  }
 
   function revokePreview(p: Phase) {
-    if (p.name === 'previewing' || p.name === 'scanning' || p.name === 'result' || p.name === 'decoding' || p.name === 'funny') {
+    if (
+      p.name === 'previewing' ||
+      p.name === 'scanning' ||
+      p.name === 'result' ||
+      p.name === 'decoding' ||
+      p.name === 'decode-failed' ||
+      p.name === 'funny'
+    ) {
       URL.revokeObjectURL(p.previewUrl)
     }
   }
@@ -119,6 +135,20 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
 
     console.log('[vin-scanner] calling onVinDecoded with vin=%s specs=%o', vin, specs)
     onVinDecoded(vin, specs)
+
+    if (!specs && decodeEnabled) {
+      console.log('[vin-scanner] decode enabled but no specs — showing decode-failed phase')
+      setPhase({ name: 'decode-failed', vin, previewUrl })
+      clearDecodeFailedCloseTimer()
+      decodeFailedCloseTimerRef.current = setTimeout(() => {
+        decodeFailedCloseTimerRef.current = null
+        URL.revokeObjectURL(previewUrl)
+        setOpen(false)
+        setTimeout(() => setPhase({ name: 'idle' }), 200)
+      }, 2500)
+      return
+    }
+
     URL.revokeObjectURL(previewUrl)
     setOpen(false)
     setTimeout(() => setPhase({ name: 'idle' }), 200)
@@ -135,8 +165,8 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
   }
 
   function handleClose() {
+    clearDecodeFailedCloseTimer()
     revokePreview(phase)
-    setDecodeEnabled(false)
     setOpen(false)
     setTimeout(() => setPhase({ name: 'idle' }), 200)
   }
@@ -269,6 +299,15 @@ export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
               className="w-full rounded-lg object-cover max-h-56"
             />
             <p className="text-sm text-center">{phase.comment}</p>
+          </div>
+        )}
+
+        {/* decode failed (API/key/no data) while decode toggle was on */}
+        {phase.name === 'decode-failed' && (
+          <div className="flex flex-col gap-2 py-1">
+            <p className="text-sm text-muted-foreground">
+              VIN guardado, pero no se pudieron obtener los datos del vehículo.
+            </p>
           </div>
         )}
 
