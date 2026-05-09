@@ -211,3 +211,21 @@ Only relevant when `shops.country_code = 'CO'`. Other markets: hide fields, skip
 | SMS via Twilio/MessageBird (Colombia: also Telnyx) | All | Week 2 |
 | Multi-location shop support | All | Month 5 |
 | Cross-country analytics dashboard | All | Month 6+ |
+
+---
+
+## AI Features
+
+### VIN Scanner (shipped)
+
+Mechanics can scan a VIN during vehicle creation instead of typing it manually.
+
+**Flow:** tap "Escanear" next to the VIN field → choose camera or file upload → image sent to OpenAI `gpt-4o` vision → VIN + confidence returned.
+
+- Confidence ≥ 85%: auto-fills the field and closes the dialog
+- Confidence < 85%: shows extracted VIN with amber warning, user can accept or retake
+- New vehicle creation only (VIN is immutable after creation)
+
+**Stack:** Vercel AI SDK (`generateObject`) · `@ai-sdk/openai` · Next.js API route `/api/vin-scan`
+
+**Env required:** `OPENAI_API_KEY`

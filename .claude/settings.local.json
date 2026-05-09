@@ -21,7 +21,20 @@
       "Bash(curl -sI http://localhost:3002/fonts/Montserrat-VariableFont_wght.ttf)",
       "Bash(npx next *)",
       "mcp__Claude_in_Chrome__read_console_messages",
-      "mcp__Claude_in_Chrome__read_network_requests"
+      "mcp__Claude_in_Chrome__read_network_requests",
+      "Bash(node -e \"const c = require\\('@clerk/nextjs/server'\\); console.log\\(Object.keys\\(c\\).filter\\(k => k.toLowerCase\\(\\).includes\\('clerk'\\) || k.toLowerCase\\(\\).includes\\('user'\\) || k.toLowerCase\\(\\).includes\\('client'\\)\\)\\)\")",
+      "Bash(node -e ' *)",
+      "mcp__d9752853-5fb0-43cd-a21a-d4137c193016__apply_migration",
+      "Bash(node -e \"const c = require\\('@clerk/nextjs/server'\\); console.log\\('clerkClient type:', typeof c.clerkClient\\)\")",
+      "mcp__d9752853-5fb0-43cd-a21a-d4137c193016__generate_typescript_types",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\swim\\\\Documents\\\\Code\\\\Github\\\\pandas-tech\\\\client\\\\.next\")",
+      "mcp__d9752853-5fb0-43cd-a21a-d4137c193016__list_projects",
+      "Bash(timeout 10)",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "Bash(npx shadcn@latest add command)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/zod/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@hookform/resolvers/package.json'\\).version\\)\")",
+      "Bash(npm run *)"
     ]
   }
 }

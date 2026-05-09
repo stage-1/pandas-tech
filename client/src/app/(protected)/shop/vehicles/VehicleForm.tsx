@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, ChevronsUpDown, Check } from 'lucide-react'
+import { Camera, Loader2 } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { trpc } from '@/lib/trpc'
 import {
@@ -15,178 +15,80 @@ import {
 } from '@/lib/vehicles'
 import { MAKES, MODELS_BY_MAKE } from '@/lib/vehicle-data'
 import { cn } from '@/lib/utils'
+import { FormErrorBlock } from '@/components/ui/form-error-block'
+import { MobileStepIndicator } from '@/components/ui/mobile-step-indicator'
 import { FieldError } from '@/components/ui/field-error'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from '@/components/ui/command'
+import { VehiclePicker, CustomerPicker } from '@/components/vehicles/vehicle-pickers'
+import { VinScanner } from '@/components/vehicles/vin-scanner'
+import { VehicleSpecsCard } from '@/components/vehicles/vehicle-specs-card'
+import { type VehicleSpecs } from '@/lib/vehicles'
 
-function VehiclePicker({
-  options,
-  value,
-  onChange,
-  placeholder,
-  id,
-  disabled,
-}: {
-  options: string[]
-  value: string | null | undefined
-  onChange: (v: string | null) => void
-  placeholder: string
-  id?: string
-  disabled?: boolean
-}) {
-  const [open, setOpen] = useState(false)
-  const [search, setSearch] = useState('')
-
-  const filtered = useMemo(
-    () =>
-      search
-        ? options.filter((o) => o.toLowerCase().includes(search.toLowerCase()))
-        : options,
-    [options, search],
-  )
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        id={id}
-        disabled={disabled}
-        className={cn(
-          'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs',
-          'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-          !value && 'text-muted-foreground',
-        )}
-      >
-        {value ?? placeholder}
-        <ChevronsUpDown className="ml-2 size-3.5 shrink-0 opacity-50" />
-      </PopoverTrigger>
-      <PopoverContent className="w-[--anchor-width] p-0" align="start">
-        <Command shouldFilter={false}>
-          <CommandInput
-            placeholder={`Buscar…`}
-            value={search}
-            onValueChange={setSearch}
-          />
-          <CommandList>
-            <CommandEmpty>Sin resultados.</CommandEmpty>
-            <CommandGroup>
-              {filtered.map((opt) => (
-                <CommandItem
-                  key={opt}
-                  value={opt}
-                  onSelect={() => {
-                    onChange(opt === value ? null : opt)
-                    setSearch('')
-                    setOpen(false)
-                  }}
-                >
-                  {opt}
-                  <Check
-                    className={cn('ml-auto size-4', value === opt ? 'opacity-100' : 'opacity-0')}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  )
+export type Vehicle = {
+  id: string
+  vin: string | null
+  year: number | null
+  make: string | null
+  model: string | null
+  trim: string | null
+  color: string | null
+  odometer: number | null
+  license_plate: string | null
+  notes: string | null
+  current_customer_id: string | null
+  customer_name: string | null
+  // Vincario spec fields
+  engine_displacement_ccm?: number | null
+  engine_cylinders?: number | null
+  engine_model?: string | null
+  engine_power_kw?: number | null
+  fuel_type?: string | null
+  fuel_system?: string | null
+  engine_turbine?: string | null
+  engine_oil_capacity_l?: number | null
+  engine_coolant_l?: number | null
+  transmission?: string | null
+  drive?: string | null
+  number_of_gears?: number | null
+  front_brakes?: string | null
+  rear_brakes?: string | null
+  abs?: boolean | null
+  wheel_size?: string | null
+  wheel_rims_size?: string | null
+  front_suspension?: string | null
+  rear_suspension?: string | null
+  body_type?: string | null
+  number_of_doors?: number | null
+  number_of_seats?: number | null
 }
 
-function CustomerPicker({
-  value,
-  onChange,
-}: {
-  value: string | null | undefined
-  onChange: (id: string | null) => void
-}) {
-  const [open, setOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
-  const [selectedName, setSelectedName] = useState<string | null>(null)
-
-  useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 300)
-    return () => clearTimeout(t)
-  }, [search])
-
-  const { data: customers } = trpc.vehicles.customers.useQuery(
-    { search: debouncedSearch || undefined },
-    { enabled: open },
-  )
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        id="customer_picker"
-        className={cn(
-          'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs',
-          'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          !value && 'text-muted-foreground',
-        )}
-      >
-        {selectedName ?? 'Seleccionar cliente'}
-        <ChevronsUpDown className="ml-2 size-3.5 shrink-0 opacity-50" />
-      </PopoverTrigger>
-      <PopoverContent className="w-[--anchor-width] p-0" align="start">
-        <Command shouldFilter={false}>
-          <CommandInput
-            placeholder="Buscar cliente…"
-            value={search}
-            onValueChange={setSearch}
-          />
-          <CommandList>
-            <CommandEmpty>Sin resultados.</CommandEmpty>
-            <CommandGroup>
-              {customers?.map((c) => (
-                <CommandItem
-                  key={c.id}
-                  value={c.id}
-                  onSelect={() => {
-                    if (c.id === value) {
-                      onChange(null)
-                      setSelectedName(null)
-                    } else {
-                      onChange(c.id)
-                      setSelectedName(c.name)
-                    }
-                    setOpen(false)
-                  }}
-                >
-                  {c.name}
-                  <Check
-                    className={cn(
-                      'ml-auto size-4',
-                      value === c.id ? 'opacity-100' : 'opacity-0',
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-export function VehicleForm() {
+export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
+  const isEdit = !!vehicle
   const router = useRouter()
   const isMobile = useIsMobile()
   const [step, setStep] = useState(0)
+  const [submitBlocked, setSubmitBlocked] = useState(false)
+  const [vinSpecs, setVinSpecs] = useState<VehicleSpecs | null>(() => {
+    if (!vehicle) return null
+    const s: VehicleSpecs = {}
+    const fields: (keyof VehicleSpecs)[] = [
+      'engine_displacement_ccm', 'engine_cylinders', 'engine_model', 'engine_power_kw',
+      'fuel_type', 'fuel_system', 'engine_turbine', 'engine_oil_capacity_l', 'engine_coolant_l',
+      'transmission', 'drive', 'number_of_gears',
+      'front_brakes', 'rear_brakes', 'abs', 'wheel_size', 'wheel_rims_size',
+      'front_suspension', 'rear_suspension', 'body_type', 'number_of_doors', 'number_of_seats',
+    ]
+    let hasData = false
+    for (const f of fields) {
+      const v = (vehicle as Record<string, unknown>)[f]
+      if (v != null) { (s as Record<string, unknown>)[f] = v; hasData = true }
+    }
+    return hasData ? s : null
+  })
 
   const {
     register,
@@ -198,15 +100,16 @@ export function VehicleForm() {
   } = useForm<CreateVehicleFormValues, unknown, CreateVehicleInput>({
     resolver: zodResolver(createVehicleSchema),
     defaultValues: {
-      vin: '',
-      year: undefined,
-      make: '',
-      model: '',
-      trim: '',
-      color: '',
-      license_plate: '',
-      notes: '',
-      customer_id: undefined,
+      vin: vehicle?.vin ?? '',
+      year: vehicle?.year ?? undefined,
+      make: vehicle?.make ?? '',
+      model: vehicle?.model ?? '',
+      trim: vehicle?.trim ?? '',
+      color: vehicle?.color ?? '',
+      odometer: vehicle?.odometer ?? undefined,
+      license_plate: vehicle?.license_plate ?? '',
+      notes: vehicle?.notes ?? '',
+      customer_id: vehicle?.current_customer_id ?? undefined,
     },
   })
 
@@ -225,34 +128,51 @@ export function VehicleForm() {
   const createVehicle = trpc.vehicles.create.useMutation({
     onSuccess: () => router.push('/shop/vehicles'),
   })
+  const updateVehicle = trpc.vehicles.update.useMutation({
+    onSuccess: () => router.push('/shop/vehicles'),
+  })
+
+  const isPending = isEdit ? updateVehicle.isPending : createVehicle.isPending
+  const mutationError = isEdit ? updateVehicle.error : createVehicle.error
 
   function onSubmit(data: CreateVehicleInput) {
-    createVehicle.mutate({
-      ...data,
+    const nullified = {
       year: data.year || null,
       make: data.make || null,
       model: data.model || null,
       trim: data.trim || null,
       color: data.color || null,
+      odometer: data.odometer ?? null,
       license_plate: data.license_plate || null,
       notes: data.notes || null,
       customer_id: data.customer_id || null,
-    })
+    }
+    if (isEdit) {
+      updateVehicle.mutate({ id: vehicle!.id, ...nullified, specs: vinSpecs ?? undefined })
+    } else {
+      createVehicle.mutate({ vin: data.vin, ...nullified, specs: vinSpecs ?? undefined })
+    }
   }
 
   async function handleMobileNext() {
     const fields = MOBILE_STEPS[step].fields as unknown as (keyof CreateVehicleFormValues)[]
     const valid = await trigger(fields)
-    if (valid) setStep((s) => s + 1)
+    if (valid) {
+      setSubmitBlocked(true)
+      setStep((s) => s + 1)
+      setTimeout(() => setSubmitBlocked(false), 400)
+    }
   }
 
   const isLastStep = step === MOBILE_STEPS.length - 1
 
-  const submitLabel = createVehicle.isPending ? (
+  const submitLabel = isPending ? (
     <span className="flex items-center gap-2">
       <Loader2 className="size-4 animate-spin" />
       Guardando…
     </span>
+  ) : isEdit ? (
+    'Guardar cambios'
   ) : (
     'Guardar vehículo'
   )
@@ -260,35 +180,11 @@ export function VehicleForm() {
   return (
     <Card>
       <CardContent className="p-5 sm:p-6">
-        {/* Mobile step indicator */}
         {isMobile && (
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-sm font-medium text-foreground">
-              {MOBILE_STEPS[step].label}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">
-                Paso {step + 1} de {MOBILE_STEPS.length}
-              </span>
-              <div className="flex gap-1.5">
-                {MOBILE_STEPS.map((_, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      'h-1.5 w-1.5 rounded-full transition-colors',
-                      i <= step ? 'bg-primary' : 'bg-border',
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <MobileStepIndicator step={step} steps={MOBILE_STEPS} />
         )}
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           {/* Step 1: Identificación */}
           <div className={cn(isMobile && step !== 0 && 'hidden')}>
             {!isMobile && (
@@ -298,16 +194,40 @@ export function VehicleForm() {
             )}
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Label htmlFor="vin">VIN *</Label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <Label htmlFor="vin">VIN {!isEdit && '*'}</Label>
+                  {!isEdit && (
+                    <VinScanner
+                      onVinDecoded={(vin, specs) => {
+                        setValue('vin', vin)
+                        trigger('vin')
+                        if (specs) {
+                          setVinSpecs(specs)
+                          if (specs.make)  setValue('make', specs.make)
+                          if (specs.model) setValue('model', specs.model)
+                          if (specs.year)  setValue('year', specs.year)
+                          if (specs.trim)  setValue('trim', specs.trim)
+                        }
+                      }}
+                      trigger={
+                        <Button type="button" variant="ghost" size="xs" className="gap-1 text-muted-foreground">
+                          <Camera className="size-3.5" />
+                          Escanear
+                        </Button>
+                      }
+                    />
+                  )}
+                </div>
                 <Input
                   id="vin"
                   placeholder="Ej: 1HGBH41JXMN109186"
                   {...register('vin')}
                   aria-invalid={!!errors.vin}
-                  className="mt-1.5 uppercase"
-                  autoFocus
+                  className="uppercase"
+                  autoFocus={!isEdit}
+                  disabled={isEdit}
                 />
-                <FieldError message={errors.vin?.message} />
+                {!isEdit && <FieldError message={errors.vin?.message} />}
               </div>
               <div>
                 <Label htmlFor="license_plate">Placa</Label>
@@ -393,7 +313,21 @@ export function VehicleForm() {
                   className="mt-1.5"
                 />
               </div>
+              <div>
+                <Label htmlFor="odometer">Kilometraje</Label>
+                <Input
+                  id="odometer"
+                  type="number"
+                  min={0}
+                  placeholder="Ej: 150000"
+                  {...register('odometer')}
+                  aria-invalid={!!errors.odometer}
+                  className="mt-1.5"
+                />
+                <FieldError message={errors.odometer?.message} />
+              </div>
             </div>
+            {vinSpecs && <div className="mt-4"><VehicleSpecsCard specs={vinSpecs} /></div>}
           </div>
 
           {/* Step 3: Adicional */}
@@ -412,7 +346,8 @@ export function VehicleForm() {
                 <div className="mt-1.5">
                   <CustomerPicker
                     value={customerId}
-                    onChange={(id) => setValue('customer_id', id)}
+                    onChange={(id) => setValue('customer_id', id ?? undefined)}
+                    initialName={vehicle?.customer_name}
                   />
                 </div>
               </div>
@@ -429,19 +364,13 @@ export function VehicleForm() {
             </div>
           </div>
 
-          {/* Error */}
-          {createVehicle.error && (
-            <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2">
-              <p className="text-sm font-medium text-destructive">
-                Error al registrar el vehículo
-              </p>
-              <p className="text-xs text-destructive/80 mt-0.5">
-                {createVehicle.error.message}
-              </p>
-            </div>
+          {mutationError && (
+            <FormErrorBlock
+              title={isEdit ? 'Error al actualizar el vehículo' : 'Error al registrar el vehículo'}
+              message={mutationError.message}
+            />
           )}
 
-          {/* Actions */}
           {isMobile ? (
             <div className={cn('flex items-center gap-3', step > 0 ? 'justify-between' : 'justify-end')}>
               {step > 0 && (
@@ -449,14 +378,14 @@ export function VehicleForm() {
                   type="button"
                   variant="ghost"
                   onClick={() => setStep((s) => s - 1)}
-                  disabled={createVehicle.isPending}
+                  disabled={isPending}
                   className="text-muted-foreground"
                 >
                   Atrás
                 </Button>
               )}
               {isLastStep ? (
-                <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+                <Button type="submit" disabled={isPending || submitBlocked} className="min-w-36">
                   {submitLabel}
                 </Button>
               ) : (
@@ -467,7 +396,7 @@ export function VehicleForm() {
             </div>
           ) : (
             <div className="flex justify-end pt-2">
-              <Button type="submit" disabled={createVehicle.isPending} className="min-w-36">
+              <Button type="submit" disabled={isPending} className="min-w-36">
                 {submitLabel}
               </Button>
             </div>
