@@ -122,7 +122,6 @@ export default function VehiclesPage() {
           </CardContent>
         </Card>
       ) : (
-<<<<<<< Updated upstream
         <>
           {/* Desktop / tablet — table, only rendered at md+ */}
           <Card className="hidden md:block">
@@ -152,8 +151,17 @@ export default function VehiclesPage() {
                       )}
                     </TableCell>
                     <TableCell>
-                      {formatMakeModel(v.make, v.model) || (
-                        <span className="text-xs text-muted-foreground">Sin datos</span>
+                      <span>
+                        {formatMakeModel(v.make, v.model) || (
+                          <span className="text-xs text-muted-foreground">
+                            Sin datos
+                          </span>
+                        )}
+                      </span>
+                      {!v.model && v.plant_country && (
+                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                          {v.plant_country}
+                        </span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -193,57 +201,28 @@ export default function VehiclesPage() {
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground truncate">
                       {formatMakeModel(v.make, v.model) || (
-                        <span className="text-muted-foreground font-normal">Sin datos</span>
+                        <span className="font-normal text-muted-foreground">
+                          Sin datos
+                        </span>
                       )}
-                      {v.year && (
+                      {v.year != null && v.year !== '' && (
                         <span className="ml-1 font-normal text-muted-foreground">
                           {v.year}
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                    {!v.model && v.plant_country && (
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        {v.plant_country}
+                      </p>
+                    )}
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
                       <span className="font-mono">{v.vin ?? '—'}</span>
                       {v.license_plate && ` · ${v.license_plate}`}
                       {v.customer_name && ` · ${v.customer_name}`}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
-=======
-        <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>VIN</TableHead>
-                <TableHead className="hidden md:table-cell">Año</TableHead>
-                <TableHead>Marca / Modelo</TableHead>
-                <TableHead className="hidden sm:table-cell">Placa</TableHead>
-                <TableHead className="hidden md:table-cell">Cliente</TableHead>
-                <TableHead className="w-20" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {vehicles.map((v) => (
-                <TableRow key={v.id}>
-                  <TableCell className="font-mono text-xs">
-                    {v.vin}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {v.year ?? '—'}
-                  </TableCell>
-                  <TableCell>
-                    <span>{[v.make, v.model].filter(Boolean).join(' ') || '—'}</span>
-                    {!v.model && v.plant_country && (
-                      <span className="block text-xs text-muted-foreground">{v.plant_country}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    {v.license_plate ?? '—'}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    {v.customer_name ?? '—'}
-                  </TableCell>
-                  <TableCell className="w-20 text-right">
->>>>>>> Stashed changes
                     <Button
                       variant="ghost"
                       size="icon-sm"
