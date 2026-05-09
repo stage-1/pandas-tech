@@ -1,6 +1,37 @@
 import { z } from 'zod'
 import type { input } from 'zod/v4/core'
 
+export const vehicleSpecsSchema = z.object({
+  make: z.string().optional(),
+  model: z.string().optional(),
+  year: z.number().int().optional(),
+  trim: z.string().optional(),
+  engine_displacement_ccm: z.number().int().optional(),
+  engine_cylinders: z.number().int().optional(),
+  engine_model: z.string().optional(),
+  engine_power_kw: z.number().optional(),
+  fuel_type: z.string().optional(),
+  fuel_system: z.string().optional(),
+  engine_turbine: z.string().optional(),
+  engine_oil_capacity_l: z.number().optional(),
+  engine_coolant_l: z.number().optional(),
+  transmission: z.string().optional(),
+  drive: z.string().optional(),
+  number_of_gears: z.number().int().optional(),
+  front_brakes: z.string().optional(),
+  rear_brakes: z.string().optional(),
+  abs: z.boolean().optional(),
+  wheel_size: z.string().optional(),
+  wheel_rims_size: z.string().optional(),
+  front_suspension: z.string().optional(),
+  rear_suspension: z.string().optional(),
+  body_type: z.string().optional(),
+  number_of_doors: z.number().int().optional(),
+  number_of_seats: z.number().int().optional(),
+})
+
+export type VehicleSpecs = z.infer<typeof vehicleSpecsSchema>
+
 export const createVehicleSchema = z.object({
   vin:           z.string().min(11, 'VIN debe tener al menos 11 caracteres').max(17, 'VIN no puede exceder 17 caracteres'),
   year:          z.coerce.number().int().min(1900).max(2100).nullish(),
