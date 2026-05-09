@@ -3,12 +3,14 @@ import { shopsRouter } from './shops'
 import { usersRouter } from './users'
 import { vehiclesRouter } from './vehicles'
 import { customersRouter } from './customers'
+import { dashboardRouter } from './dashboard'
 
 export const appRouter = router({
   shops: shopsRouter,
   users: usersRouter,
   vehicles: vehiclesRouter,
   customers: customersRouter,
+  dashboard: dashboardRouter,
 })
 
 export type AppRouter = typeof appRouter

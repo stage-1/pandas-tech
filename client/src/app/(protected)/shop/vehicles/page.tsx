@@ -70,7 +70,10 @@ export default function VehiclesPage() {
   const { data: vehicles, isPending } = trpc.vehicles.list.useQuery()
   const utils = trpc.useUtils()
   const deleteVehicle = trpc.vehicles.delete.useMutation({
-    onSuccess: () => utils.vehicles.list.invalidate(),
+    onSuccess: async () => {
+      await utils.vehicles.list.invalidate()
+      await utils.dashboard.stats.invalidate()
+    },
   })
 
   if (isPending) {

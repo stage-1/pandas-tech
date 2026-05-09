@@ -30,7 +30,10 @@ export default function CustomersPage() {
   const { data: customers, isPending } = trpc.customers.list.useQuery()
   const utils = trpc.useUtils()
   const deleteCustomer = trpc.customers.delete.useMutation({
-    onSuccess: () => utils.customers.list.invalidate(),
+    onSuccess: async () => {
+      await utils.customers.list.invalidate()
+      await utils.dashboard.stats.invalidate()
+    },
   })
 
   if (isPending) {

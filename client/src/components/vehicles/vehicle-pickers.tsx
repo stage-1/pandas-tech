@@ -16,6 +16,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { CreateCustomerDialog } from './create-customer-dialog'
 
+const CUSTOM_MODEL_MAX_LEN = 60
+
 export function VehiclePicker({
   options,
   value,
@@ -23,6 +25,7 @@ export function VehiclePicker({
   placeholder,
   id,
   disabled,
+  allowCustom = false,
 }: {
   options: string[]
   value: string | null | undefined
@@ -30,9 +33,18 @@ export function VehiclePicker({
   placeholder: string
   id?: string
   disabled?: boolean
+  /** When true, user can confirm the search text as a value if it doesn’t exactly match any option (e.g. modelo libre). */
+  allowCustom?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
+
+  const trimmedSearch = search.trim()
+  const hasExactOptionMatch =
+    trimmedSearch.length > 0 &&
+    options.some((o) => o.toLowerCase() === trimmedSearch.toLowerCase())
+  const showCreatable =
+    allowCustom && trimmedSearch.length > 0 && !hasExactOptionMatch
 
   const filtered = useMemo(
     () =>
@@ -41,6 +53,21 @@ export function VehiclePicker({
         : options,
     [options, search],
   )
+
+  const showEmptyHint = filtered.length === 0 && !showCreatable
+
+  function commitCustomModel() {
+    const q = trimmedSearch.slice(0, CUSTOM_MODEL_MAX_LEN)
+    if (!q.length) return
+    onChange(q)
+    setSearch('')
+    setOpen(false)
+  }
+
+  const creatablePreview =
+    trimmedSearch.length > CUSTOM_MODEL_MAX_LEN
+      ? `${trimmedSearch.slice(0, CUSTOM_MODEL_MAX_LEN)}…`
+      : trimmedSearch
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -66,8 +93,17 @@ export function VehiclePicker({
             onValueChange={setSearch}
           />
           <CommandList>
-            <CommandEmpty>Sin resultados.</CommandEmpty>
+            {showEmptyHint ? <CommandEmpty>Sin resultados.</CommandEmpty> : null}
             <CommandGroup>
+              {showCreatable ? (
+                <CommandItem
+                  key="__custom_model__"
+                  value={`__custom__:${trimmedSearch}`}
+                  onSelect={() => commitCustomModel()}
+                >
+                  Usar «{creatablePreview}»
+                </CommandItem>
+              ) : null}
               {filtered.map((opt) => (
                 <CommandItem
                   key={opt}

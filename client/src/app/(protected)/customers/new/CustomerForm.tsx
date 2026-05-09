@@ -33,8 +33,12 @@ export function CustomerForm() {
     defaultValues: { name: '', email: '', phone: '', notes: '' },
   })
 
+  const utils = trpc.useUtils()
   const createCustomer = trpc.customers.create.useMutation({
-    onSuccess: () => router.push('/customers'),
+    onSuccess: async () => {
+      await utils.dashboard.stats.invalidate()
+      router.push('/customers')
+    },
   })
 
   function onSubmit(data: CreateCustomerFormValues) {

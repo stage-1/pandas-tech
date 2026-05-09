@@ -129,11 +129,18 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
     return Array.from({ length: currentYear - 1901 + 1 }, (_, i) => String(currentYear - i))
   }, [])
 
+  const utils = trpc.useUtils()
   const createVehicle = trpc.vehicles.create.useMutation({
-    onSuccess: () => router.push('/shop/vehicles'),
+    onSuccess: async () => {
+      await utils.dashboard.stats.invalidate()
+      router.push('/shop/vehicles')
+    },
   })
   const updateVehicle = trpc.vehicles.update.useMutation({
-    onSuccess: () => router.push('/shop/vehicles'),
+    onSuccess: async () => {
+      await utils.dashboard.stats.invalidate()
+      router.push('/shop/vehicles')
+    },
   })
 
   const isPending = isEdit ? updateVehicle.isPending : createVehicle.isPending
@@ -294,6 +301,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                     value={watch('model') || null}
                     placeholder={selectedMake ? 'Seleccionar modelo' : 'Selecciona marca primero'}
                     disabled={!selectedMake}
+                    allowCustom
                     onChange={(v) => setValue('model', v ?? '')}
                   />
                 </div>

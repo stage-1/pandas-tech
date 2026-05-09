@@ -31,8 +31,10 @@ export function CreateCustomerDialog({
     defaultValues: { name: '', phone: '' },
   })
 
+  const utils = trpc.useUtils()
   const createCustomer = trpc.customers.create.useMutation({
-    onSuccess: (customer) => {
+    onSuccess: async (customer) => {
+      await utils.dashboard.stats.invalidate()
       onCreated(customer.id as string, customer.name as string)
       reset()
     },
