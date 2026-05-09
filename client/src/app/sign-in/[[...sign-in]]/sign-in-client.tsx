@@ -152,7 +152,7 @@ export function SignInClient() {
         }}
       />
       {/* Three.js canvas — z:1, 50% opacity, above gradient */}
-      <DenimBg />
+      <DenimBg scene="flowy" />
       {/* Card layer — z:2, above canvas */}
       <div
         className="relative min-h-screen flex items-center justify-center px-8 lg:px-4"
