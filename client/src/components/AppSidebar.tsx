@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, Settings, Store, Car } from 'lucide-react'
+import { LayoutDashboard, Users, Settings, Store, Car, ClipboardList } from 'lucide-react'
 import { UserButton } from '@clerk/nextjs'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { trpc } from '@/lib/trpc'
@@ -19,6 +19,7 @@ const navItems = [
   { label: 'Home', href: '/dashboard', icon: LayoutDashboard },
   { label: 'Taller', href: '/shop', icon: Store },
   { label: 'Vehículos', href: '/shop/vehicles', icon: Car },
+  { label: 'Órdenes', href: '/repair-orders', icon: ClipboardList },
   { label: 'Clientes', href: '/customers', icon: Users },
   { label: 'Settings', href: '/settings', icon: Settings },
 ]

@@ -8,13 +8,14 @@ import {
 // Otherwise Clerk's dev-browser handshake hits internal paths like /clerk_<id>
 // without the __clerk_db_jwt cookie, auth.protect() runs again there, rewrite
 // resolves to a 404 and the viewport stays blank (see x-clerk-auth-reason).
+// `/api/trpc` is not Clerk-protected: `protectedProcedure` enforces auth; `publicProcedure` serves token flows (e.g. approve link).
 const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
   '/onboard(.*)',
   '/shop(.*)',
+  '/repair-orders(.*)',
   '/customers(.*)',
   '/settings(.*)',
-  '/api/trpc(.*)',
 ])
 
 /**
