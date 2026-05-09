@@ -133,6 +133,7 @@ export default function VehiclesPage() {
                   <TableHead>Marca / Modelo</TableHead>
                   <TableHead>Placa</TableHead>
                   <TableHead>Cliente</TableHead>
+                  <TableHead>Notas</TableHead>
                   <TableHead className="w-20" />
                 </TableRow>
               </TableHeader>
@@ -174,6 +175,18 @@ export default function VehiclesPage() {
                         <span className="text-xs text-muted-foreground">Sin cliente</span>
                       )}
                     </TableCell>
+                    <TableCell
+                      className="max-w-[14rem] text-xs text-muted-foreground"
+                      title={v.notes?.trim() ? v.notes : undefined}
+                    >
+                      {v.notes?.trim() ? (
+                        <span className="line-clamp-2 whitespace-pre-wrap break-words text-foreground">
+                          {v.notes}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     <TableCell className="w-20 text-right">
                       <Button
                         variant="ghost"
@@ -197,44 +210,59 @@ export default function VehiclesPage() {
           <div className="flex flex-col gap-3 md:hidden">
             {vehicles.map((v) => (
               <Card key={v.id}>
-                <CardContent className="flex items-center justify-between gap-4 py-3">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-foreground truncate">
-                      {formatMakeModel(v.make, v.model) || (
-                        <span className="font-normal text-muted-foreground">
-                          Sin datos
-                        </span>
-                      )}
-                      {v.year != null && (
-                        <span className="ml-1 font-normal text-muted-foreground">
-                          {v.year}
-                        </span>
-                      )}
-                    </p>
-                    {!v.model && v.plant_country && (
-                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                        {v.plant_country}
+                <CardContent className="flex flex-col gap-3 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {formatMakeModel(v.make, v.model) || (
+                          <span className="font-normal text-muted-foreground">
+                            Sin datos
+                          </span>
+                        )}
+                        {v.year != null && (
+                          <span className="ml-1 font-normal text-muted-foreground">
+                            {v.year}
+                          </span>
+                        )}
                       </p>
-                    )}
-                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                      <span className="font-mono">{v.vin ?? '—'}</span>
-                      {v.license_plate && ` · ${v.license_plate}`}
-                      {v.customer_name && ` · ${v.customer_name}`}
-                    </p>
+                      {!v.model && v.plant_country && (
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                          {v.plant_country}
+                        </p>
+                      )}
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        <span className="font-mono">{v.vin ?? '—'}</span>
+                        {v.license_plate && ` · ${v.license_plate}`}
+                        {v.customer_name && ` · ${v.customer_name}`}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        render={<Link href={`/shop/vehicles/${v.id}/edit`} />}
+                      >
+                        <Pencil className="size-4" />
+                      </Button>
+                      <DeleteVehicleDialog
+                        isPending={deleteVehicle.isPending}
+                        onConfirm={() => deleteVehicle.mutate({ id: v.id })}
+                      />
+                    </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      render={<Link href={`/shop/vehicles/${v.id}/edit`} />}
+                  {v.notes?.trim() ? (
+                    <div
+                      className="rounded-md border border-border/70 bg-muted/40 px-3 py-2.5"
+                      title={v.notes}
                     >
-                      <Pencil className="size-4" />
-                    </Button>
-                    <DeleteVehicleDialog
-                      isPending={deleteVehicle.isPending}
-                      onConfirm={() => deleteVehicle.mutate({ id: v.id })}
-                    />
-                  </div>
+                      <p className="text-[0.6875rem] font-medium uppercase tracking-wide text-muted-foreground">
+                        Notas
+                      </p>
+                      <p className="mt-1.5 text-xs leading-relaxed text-foreground line-clamp-4 whitespace-pre-wrap break-words">
+                        {v.notes}
+                      </p>
+                    </div>
+                  ) : null}
                 </CardContent>
               </Card>
             ))}
