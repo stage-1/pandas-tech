@@ -35,7 +35,7 @@ export default function CustomersPage() {
 
   if (isPending) {
     return (
-      <div className="flex max-w-4xl flex-col gap-6">
+      <div className="flex max-w-6xl flex-col gap-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <Skeleton className="h-8 w-32" />
@@ -49,7 +49,7 @@ export default function CustomersPage() {
   }
 
   return (
-    <div className="flex max-w-4xl flex-col gap-6">
+    <div className="flex max-w-6xl flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="font-display text-2xl font-bold text-foreground">
@@ -97,15 +97,24 @@ export default function CustomersPage() {
                 <TableRow key={c.id}>
                   <TableCell className="font-medium">{c.name}</TableCell>
                   <TableCell className="hidden sm:table-cell text-muted-foreground">
-                    {c.email ?? '—'}
+                    {c.email ?? <span className="text-xs">Sin email</span>}
                   </TableCell>
                   <TableCell className="hidden md:table-cell text-muted-foreground">
-                    {c.phone ?? '—'}
+                    {c.phone ?? <span className="text-xs">Sin teléfono</span>}
                   </TableCell>
                   <TableCell className="w-10 text-right">
                     <AlertDialog>
-                      <AlertDialogTrigger render={<Button variant="ghost" size="icon-sm" disabled={deleteCustomer.isPending} />}>
-                        <Trash2 className="size-4 text-destructive" />
+                      <AlertDialogTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-muted-foreground hover:text-destructive"
+                            disabled={deleteCustomer.isPending}
+                          />
+                        }
+                      >
+                        <Trash2 className="size-4" />
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
@@ -116,7 +125,10 @@ export default function CustomersPage() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteCustomer.mutate({ id: c.id })}>
+                          <AlertDialogAction
+                            variant="destructive"
+                            onClick={() => deleteCustomer.mutate({ id: c.id })}
+                          >
                             Eliminar
                           </AlertDialogAction>
                         </AlertDialogFooter>

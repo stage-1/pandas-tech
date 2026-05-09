@@ -90,7 +90,7 @@
       "link":      { "$type": "color", "$value": "#C01E1E" }
     },
     "border": {
-      "default": { "$type": "color", "$value": "#E6E2DB" },
+      "default": { "$type": "color", "$value": "#D8D6D2" },
       "strong":  { "$type": "color", "$value": "#B2AFA8" },
       "subtle":  { "$type": "color", "$value": "#F0EDE8" },
       "focus":   { "$type": "color", "$value": "#E03535" }
@@ -249,7 +249,7 @@
       "background":  { "$type": "color", "$value": "#F8F6F2" },
       "textPrimary": { "$type": "color", "$value": "#141412" },
       "textMuted":   { "$type": "color", "$value": "#3E3C38" },
-      "borderBase":  { "$type": "color", "$value": "#E6E2DB" }
+      "borderBase":  { "$type": "color", "$value": "#D8D6D2" }
     },
     "dark": {
       "surface":     { "$type": "color", "$value": "#1C1B19" },

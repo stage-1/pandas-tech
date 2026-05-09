@@ -20,8 +20,8 @@
   --accent: #EDF2F8;
   --accent-foreground: #1A3650;
   --destructive: #C01E1E;
-  --border: #E6E2DB;
-  --input: #E6E2DB;
+  --border: #D8D6D2;
+  --input: #D8D6D2;
   --ring: #E03535;
   --chart-1: #C01E1E;
   --chart-2: #30597C;
@@ -34,7 +34,7 @@
   --sidebar-primary-foreground: #F8F6F2;
   --sidebar-accent: #F0EDE8;
   --sidebar-accent-foreground: #141412;
-  --sidebar-border: #E6E2DB;
+  --sidebar-border: #D8D6D2;
   --sidebar-ring: #E03535;
   --radius: 8px;
 }
