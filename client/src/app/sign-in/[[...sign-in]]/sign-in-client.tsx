@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { FieldError } from '@/components/ui/field-error'
+import { useWelcomeTag } from '@/lib/welcome/use-welcome-tag'
 import dynamic from 'next/dynamic'
 
 const DenimBg = dynamic(() => import('./denim-bg').then(m => m.DenimBg), { ssr: false })
@@ -38,6 +39,7 @@ export function SignInClient() {
   const [formError, setFormError] = useState<string | null>(null)
   const [showBypass, setShowBypass] = useState(false)
   const [bypassInput, setBypassInput] = useState('')
+  const { short: welcomeShort, long: welcomeLong } = useWelcomeTag()
 
   const {
     register,
@@ -175,7 +177,10 @@ export function SignInClient() {
             {/* Nose */}
             <ellipse cx="50" cy="60" rx="7" ry="5" fill="#0a1228" />
           </svg>
-          <CardTitle className="text-white text-lg">Sign in</CardTitle>
+          <CardTitle className="text-white text-lg truncate w-full">
+            <span className="sm:hidden">{welcomeShort}</span>
+            <span className="hidden sm:inline">{welcomeLong}</span>
+          </CardTitle>
           <CardDescription className="text-white/50">
             Enter your email and password to continue
           </CardDescription>
