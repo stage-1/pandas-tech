@@ -6,7 +6,7 @@ import { auth } from '@clerk/nextjs/server'
 const resultSchema = z.object({
   vin: z.string(),
   confidence: z.number().min(0).max(1),
-  funnyComment: z.string().optional(),
+  funnyComment: z.string(),
 })
 
 export async function POST(req: Request) {
@@ -21,7 +21,6 @@ export async function POST(req: Request) {
 
   const bytes = await image.arrayBuffer()
   const base64 = Buffer.from(bytes).toString('base64')
-  const dataUrl = `data:${image.type};base64,${base64}`
 
   const { object } = await generateObject({
     model: openai('gpt-4o'),
@@ -32,7 +31,8 @@ export async function POST(req: Request) {
         content: [
           {
             type: 'image',
-            image: dataUrl,
+            image: base64,
+            mediaType: image.type,
           },
           {
             type: 'text',
@@ -43,7 +43,7 @@ IMPORTANT: If the image clearly contains NO vehicle or VIN-related content at al
 - "Eso es una pizza... deliciosa pero sin número de serie 🍕"
 - "Muy bonito el paisaje, pero los carros tienen VIN, no las montañas 🏔️"
 - "Ese selfie quedó bien, pero necesitamos el VIN, no tu cara 😅"
-If the image does contain a vehicle or possible VIN, leave funnyComment undefined.`,
+If the image does contain a vehicle or possible VIN, set funnyComment to an empty string "".`,
           },
         ],
       },
