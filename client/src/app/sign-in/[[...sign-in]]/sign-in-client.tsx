@@ -143,9 +143,9 @@ export function SignInClient() {
       >
       <div className="relative w-full max-w-sm">
       <Card
-        className="w-full border-white/8 text-white"
+        className="w-full border-white/8 text-white p-4"
         style={{
-          background: 'rgba(10, 18, 40, 0.85)',
+          background: 'rgba(0, 10, 36, 0.34)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid rgba(255,255,255,0.08)',
@@ -175,7 +175,10 @@ export function SignInClient() {
             {/* Nose */}
             <ellipse cx="50" cy="60" rx="7" ry="5" fill="#0a1228" />
           </svg>
-          <CardTitle className="text-white text-lg">Sign in</CardTitle>
+          <CardTitle className="text-white text-lg">Welcome</CardTitle>
+          {/* <CardDescription className="text-white/50">
+            Enter your email and password to continue
+          </CardDescription> */}
         </CardHeader>
 
         <CardContent className="text-center">
@@ -215,41 +218,70 @@ export function SignInClient() {
             <Button
               type="submit"
               disabled={isSubmitting || fetchStatus === 'fetching'}
-              className="w-full bg-red-600 hover:bg-red-500 text-white border-0 h-10 sm:h-9 font-bold sm:font-semibold"
+              className="w-full bg-white hover:bg-orange-400/90 text-black border-0 h-10 sm:h-9 font-bold sm:font-semibold"
             >
-              {isSubmitting || fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in'}
+              {isSubmitting || fetchStatus === 'fetching' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign In'}
             </Button>
           </form>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-4 w-full border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white h-10 sm:h-9 font-bold sm:font-semibold"
+            onClick={onGoogleSignIn}
+          > 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 48 48"
+              className="inline mr-2 align-text-bottom"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <g>
+                <path fill="#c9c9c9" d="M44.5 20H24v8.5h11.7C34.1 33.6 29.6 36 24 36a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 2.9l6.5-6.5A20 20 0 0 0 24 4C12.96 4 4 12.96 4 24s8.96 20 20 20c11.04 0 19.5-8 19.5-20 0-1.4-.16-2.8-.5-4z"/>
+                <path fill="#a8a8a8" d="M6.34 14.41 13.51 19.2A12 12 0 0 1 24 12c3 0 5.8 1.1 7.9 2.9l6.5-6.5A19.89 19.89 0 0 0 24 4c-5.45 0-10.45 2.09-14.23 5.51z"/>
+                <path fill="#8f8f8f" d="M24 44C29.53 44 34.06 42.02 37.4 39l-7-5.71C28.09 34.31 26.17 35 24 35a12 12 0 0 1-10.49-6.19l-7.18 5.54C8.56 41.04 15.88 44 24 44z"/>
+                <path fill="#6f6f6f" d="m44.5 20H24v8.5h11.7C34.93 33.17 29.53 36 24 36c-6.17 0-11.4-4.21-13.14-9.97l-7.1 5.47A19.98 19.98 0 0 0 24 44c11.04 0 19.5-8 19.5-20 0-1.4-.16-2.8-.5-4z"/>
+                <path fill="none" d="M0 0h48v48H0z"/>
+              </g>
+            </svg>
+            Google
+       
+          </Button>
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center">
-              <span className="px-2 text-xs text-white/30" style={{ background: 'rgba(10,18,40,0.85)' }}>
+              <span className="px-2 text-xs text-black border border-white/10 rounded-lg" style={{ background: 'rgba(206, 206, 206, 0.85)' }}>
                 or
               </span>
             </div>
           </div>
 
+          <div className="flex flex-col justify-center items-center gap-2">
+         
           <Button
             type="button"
             variant="outline"
-            className="w-full border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white h-10 sm:h-9 font-bold sm:font-semibold"
-            onClick={onGoogleSignIn}
+            className="w-auto lg:w-full border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white h-10 sm:h-9 font-bold sm:font-semibold"
+            onClick={ () => { window.location.href = '/sign-up' }}
           >
-            Continue with Google
+            Sign Up
+       
           </Button>
+          </div>
         </CardContent>
 
-        <CardFooter className="justify-center border-t border-white/8 bg-transparent">
+        {/* <CardFooter className="justify-center border-t border-white/8 bg-transparent">
           <p className="text-xs text-white/30">
-            Don&apos;t have an account?{' '}
-            <Link href="/sign-up" className="text-blue-400 hover:text-blue-300 underline underline-offset-2">
-              Sign up
-            </Link>
+            
+          
           </p>
-        </CardFooter>
+        </CardFooter> */}
       </Card>
 
         <div className="absolute bottom-3 right-3 flex items-center gap-2">

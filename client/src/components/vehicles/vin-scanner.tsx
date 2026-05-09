@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react'
 import { Camera, Loader2, Upload, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import {
   Dialog,
   DialogContent,
@@ -10,6 +11,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog'
+import type { VehicleSpecs } from '@/lib/vehicles'
 
 const CONFIDENCE_THRESHOLD = 0.85
 
@@ -18,21 +20,23 @@ type Phase =
   | { name: 'previewing'; file: File; previewUrl: string }
   | { name: 'scanning'; previewUrl: string }
   | { name: 'result'; vin: string; confidence: number; previewUrl: string }
+  | { name: 'decoding'; vin: string; previewUrl: string }
   | { name: 'error'; message: string }
 
 interface VinScannerProps {
-  onConfirm: (vin: string) => void
+  onVinDecoded: (vin: string, specs: VehicleSpecs | null) => void
   trigger: React.ReactElement<{ onClick?: () => void }>
 }
 
-export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
+export function VinScanner({ onVinDecoded, trigger }: VinScannerProps) {
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<Phase>({ name: 'idle' })
+  const [decodeEnabled, setDecodeEnabled] = useState(false)
   const cameraRef = useRef<HTMLInputElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   function revokePreview(p: Phase) {
-    if (p.name === 'previewing' || p.name === 'scanning' || p.name === 'result') {
+    if (p.name === 'previewing' || p.name === 'scanning' || p.name === 'result' || p.name === 'decoding') {
       URL.revokeObjectURL(p.previewUrl)
     }
   }
@@ -63,24 +67,55 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
       const vin = data.vin.toUpperCase()
       const { confidence } = data
 
-      console.log('[vin-scanner] API response', { vin, confidence, threshold: CONFIDENCE_THRESHOLD })
+      console.log('[vin-scanner] scan result', { vin, confidence, threshold: CONFIDENCE_THRESHOLD })
 
-      // Auto-confirm and close on high confidence
       if (confidence >= CONFIDENCE_THRESHOLD) {
-        console.log('[vin-scanner] auto-confirming (high confidence)')
-        onConfirm(vin)
-        URL.revokeObjectURL(previewUrl)
-        setOpen(false)
-        setTimeout(() => setPhase({ name: 'idle' }), 200)
+        console.log('[vin-scanner] auto-confirming (high confidence), starting decode')
+        await decodeAndConfirm(vin, previewUrl)
         return
       }
 
       console.log('[vin-scanner] showing result (low confidence)')
       setPhase({ name: 'result', vin, confidence, previewUrl })
     } catch (err) {
-      console.error('[vin-scanner] API error', err)
+      console.error('[vin-scanner] scan error', err)
       setPhase({ name: 'error', message: 'No se pudo analizar la imagen. Intenta de nuevo.' })
     }
+  }
+
+  async function decodeAndConfirm(vin: string, previewUrl: string) {
+    setPhase({ name: 'decoding', vin, previewUrl })
+
+    console.log('[vin-scanner] starting decode for vin=%s decodeEnabled=%s', vin, decodeEnabled)
+
+    let specs: VehicleSpecs | null = null
+    if (decodeEnabled) try {
+      console.log('[vin-scanner] posting to /api/vin-decode')
+      const res = await fetch('/api/vin-decode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vin }),
+      })
+      console.log('[vin-scanner] response status=%d ok=%s', res.status, res.ok)
+
+      const raw = await res.text()
+      console.log('[vin-scanner] raw response body:', raw)
+
+      const data = JSON.parse(raw) as { specs: VehicleSpecs | null }
+      console.log('[vin-scanner] decode response %o', data)
+      console.log('[vin-scanner] specs keys:', data.specs ? Object.keys(data.specs) : 'null')
+      console.log('[vin-scanner] specs has any values:', data.specs ? Object.values(data.specs).some(v => v != null) : false)
+
+      specs = data.specs
+    } catch (err) {
+      console.error('[vin-scanner] decode error (degrading gracefully) %o', err)
+    }
+
+    console.log('[vin-scanner] calling onVinDecoded with vin=%s specs=%o', vin, specs)
+    onVinDecoded(vin, specs)
+    URL.revokeObjectURL(previewUrl)
+    setOpen(false)
+    setTimeout(() => setPhase({ name: 'idle' }), 200)
   }
 
   function handleReset() {
@@ -88,14 +123,14 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
     setPhase({ name: 'idle' })
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (phase.name !== 'result') return
-    onConfirm(phase.vin)
-    handleClose()
+    await decodeAndConfirm(phase.vin, phase.previewUrl)
   }
 
   function handleClose() {
     revokePreview(phase)
+    setDecodeEnabled(false)
     setOpen(false)
     setTimeout(() => setPhase({ name: 'idle' }), 200)
   }
@@ -141,6 +176,17 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
               <Upload className="size-4" />
               Subir imagen
             </Button>
+            <label className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 cursor-pointer">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium">Decodificar datos del vehículo</span>
+                <span className="text-xs text-muted-foreground">Consulta Vincario para obtener specs técnicas</span>
+              </div>
+              <Switch
+                size="sm"
+                checked={decodeEnabled}
+                onCheckedChange={setDecodeEnabled}
+              />
+            </label>
           </div>
         )}
 
@@ -168,7 +214,22 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
           </div>
         )}
 
-        {/* result (low confidence only — high confidence auto-confirms) */}
+        {/* decoding */}
+        {phase.name === 'decoding' && (
+          <div className="relative">
+            <img
+              src={phase.previewUrl}
+              alt="Decodificando"
+              className="w-full rounded-lg object-cover max-h-56 opacity-40"
+            />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+              <Loader2 className="size-6 animate-spin text-foreground" />
+              <span className="text-sm font-medium">Decodificando datos del vehículo…</span>
+            </div>
+          </div>
+        )}
+
+        {/* result (low confidence only) */}
         {phase.name === 'result' && (
           <>
             <img
@@ -198,7 +259,7 @@ export function VinScanner({ onConfirm, trigger }: VinScannerProps) {
           <p className="text-sm text-destructive py-1">{phase.message}</p>
         )}
 
-        {/* footer — only when there are actions */}
+        {/* footer */}
         {phase.name === 'previewing' && (
           <DialogFooter>
             <Button variant="outline" onClick={handleReset}>Cancelar</Button>

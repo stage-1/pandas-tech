@@ -8,6 +8,9 @@ const log = (...args: unknown[]) => { if (DEV) console.log('[denim-bg]', ...args
 
 const PALETTE = [0x3a5f9e, 0x2e4a8a, 0x5c82c8, 0x1a2f5e, 0x4a6fb5]
 
+/** Three subtly different charcoals for blocky cubes (random index 1–3 → tones in this array). */
+const CUBE_CHARCOAL = [0x2c2c2c, 0x353433, 0x3d3d3d]
+
 // ─── Blocky scene ────────────────────────────────────────────────────────────
 
 function useBlockyScene(canvas: HTMLCanvasElement | null) {
@@ -23,8 +26,8 @@ function useBlockyScene(canvas: HTMLCanvasElement | null) {
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100)
     camera.position.z = 14
 
-    scene.add(new THREE.AmbientLight(0x3a5f9e, 1.2))
-    const dir = new THREE.DirectionalLight(0x7aaeff, 2.5)
+    scene.add(new THREE.AmbientLight(0x777777, 0.88))
+    const dir = new THREE.DirectionalLight(0xdedad6, 2.05)
     dir.position.set(6, 8, 4)
     scene.add(dir)
 
@@ -37,7 +40,10 @@ function useBlockyScene(canvas: HTMLCanvasElement | null) {
       const size = 0.4 + Math.random() * 0.8
       const mesh = new THREE.Mesh(
         new THREE.BoxGeometry(size, size, size),
-        new THREE.MeshStandardMaterial({ color: PALETTE[Math.floor(Math.random() * PALETTE.length)], flatShading: true }),
+        new THREE.MeshStandardMaterial({
+          color: CUBE_CHARCOAL[Math.floor(Math.random() * CUBE_CHARCOAL.length)],
+          flatShading: true,
+        }),
       )
       mesh.position.set((Math.random() - 0.5) * 18, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 10)
       mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI)

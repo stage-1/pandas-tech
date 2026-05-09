@@ -25,6 +25,8 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { VehiclePicker, CustomerPicker } from '@/components/vehicles/vehicle-pickers'
 import { VinScanner } from '@/components/vehicles/vin-scanner'
+import { VehicleSpecsCard } from '@/components/vehicles/vehicle-specs-card'
+import { type VehicleSpecs } from '@/lib/vehicles'
 
 export type Vehicle = {
   id: string
@@ -39,6 +41,29 @@ export type Vehicle = {
   notes: string | null
   current_customer_id: string | null
   customer_name: string | null
+  // Vincario spec fields
+  engine_displacement_ccm?: number | null
+  engine_cylinders?: number | null
+  engine_model?: string | null
+  engine_power_kw?: number | null
+  fuel_type?: string | null
+  fuel_system?: string | null
+  engine_turbine?: string | null
+  engine_oil_capacity_l?: number | null
+  engine_coolant_l?: number | null
+  transmission?: string | null
+  drive?: string | null
+  number_of_gears?: number | null
+  front_brakes?: string | null
+  rear_brakes?: string | null
+  abs?: boolean | null
+  wheel_size?: string | null
+  wheel_rims_size?: string | null
+  front_suspension?: string | null
+  rear_suspension?: string | null
+  body_type?: string | null
+  number_of_doors?: number | null
+  number_of_seats?: number | null
 }
 
 export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
@@ -47,6 +72,23 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
   const isMobile = useIsMobile()
   const [step, setStep] = useState(0)
   const [submitBlocked, setSubmitBlocked] = useState(false)
+  const [vinSpecs, setVinSpecs] = useState<VehicleSpecs | null>(() => {
+    if (!vehicle) return null
+    const s: VehicleSpecs = {}
+    const fields: (keyof VehicleSpecs)[] = [
+      'engine_displacement_ccm', 'engine_cylinders', 'engine_model', 'engine_power_kw',
+      'fuel_type', 'fuel_system', 'engine_turbine', 'engine_oil_capacity_l', 'engine_coolant_l',
+      'transmission', 'drive', 'number_of_gears',
+      'front_brakes', 'rear_brakes', 'abs', 'wheel_size', 'wheel_rims_size',
+      'front_suspension', 'rear_suspension', 'body_type', 'number_of_doors', 'number_of_seats',
+    ]
+    let hasData = false
+    for (const f of fields) {
+      const v = (vehicle as Record<string, unknown>)[f]
+      if (v != null) { (s as Record<string, unknown>)[f] = v; hasData = true }
+    }
+    return hasData ? s : null
+  })
 
   const {
     register,
@@ -106,9 +148,9 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       customer_id: data.customer_id || null,
     }
     if (isEdit) {
-      updateVehicle.mutate({ id: vehicle!.id, ...nullified })
+      updateVehicle.mutate({ id: vehicle!.id, ...nullified, specs: vinSpecs ?? undefined })
     } else {
-      createVehicle.mutate({ vin: data.vin, ...nullified })
+      createVehicle.mutate({ vin: data.vin, ...nullified, specs: vinSpecs ?? undefined })
     }
   }
 
@@ -156,7 +198,17 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                   <Label htmlFor="vin">VIN {!isEdit && '*'}</Label>
                   {!isEdit && (
                     <VinScanner
-                      onConfirm={(vin) => { setValue('vin', vin); trigger('vin') }}
+                      onVinDecoded={(vin, specs) => {
+                        setValue('vin', vin)
+                        trigger('vin')
+                        if (specs) {
+                          setVinSpecs(specs)
+                          if (specs.make)  setValue('make', specs.make)
+                          if (specs.model) setValue('model', specs.model)
+                          if (specs.year)  setValue('year', specs.year)
+                          if (specs.trim)  setValue('trim', specs.trim)
+                        }
+                      }}
                       trigger={
                         <Button type="button" variant="ghost" size="xs" className="gap-1 text-muted-foreground">
                           <Camera className="size-3.5" />
@@ -275,6 +327,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                 <FieldError message={errors.odometer?.message} />
               </div>
             </div>
+            {vinSpecs && <div className="mt-4"><VehicleSpecsCard specs={vinSpecs} /></div>}
           </div>
 
           {/* Step 3: Adicional */}
