@@ -217,9 +217,9 @@ function useParticleScene(canvas: HTMLCanvasElement | null) {
       positions[i3]     = (Math.random() - 0.5) * BOUNDS.x * 2
       positions[i3 + 1] = (Math.random() - 0.5) * BOUNDS.y * 2
       positions[i3 + 2] = (Math.random() - 0.5) * BOUNDS.z * 2
-      velocities[i3]     = (Math.random() - 0.5) * 0.02
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.02
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.01
+      velocities[i3]     = (Math.random() - 0.5) * 0.004
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.004
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.002
       const [r, g, b] = paletteRGB[Math.floor(Math.random() * paletteRGB.length)]
       colors[i3] = r; colors[i3 + 1] = g; colors[i3 + 2] = b
     }
@@ -231,7 +231,7 @@ function useParticleScene(canvas: HTMLCanvasElement | null) {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
     const material = new THREE.PointsMaterial({
-      size: 2.5,
+      size: 0.8,
       sizeAttenuation: true,
       transparent: true,
       opacity: 0.75,
@@ -253,13 +253,13 @@ function useParticleScene(canvas: HTMLCanvasElement | null) {
         const i3 = i * 3
         const x = positions[i3], y = positions[i3 + 1], z = positions[i3 + 2]
 
-        velocities[i3]     += Math.sin(y * 0.4 + t * 0.6) * Math.cos(z * 0.3) * 0.012
-        velocities[i3 + 1] += Math.sin(z * 0.3 + t * 0.4) * Math.cos(x * 0.25) * 0.008
-        velocities[i3 + 2] += Math.cos(x * 0.25 + t * 0.5) * Math.sin(y * 0.35) * 0.006
+        velocities[i3]     += Math.sin(y * 0.4 + t * 0.6) * Math.cos(z * 0.3) * 0.002
+        velocities[i3 + 1] += Math.sin(z * 0.3 + t * 0.4) * Math.cos(x * 0.25) * 0.0015
+        velocities[i3 + 2] += Math.cos(x * 0.25 + t * 0.5) * Math.sin(y * 0.35) * 0.001
 
-        velocities[i3]     *= 0.96
-        velocities[i3 + 1] *= 0.96
-        velocities[i3 + 2] *= 0.96
+        velocities[i3]     *= 0.98
+        velocities[i3 + 1] *= 0.98
+        velocities[i3 + 2] *= 0.98
 
         positions[i3]     += velocities[i3]
         positions[i3 + 1] += velocities[i3 + 1]
