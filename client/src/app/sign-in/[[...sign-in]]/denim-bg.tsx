@@ -182,24 +182,130 @@ function useFlowyScene(canvas: HTMLCanvasElement | null) {
   }, [canvas])
 }
 
+// ─── Particle scene ──────────────────────────────────────────────────────────
+
+function useParticleScene(canvas: HTMLCanvasElement | null) {
+  useEffect(() => {
+    if (!canvas) return
+    log('initializing particle scene')
+
+    const COUNT = 200
+    const BOUNDS = { x: 14, y: 9, z: 6 }
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(window.innerWidth, window.innerHeight)
+
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 120)
+    camera.position.z = 16
+
+    const positions = new Float32Array(COUNT * 3)
+    const velocities = new Float32Array(COUNT * 3)
+    const colors = new Float32Array(COUNT * 3)
+
+    const paletteRGB: [number, number, number][] = [
+      [0x3a / 255, 0x5f / 255, 0x9e / 255],
+      [0x2e / 255, 0x4a / 255, 0x8a / 255],
+      [0x5c / 255, 0x82 / 255, 0xc8 / 255],
+      [0x1a / 255, 0x2f / 255, 0x5e / 255],
+      [0x4a / 255, 0x6f / 255, 0xb5 / 255],
+    ]
+
+    for (let i = 0; i < COUNT; i++) {
+      const i3 = i * 3
+      positions[i3]     = (Math.random() - 0.5) * BOUNDS.x * 2
+      positions[i3 + 1] = (Math.random() - 0.5) * BOUNDS.y * 2
+      positions[i3 + 2] = (Math.random() - 0.5) * BOUNDS.z * 2
+      velocities[i3]     = (Math.random() - 0.5) * 0.02
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.02
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.01
+      const [r, g, b] = paletteRGB[Math.floor(Math.random() * paletteRGB.length)]
+      colors[i3] = r; colors[i3 + 1] = g; colors[i3 + 2] = b
+    }
+
+    const geometry = new THREE.BufferGeometry()
+    const posAttr = new THREE.BufferAttribute(positions, 3)
+    posAttr.setUsage(THREE.DynamicDrawUsage)
+    geometry.setAttribute('position', posAttr)
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+
+    const material = new THREE.PointsMaterial({
+      size: 2.5,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.75,
+      vertexColors: true,
+    })
+
+    const points = new THREE.Points(geometry, material)
+    scene.add(points)
+    log(`spawned ${COUNT} particles`)
+
+    let frame = 0
+    let animId: number
+    const animate = () => {
+      animId = requestAnimationFrame(animate)
+      frame++
+      const t = frame * 0.01
+
+      for (let i = 0; i < COUNT; i++) {
+        const i3 = i * 3
+        const x = positions[i3], y = positions[i3 + 1], z = positions[i3 + 2]
+
+        velocities[i3]     += Math.sin(y * 0.4 + t * 0.6) * Math.cos(z * 0.3) * 0.012
+        velocities[i3 + 1] += Math.sin(z * 0.3 + t * 0.4) * Math.cos(x * 0.25) * 0.008
+        velocities[i3 + 2] += Math.cos(x * 0.25 + t * 0.5) * Math.sin(y * 0.35) * 0.006
+
+        velocities[i3]     *= 0.96
+        velocities[i3 + 1] *= 0.96
+        velocities[i3 + 2] *= 0.96
+
+        positions[i3]     += velocities[i3]
+        positions[i3 + 1] += velocities[i3 + 1]
+        positions[i3 + 2] += velocities[i3 + 2]
+
+        if (positions[i3]     >  BOUNDS.x) positions[i3]     = -BOUNDS.x
+        if (positions[i3]     < -BOUNDS.x) positions[i3]     =  BOUNDS.x
+        if (positions[i3 + 1] >  BOUNDS.y) positions[i3 + 1] = -BOUNDS.y
+        if (positions[i3 + 1] < -BOUNDS.y) positions[i3 + 1] =  BOUNDS.y
+        if (positions[i3 + 2] >  BOUNDS.z) positions[i3 + 2] = -BOUNDS.z
+        if (positions[i3 + 2] < -BOUNDS.z) positions[i3 + 2] =  BOUNDS.z
+      }
+
+      geometry.attributes.position.needsUpdate = true
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    const onResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
+    }
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      log('disposing particle scene')
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', onResize)
+      renderer.dispose()
+      geometry.dispose()
+      material.dispose()
+    }
+  }, [canvas])
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export type DenimScene = 'blocky' | 'flowy'
+export type DenimScene = 'blocky' | 'flowy' | 'particle'
 
-/**
- * Full-screen Three.js background canvas.
- * Default scene is 'blocky'. Switch to 'flowy' via the scene prop.
- *
- * Usage:
- *   <DenimBg />               ← blocky (default)
- *   <DenimBg scene="flowy" /> ← flowy tori + knots
- */
 export function DenimBg({ scene = 'blocky' }: { scene?: DenimScene }) {
-  // Callback ref → state: ensures the effect fires after the canvas mounts
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 
   useBlockyScene(scene === 'blocky' ? canvas : null)
   useFlowyScene(scene === 'flowy' ? canvas : null)
+  useParticleScene(scene === 'particle' ? canvas : null)
 
   return (
     <canvas

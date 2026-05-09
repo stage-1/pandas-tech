@@ -122,6 +122,7 @@ export default function VehiclesPage() {
           </CardContent>
         </Card>
       ) : (
+<<<<<<< Updated upstream
         <>
           {/* Desktop / tablet — table, only rendered at md+ */}
           <Card className="hidden md:block">
@@ -207,6 +208,42 @@ export default function VehiclesPage() {
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
+=======
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>VIN</TableHead>
+                <TableHead className="hidden md:table-cell">Año</TableHead>
+                <TableHead>Marca / Modelo</TableHead>
+                <TableHead className="hidden sm:table-cell">Placa</TableHead>
+                <TableHead className="hidden md:table-cell">Cliente</TableHead>
+                <TableHead className="w-20" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {vehicles.map((v) => (
+                <TableRow key={v.id}>
+                  <TableCell className="font-mono text-xs">
+                    {v.vin}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {v.year ?? '—'}
+                  </TableCell>
+                  <TableCell>
+                    <span>{[v.make, v.model].filter(Boolean).join(' ') || '—'}</span>
+                    {!v.model && v.plant_country && (
+                      <span className="block text-xs text-muted-foreground">{v.plant_country}</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {v.license_plate ?? '—'}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {v.customer_name ?? '—'}
+                  </TableCell>
+                  <TableCell className="w-20 text-right">
+>>>>>>> Stashed changes
                     <Button
                       variant="ghost"
                       size="icon-sm"
