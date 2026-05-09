@@ -25,6 +25,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+type LineRow = Record<string, unknown>
+
 function coerceNum(v: string) {
   const n = Number.parseFloat(v)
   return Number.isFinite(n) ? n : 0
