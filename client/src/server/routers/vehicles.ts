@@ -162,7 +162,6 @@ export const vehiclesRouter = router({
           WHERE shop_id = ${shopId} AND deleted_at IS NULL
             AND name ILIKE ${'%' + search + '%'}
           ORDER BY name
-          LIMIT 20
         `
       }
 
@@ -170,7 +169,6 @@ export const vehiclesRouter = router({
         SELECT id, name FROM public.customers
         WHERE shop_id = ${shopId} AND deleted_at IS NULL
         ORDER BY name
-        LIMIT 20
       `
     }),
 })
