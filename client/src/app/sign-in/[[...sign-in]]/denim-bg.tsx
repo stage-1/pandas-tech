@@ -217,9 +217,9 @@ function useParticleScene(canvas: HTMLCanvasElement | null) {
       positions[i3]     = (Math.random() - 0.5) * BOUNDS.x * 2
       positions[i3 + 1] = (Math.random() - 0.5) * BOUNDS.y * 2
       positions[i3 + 2] = (Math.random() - 0.5) * BOUNDS.z * 2
-      velocities[i3]     = (Math.random() - 0.5) * 0.0016
-      velocities[i3 + 1] = (Math.random() - 0.5) * 0.0016
-      velocities[i3 + 2] = (Math.random() - 0.5) * 0.0008
+      velocities[i3]     = (Math.random() - 0.5) * 0.0008
+      velocities[i3 + 1] = (Math.random() - 0.5) * 0.0008
+      velocities[i3 + 2] = (Math.random() - 0.5) * 0.0002
       const [r, g, b] = paletteRGB[Math.floor(Math.random() * paletteRGB.length)]
       colors[i3] = r; colors[i3 + 1] = g; colors[i3 + 2] = b
     }
