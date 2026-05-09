@@ -205,7 +205,7 @@ export default function VehiclesPage() {
                           Sin datos
                         </span>
                       )}
-                      {v.year != null && v.year !== '' && (
+                      {v.year != null && (
                         <span className="ml-1 font-normal text-muted-foreground">
                           {v.year}
                         </span>
