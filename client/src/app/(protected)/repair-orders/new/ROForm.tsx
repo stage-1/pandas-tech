@@ -242,7 +242,12 @@ export function ROForm() {
             </div>
           </div>
 
-          <FormErrorBlock message={createRO.error?.message} />
+          {createRO.error && (
+            <FormErrorBlock
+              title="Error al crear la orden"
+              message={createRO.error.message || 'Algo salió mal. Intenta de nuevo.'}
+            />
+          )}
 
           {isMobile && !isLastStep && (
             <div className="flex gap-2">
