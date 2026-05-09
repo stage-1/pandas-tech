@@ -64,6 +64,9 @@ export type Vehicle = {
   body_type?: string | null
   number_of_doors?: number | null
   number_of_seats?: number | null
+  manufacturer?: string | null
+  plant_country?: string | null
+  make_logo_url?: string | null
 }
 
 export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
@@ -81,6 +84,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       'transmission', 'drive', 'number_of_gears',
       'front_brakes', 'rear_brakes', 'abs', 'wheel_size', 'wheel_rims_size',
       'front_suspension', 'rear_suspension', 'body_type', 'number_of_doors', 'number_of_seats',
+      'manufacturer', 'plant_country', 'make_logo_url',
     ]
     let hasData = false
     for (const f of fields) {

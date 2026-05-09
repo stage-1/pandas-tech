@@ -97,6 +97,9 @@ function mapToSpecs(map: Record<string, string | number>): VehicleSpecs {
     body_type:               str(map, 'Body'),
     number_of_doors:         num(map, 'Number of Doors'),
     number_of_seats:         pint(map, 'Number of Seats'),
+    manufacturer:            str(map, 'Manufacturer'),
+    plant_country:           str(map, 'Plant Country'),
+    make_logo_url:           str(map, 'Make Logo'),
   }
 }
 

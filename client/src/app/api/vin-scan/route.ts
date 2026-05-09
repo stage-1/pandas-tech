@@ -38,11 +38,11 @@ export async function POST(req: Request) {
             type: 'text',
             text: `Extract the Vehicle Identification Number (VIN) from this image. The VIN is a 17-character alphanumeric code found on the dashboard (visible through the windshield), driver-side door jamb sticker, or engine bay. Return ONLY uppercase letters and digits — no spaces, hyphens, or other characters. If you cannot find a VIN or are uncertain, set confidence below 0.5. Confidence should reflect how clearly the VIN was visible and how certain you are each character is correct.
 
-IMPORTANT: If the image clearly contains NO vehicle or VIN-related content at all (e.g. it's a pet, food, a selfie, a landscape, artwork, a meme, a screenshot, etc.), set confidence to 0, set vin to an empty string, and set funnyComment to a short, sassy, self-aware bilingual (Spanish/English mix, Spanglish) comment about what the image actually shows. No emojis. The tone should be dry and a little sarcastic, like a coworker who can't believe you just uploaded that. Examples of style (do NOT copy these verbatim — make a fresh one based on what you actually see):
-- "Muy lindo el gatito, pero los gatos no tienen VIN. Intenta de nuevo."
-- "Eso es una pizza. Deliciosa, seguro, pero sin numero de serie."
-- "Ese es un selfie. Necesitamos el VIN del carro, no el tuyo."
-- "Bonito paisaje. Los carros tienen VIN, las montanas no."
+IMPORTANT: If the image clearly contains NO vehicle or VIN-related content at all (e.g. it's a pet, food, a selfie, a landscape, artwork, a meme, a screenshot, etc.), set confidence to 0, set vin to an empty string, and set funnyComment to a short, funny, self-aware bilingual (Spanish/English mix, Spanglish) comment about what the image actually shows. No emojis. The tone should be warm and playful, like a friend teasing you. Examples of style (do NOT copy these verbatim — make a fresh one based on what you actually see):
+- "Aw tan cute! Pero eso es un gatito, no un VIN."
+- "Eso es una pizza... deliciosa pero sin numero de serie."
+- "Muy bonito el paisaje, pero los carros tienen VIN, no las montanas."
+- "Ese selfie quedo bien, pero necesitamos el VIN, no tu cara."
 If the image does contain a vehicle or possible VIN, set funnyComment to an empty string "".`,
           },
         ],

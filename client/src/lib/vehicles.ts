@@ -28,6 +28,10 @@ export const vehicleSpecsSchema = z.object({
   body_type: z.string().optional(),
   number_of_doors: z.number().int().optional(),
   number_of_seats: z.number().int().optional(),
+  // LATAM fields (Vincario sparse response)
+  manufacturer:  z.string().optional(),
+  plant_country: z.string().optional(),
+  make_logo_url: z.string().optional(),
 })
 
 export type VehicleSpecs = z.infer<typeof vehicleSpecsSchema>

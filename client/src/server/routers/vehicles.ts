@@ -33,7 +33,8 @@ export const vehiclesRouter = router({
           fuel_type, fuel_system, engine_turbine, engine_oil_capacity_l, engine_coolant_l,
           transmission, drive, number_of_gears,
           front_brakes, rear_brakes, abs, wheel_size, wheel_rims_size,
-          front_suspension, rear_suspension, body_type, number_of_doors, number_of_seats
+          front_suspension, rear_suspension, body_type, number_of_doors, number_of_seats,
+          manufacturer, plant_country, make_logo_url
         ) VALUES (
           ${shopId}, ${input.vin}, ${input.year ?? null}, ${input.make ?? null},
           ${input.model ?? null}, ${input.trim ?? null}, ${input.color ?? null},
@@ -47,7 +48,8 @@ export const vehiclesRouter = router({
           ${s?.front_brakes ?? null}, ${s?.rear_brakes ?? null}, ${s?.abs ?? null},
           ${s?.wheel_size ?? null}, ${s?.wheel_rims_size ?? null},
           ${s?.front_suspension ?? null}, ${s?.rear_suspension ?? null},
-          ${s?.body_type ?? null}, ${s?.number_of_doors ?? null}, ${s?.number_of_seats ?? null}
+          ${s?.body_type ?? null}, ${s?.number_of_doors ?? null}, ${s?.number_of_seats ?? null},
+          ${s?.manufacturer ?? null}, ${s?.plant_country ?? null}, ${s?.make_logo_url ?? null}
         )
         RETURNING *
       `
@@ -116,6 +118,9 @@ export const vehiclesRouter = router({
           body_type                 = ${s?.body_type ?? null},
           number_of_doors           = ${s?.number_of_doors ?? null},
           number_of_seats           = ${s?.number_of_seats ?? null},
+          manufacturer              = ${s?.manufacturer ?? null},
+          plant_country             = ${s?.plant_country ?? null},
+          make_logo_url             = ${s?.make_logo_url ?? null},
           updated_at                = NOW()
         WHERE id = ${input.id}
           AND shop_id = ${shopId}
