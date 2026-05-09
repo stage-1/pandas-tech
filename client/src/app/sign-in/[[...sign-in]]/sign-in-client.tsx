@@ -198,7 +198,7 @@ export function SignInClient() {
           </CardTitle>
           <CardDescription className="text-white/50">
             Enter your email and password to continue
-          </CardDescription> */}
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="text-center">
