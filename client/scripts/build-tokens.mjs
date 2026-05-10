@@ -16,6 +16,8 @@ const repoRoot = resolve(__dirname, "../..");
 const SRC = resolve(repoRoot, "docs/designsystem/tokens/tokens.panda.w3c.json");
 const OUT_JSON = resolve(repoRoot, "docs/designsystem/v1Pandas.json");
 const OUT_CSS = resolve(repoRoot, "client/src/app/v1Pandas.css");
+// When `:root`/`.dark` tokens change above, mirror the same hexes into
+// `client/src/app/shop-theme-presets.css` under `[data-shop-theme="pandas"]`.
 
 const BANNER_JSON = `"_generated": "DO NOT EDIT — generated from tokens.panda.w3c.json by client/scripts/build-tokens.mjs"`;
 const BANNER_CSS = `/*

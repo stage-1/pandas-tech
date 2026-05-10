@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { themeSlugSchema, type ShopThemeSlug } from '@/lib/shop-themes'
 
 export const COUNTRY_CONFIG = {
   CO: { label: 'NIT', hint: '123456789-0', taxIdType: 'NIT', currency: 'COP', iva: 0.19, flag: '🇨🇴', name: 'Colombia',      timezone: 'America/Bogota'       },
@@ -36,6 +37,7 @@ export const createShopSchema = z.object({
   country_code: z.enum(['CO', 'MX', 'CL', 'US'] as const),
   tax_id:       z.string().max(30).optional(),
   tax_id_type:  z.string().max(20).optional(),
+  theme_slug:   themeSlugSchema,
 })
 
 export function wizardStateToCreateInput(state: {
@@ -43,6 +45,7 @@ export function wizardStateToCreateInput(state: {
   name: string
   country: CountryCode
   taxId: string
+  theme_slug: ShopThemeSlug
 }) {
   return {
     name: state.name,
@@ -50,5 +53,6 @@ export function wizardStateToCreateInput(state: {
     tax_id: state.taxId || undefined,
     tax_id_type: COUNTRY_CONFIG[state.country].taxIdType,
     role: state.role,
+    theme_slug: state.theme_slug,
   }
 }

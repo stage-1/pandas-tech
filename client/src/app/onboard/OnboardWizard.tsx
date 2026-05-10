@@ -7,11 +7,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Loader2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { CountryCode, shopNameSchema, inviteCodeSchema, wizardStateToCreateInput } from '@/lib/onboard'
+import { type ShopThemeSlug } from '@/lib/shop-themes'
 import { RoleSelect } from './steps/RoleSelect'
 import { ShopName } from './steps/ShopName'
 import { CountryPicker } from './steps/CountryPicker'
 import { TaxId } from './steps/TaxId'
 import { Confirm } from './steps/Confirm'
+import { ThemePick } from './steps/ThemePick'
 import { JoinShop } from './steps/JoinShop'
 import { cn } from '@/lib/utils'
 
@@ -22,9 +24,10 @@ type WizardState = {
   country: CountryCode
   taxId: string
   inviteCode: string
+  theme_slug: ShopThemeSlug
 }
 
-const OWNER_STEPS = ['role', 'shop-name', 'country', 'tax-id', 'confirm'] as const
+const OWNER_STEPS = ['role', 'shop-name', 'country', 'tax-id', 'theme', 'confirm'] as const
 const TECH_STEPS = ['role', 'join-shop'] as const
 
 function getSteps(role: 'owner' | 'tech') {
@@ -47,6 +50,7 @@ export function OnboardWizard() {
     country: 'CO',
     taxId: '',
     inviteCode: '',
+    theme_slug: 'pandas',
   })
 
   const steps = getSteps(state.role)
@@ -95,6 +99,7 @@ export function OnboardWizard() {
       case 'shop-name': return shopNameSchema.safeParse({ name: state.name }).success
       case 'country':   return true
       case 'tax-id':    return true
+      case 'theme':     return true
       case 'confirm':   return true
       case 'join-shop': return inviteCodeSchema.safeParse({ inviteCode: state.inviteCode }).success
       default:          return false
@@ -202,12 +207,19 @@ export function OnboardWizard() {
               onChange={(taxId) => setState((s) => ({ ...s, taxId }))}
             />
           )}
+          {currentStepName === 'theme' && (
+            <ThemePick
+              value={state.theme_slug}
+              onChange={(theme_slug) => setState((s) => ({ ...s, theme_slug }))}
+            />
+          )}
           {currentStepName === 'confirm' && (
             <Confirm
               name={state.name}
               country={state.country}
               taxId={state.taxId}
               role={state.role}
+              themeSlug={state.role === 'owner' ? state.theme_slug : undefined}
             />
           )}
           {currentStepName === 'join-shop' && (

@@ -1,3 +1,5 @@
+import { SettingsShopSection } from '@/components/SettingsShopSection'
+
 export default function SettingsPage() {
   return (
     <div className="flex max-w-2xl flex-col gap-6">
@@ -6,9 +8,11 @@ export default function SettingsPage() {
           Configuración
         </h1>
         <p className="text-sm text-muted-foreground">
-          Ajustes de tu cuenta y taller. Próximamente.
+          Ajustes de tu cuenta y taller.
         </p>
       </div>
+
+      <SettingsShopSection />
     </div>
   )
 }

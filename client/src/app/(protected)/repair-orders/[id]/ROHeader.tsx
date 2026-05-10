@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { Link2, Check } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { RepairOrderStatusBadge } from '@/components/repair-order-status-badge'
 import { Button } from '@/components/ui/button'
-import { RO_STATUS_LABELS } from '@/lib/repair-orders'
 import { formatMinor } from '@/lib/format-currency'
 
 type Ro = Record<string, unknown> & {
@@ -62,20 +61,19 @@ function CopyApproveLink({
 export function ROHeader({ repairOrder }: { repairOrder: Ro }) {
   const ro = repairOrder
   const cur = String(ro.currency ?? 'USD').trim()
-  const st = String(ro.status) as keyof typeof RO_STATUS_LABELS
-  const lbl = RO_STATUS_LABELS[st] ?? ro.status
+  const st = String(ro.status)
 
   const makeModel = `${String(ro.make ?? '').trim()} ${String(ro.model ?? '').trim()}`.trim()
   const customerName = repairOrder.customer_name != null ? String(repairOrder.customer_name) : null
 
   return (
-    <header className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 md:flex-row md:items-start md:justify-between">
+    <header className="flex flex-col gap-4 rounded-xl border border-border bg-white p-4 md:flex-row md:items-start md:justify-between dark:bg-card">
       <div className="min-w-0 space-y-2">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="font-display text-2xl font-bold text-foreground">
             #{ro.ro_number}
           </h1>
-          <Badge variant="secondary">{lbl}</Badge>
+          <RepairOrderStatusBadge status={st} />
         </div>
         <div className="text-sm text-muted-foreground space-y-0.5">
           {makeModel && <p>Vehículo: {makeModel}</p>}

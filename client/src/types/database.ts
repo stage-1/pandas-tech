@@ -451,6 +451,7 @@ export type Database = {
           region: string | null
           tax_id: string | null
           tax_id_type: string | null
+          theme_slug: string
           timezone: string
           updated_at: string
         }
@@ -471,6 +472,7 @@ export type Database = {
           region?: string | null
           tax_id?: string | null
           tax_id_type?: string | null
+          theme_slug?: string
           timezone?: string
           updated_at?: string
         }
@@ -491,6 +493,7 @@ export type Database = {
           region?: string | null
           tax_id?: string | null
           tax_id_type?: string | null
+          theme_slug?: string
           timezone?: string
           updated_at?: string
         }
@@ -674,6 +677,7 @@ export type Database = {
           region: string | null
           tax_id: string | null
           tax_id_type: string | null
+          theme_slug: string
           timezone: string
           updated_at: string
         }

@@ -1,6 +1,74 @@
 import { z } from 'zod'
+import postgres from 'postgres'
 import { TRPCError } from '@trpc/server'
 import { router, protectedProcedure } from '../trpc'
+import { themeSlugSchema } from '@/lib/shop-themes'
+
+function isPostgresError(err: unknown): err is postgres.PostgresError {
+  return (
+    err instanceof postgres.PostgresError ||
+    (!!err &&
+      typeof err === 'object' &&
+      (err as { name?: string }).name === 'PostgresError' &&
+      typeof (err as { code?: string }).code === 'string')
+  )
+}
+
+function handleThemeRpcFailure(err: unknown): never {
+  if (isPostgresError(err)) {
+    console.error('[SHOP_THEME] PostgresError', {
+      code: err.code,
+      message: err.message,
+      detail: err.detail,
+    })
+    if (err.code === '42703') {
+      throw new TRPCError({
+        code: 'PRECONDITION_FAILED',
+        message:
+          'Base de datos sin columna o esquema incompleto (theme_slug). Ejecuta las migraciones en db/migrations.',
+      })
+    }
+    if (err.code === '42883' || err.message.includes('update_shop_theme_for_session')) {
+      throw new TRPCError({
+        code: 'PRECONDITION_FAILED',
+        message:
+          'Falta la función update_shop_theme_for_session. Aplica db/migrations/0013_update_shop_theme_definer.sql.',
+      })
+    }
+    if (err.code === '42501' || err.message.includes('forbidden')) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Solo el dueño puede cambiar el tema del taller.',
+      })
+    }
+    if (err.code === '02000' || err.message.includes('no_shop')) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'No tienes un taller asignado.',
+      })
+    }
+    if (err.code === '28000') {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Sesión inválida para actualizar el tema.',
+      })
+    }
+    if (err.code === '23514') {
+      throw new TRPCError({ code: 'BAD_REQUEST', message: 'Tema no válido.' })
+    }
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: err.message || 'Error al guardar el tema.',
+    })
+  }
+
+  console.error('[SHOP_THEME] Unknown error', err)
+  throw new TRPCError({
+    code: 'INTERNAL_SERVER_ERROR',
+    message:
+      err instanceof Error ? err.message : 'Error desconocido al guardar el tema.',
+  })
+}
 
 export const shopsRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -9,7 +77,7 @@ export const shopsRouter = router({
 
   mine: protectedProcedure.query(async ({ ctx }) => {
     const [row] = await ctx.db`
-      SELECT s.* FROM public.shops s
+      SELECT s.*, m.role AS membership_role FROM public.shops s
       JOIN public.shop_memberships m ON m.shop_id = s.id
       WHERE m.user_id = ${ctx.userId}
       LIMIT 1
@@ -24,6 +92,7 @@ export const shopsRouter = router({
       tax_id:       z.string().max(30).optional(),
       tax_id_type:  z.string().max(20).optional(),
       role:         z.enum(['owner', 'tech']).default('owner'),
+      theme_slug:   themeSlugSchema.default('pandas'),
     }))
     .mutation(async ({ ctx, input }) => {
       console.log('[SHOP_CREATE] Starting for userId:', ctx.userId, 'input:', input)
@@ -53,12 +122,36 @@ export const shopsRouter = router({
           console.log('[SHOP_CREATE] Tax ID saved:', input.tax_id)
         }
 
+        try {
+          await ctx.db`
+            SELECT public.update_shop_theme_for_session(${input.theme_slug})
+          `
+        } catch (e) {
+          handleThemeRpcFailure(e)
+        }
+        console.log('[SHOP_CREATE] theme_slug:', input.theme_slug)
+
         console.log('[SHOP_CREATE] Done — returning shop')
-        return shop
+        const [fresh] = await ctx.db`SELECT * FROM public.shops WHERE id = ${shop.id}`
+        return fresh ?? shop
       } catch (err) {
         console.error('[SHOP_CREATE] Failed:', err)
         throw err
       }
+    }),
+
+  updateTheme: protectedProcedure
+    .input(z.object({ theme_slug: themeSlugSchema }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.db`
+          SELECT public.update_shop_theme_for_session(${input.theme_slug})
+        `
+        console.log('[SHOP_THEME] RPC ok', ctx.userId, input.theme_slug)
+      } catch (err) {
+        handleThemeRpcFailure(err)
+      }
+      return { theme_slug: input.theme_slug }
     }),
 
   join: protectedProcedure

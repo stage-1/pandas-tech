@@ -3,13 +3,12 @@
 import Link from 'next/link'
 import { Plus, ClipboardList } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
-import { RO_STATUS_LABELS } from '@/lib/repair-orders'
+import { RepairOrderStatusBadge } from '@/components/repair-order-status-badge'
 import { formatMinor } from '@/lib/format-currency'
 import { formatMakeModel } from '@/lib/format-display'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -93,11 +92,10 @@ export default function RepairOrdersPage() {
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className="font-normal">
-                          {RO_STATUS_LABELS[
-                            ro.status as keyof typeof RO_STATUS_LABELS
-                          ] ?? ro.status}
-                        </Badge>
+                        <RepairOrderStatusBadge
+                          className="font-normal"
+                          status={String(ro.status)}
+                        />
                       </TableCell>
                       <TableCell className="max-w-[14rem] truncate">{vehicle}</TableCell>
                       <TableCell className="max-w-[12rem] truncate">
@@ -134,11 +132,10 @@ export default function RepairOrdersPage() {
                           className="text-sm font-semibold text-primary hover:underline"
                         >
                           #{ro.ro_number}{' '}
-                          <Badge variant="secondary" className="ml-2 align-middle font-normal">
-                            {RO_STATUS_LABELS[
-                              ro.status as keyof typeof RO_STATUS_LABELS
-                            ] ?? ro.status}
-                          </Badge>
+                          <RepairOrderStatusBadge
+                            className="ml-2 align-middle font-normal"
+                            status={String(ro.status)}
+                          />
                         </Link>
                         <p className="mt-1 truncate text-xs text-muted-foreground">
                           {vehicle}

@@ -6,10 +6,10 @@ import { Undo2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { RepairOrderForm } from '@/components/repair-orders/repair-order-form'
+import { RepairOrderChangeStatusDialog } from '@/components/repair-orders/repair-order-change-status-dialog'
 import { ROHeader } from './ROHeader'
-import { ROStatusBar } from './ROStatusBar'
 import { LineItemsEditor } from './LineItemsEditor'
-import { RONotesSection } from './RONotesSection'
 import { InvoiceSection } from './InvoiceSection'
 
 export default function RepairOrderDetailPage() {
@@ -50,6 +50,21 @@ export default function RepairOrderDetailPage() {
 
   const currency = String(ro.currency ?? 'USD').trim() || 'USD'
 
+  const makeModel = `${String(ro.make ?? '').trim()} ${String(ro.model ?? '').trim()}`.trim()
+  const plate =
+    ro.license_plate != null && String(ro.license_plate) !== ''
+      ? String(ro.license_plate)
+      : ''
+  const vehicleLine = [makeModel, plate].filter(Boolean).join(' · ') || '—'
+
+  const odomRaw = ro.odometer_in
+  const odometerIn =
+    odomRaw != null && odomRaw !== ''
+      ? Number(odomRaw)
+      : null
+  const odometerSanitized =
+    odometerIn != null && Number.isFinite(odometerIn) ? odometerIn : null
+
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8">
       <div className="flex flex-wrap gap-2">
@@ -60,18 +75,30 @@ export default function RepairOrderDetailPage() {
 
       <ROHeader repairOrder={ro as never} />
 
-      <ROStatusBar repairOrderId={String(ro.id)} currentStatus={String(ro.status)} />
+      <section className="rounded-xl border border-border bg-white px-4 py-3 dark:bg-card">
+        <RepairOrderChangeStatusDialog
+          repairOrderId={String(ro.id)}
+          currentStatus={String(ro.status)}
+        />
+      </section>
+
+      <RepairOrderForm
+        mode="edit"
+        repairOrderId={String(ro.id)}
+        summary={{
+          customerName: String(ro.customer_name ?? 'Sin cliente'),
+          vehicleLine,
+          vin: ro.vin != null && String(ro.vin).trim() !== '' ? String(ro.vin) : null,
+        }}
+        complaint={(ro.complaint as string | null) ?? null}
+        internal_notes={(ro.internal_notes as string | null) ?? null}
+        odometer_in={odometerSanitized}
+      />
 
       <LineItemsEditor
         repairOrderId={String(ro.id)}
         currency={currency}
         lineItems={data.lineItems as Record<string, unknown>[]}
-      />
-
-      <RONotesSection
-        repairOrderId={String(ro.id)}
-        complaint={(ro.complaint as string | null) ?? null}
-        internal_notes={(ro.internal_notes as string | null) ?? null}
       />
 
       <InvoiceSection repairOrderId={String(ro.id)} status={String(ro.status)} currency={currency} />

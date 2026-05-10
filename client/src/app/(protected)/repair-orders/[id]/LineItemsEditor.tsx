@@ -188,8 +188,8 @@ export function LineItemsEditor({
   const cc = currency.trim() || 'USD'
 
   return (
-    <section className="rounded-xl border border-border overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-muted/30 px-4 py-3">
+    <section className="overflow-hidden rounded-xl border border-border bg-white dark:bg-card">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-white px-4 py-3 dark:bg-card">
         <h2 className="text-sm font-medium text-foreground">Líneas de servicio · {cc}</h2>
         <div className="flex flex-wrap gap-2">
           <Button

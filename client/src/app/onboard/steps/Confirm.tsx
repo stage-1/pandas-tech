@@ -1,4 +1,5 @@
 import { COUNTRY_CONFIG, CountryCode } from '@/lib/onboard'
+import { SHOP_THEME_META, type ShopThemeSlug } from '@/lib/shop-themes'
 import { StepHeader } from './StepHeader'
 
 const ROLE_LABELS: Record<string, string> = {
@@ -11,6 +12,7 @@ interface ConfirmProps {
   country: CountryCode
   taxId: string
   role: 'owner' | 'tech'
+  themeSlug?: ShopThemeSlug
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -22,7 +24,7 @@ function Row({ label, value }: { label: string; value: string }) {
   )
 }
 
-export function Confirm({ name, country, taxId, role }: ConfirmProps) {
+export function Confirm({ name, country, taxId, role, themeSlug }: ConfirmProps) {
   const config = COUNTRY_CONFIG[country]
 
   return (
@@ -39,6 +41,9 @@ export function Confirm({ name, country, taxId, role }: ConfirmProps) {
         <Row label="Moneda"    value={config.currency} />
         <Row label="IVA"       value={config.iva !== null ? `${Math.round(config.iva * 100)}%` : 'Variable'} />
         <Row label={config.label} value={taxId || '—'} />
+        {themeSlug !== undefined ? (
+          <Row label="Tema" value={SHOP_THEME_META[themeSlug].label} />
+        ) : null}
       </div>
     </div>
   )

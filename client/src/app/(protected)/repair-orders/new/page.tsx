@@ -9,7 +9,7 @@ export default function NewRepairOrderPage() {
           El cliente, vehículo y moneda coincidirán con tu taller tras guardar.
         </p>
       </div>
-      <ROForm />
+      <ROForm mode="create" />
     </div>
   )
 }
