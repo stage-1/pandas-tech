@@ -24,6 +24,7 @@
 @import "shadcn/tailwind.css";
 @import "./v1Pandas.css";
 @import "./shop-theme-presets.css";
+@import "./sidebar-dark-tone.css";
 
 @custom-variant dark (&:is(.dark *));
 

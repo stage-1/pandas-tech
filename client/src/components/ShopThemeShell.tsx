@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect } from 'react'
 import { trpc } from '@/lib/trpc'
 import { SHOP_THEME_SLUGS, type ShopThemeSlug } from '@/lib/shop-themes'
 
@@ -25,17 +25,16 @@ function writeThemeCache(shopId: string, slug: ShopThemeSlug) {
 }
 
 /**
- * Sets `data-shop-theme` for scoped tenant tokens. `pandas` uses `:root` / `.dark`
- * from `v1Pandas.css`; other slugs use `shop-theme-presets.css`.
+ * Sets `data-shop-theme` on `<html>` so tenant tokens inherit everywhere (including
+ * portaled UI like the mobile sidebar sheet). `pandas` aligns with `:root` /
+ * `.dark` in `v1Pandas.css`; other slugs use `shop-theme-presets.css`.
  * Cache is write-only (avoids mismatched preset vs `shops.mine` after edits).
  */
 export function ShopThemeShell({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null)
   const { data: shop } = trpc.shops.mine.useQuery()
 
   useLayoutEffect(() => {
-    const root = ref.current
-    if (!root) return
+    const root = document.documentElement
 
     if (!shop?.id) {
       root.removeAttribute('data-shop-theme')
@@ -48,7 +47,7 @@ export function ShopThemeShell({ children }: { children: React.ReactNode }) {
   }, [shop?.id, shop?.theme_slug])
 
   return (
-    <div ref={ref} className="min-h-svh w-full bg-background">
+    <div className="min-h-svh w-full bg-background">
       {children}
     </div>
   )

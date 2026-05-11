@@ -1,0 +1,38 @@
+/*
+ * Force navigation chrome to use each tenant palette’s *dark* sidebar tokens,
+ * regardless of next-themes light/dark. Values mirror `v1Pandas.css` `.dark` and
+ * `shop-theme-presets.css` `html.dark[data-shop-theme="…"]` sidebar lines.
+ */
+
+[data-sidebar-tone="dark"] {
+  --sidebar: #1c1b19;
+  --sidebar-foreground: #f8f6f2;
+  --sidebar-primary: #e03535;
+  --sidebar-primary-foreground: #141412;
+  --sidebar-accent: #222120;
+  --sidebar-accent-foreground: #f8f6f2;
+  --sidebar-border: #35332f;
+  --sidebar-ring: #e03535;
+}
+
+html[data-shop-theme="ocean"] [data-sidebar-tone="dark"] {
+  --sidebar: #0a1220;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #0891b2;
+  --sidebar-primary-foreground: #020617;
+  --sidebar-accent: #162032;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #0ea5e9;
+}
+
+html[data-shop-theme="forest"] [data-sidebar-tone="dark"] {
+  --sidebar: #221910;
+  --sidebar-foreground: #f5ebe0;
+  --sidebar-primary: #ca8a04;
+  --sidebar-primary-foreground: #1c1510;
+  --sidebar-accent: #342a21;
+  --sidebar-accent-foreground: #f5ebe0;
+  --sidebar-border: #3f342c;
+  --sidebar-ring: #d97706;
+}

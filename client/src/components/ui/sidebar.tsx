@@ -130,6 +130,7 @@ function SidebarProvider({
     <SidebarContext.Provider value={contextValue}>
       <div
         data-slot="sidebar-wrapper"
+        data-sidebar-tone="dark"
         style={
           {
             "--sidebar-width": SIDEBAR_WIDTH,
@@ -184,6 +185,7 @@ function Sidebar({
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetContent
           dir={dir}
+          data-sidebar-tone="dark"
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"

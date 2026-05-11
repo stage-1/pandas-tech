@@ -43,8 +43,13 @@
   --radius: 8px;
 }
 
-html.dark [data-shop-theme="pandas"],
-.dark [data-shop-theme="pandas"] {
+/**
+ * Dark palette: (1) `<html>` when it carries the active slug — main shell + portals.
+ * (2) Any descendant `[data-shop-theme="…"]` under dark html — theme preview cards use a
+ * different slug on the card than on `<html>`, so the descendant selector must stay.
+ */
+html.dark[data-shop-theme="pandas"],
+html.dark [data-shop-theme="pandas"] {
   --background: #141412;
   --foreground: #F8F6F2;
   --card: #1C1B19;
@@ -116,8 +121,8 @@ html.dark [data-shop-theme="pandas"],
   --radius: 8px;
 }
 
-html.dark [data-shop-theme="ocean"],
-.dark [data-shop-theme="ocean"] {
+html.dark[data-shop-theme="ocean"],
+html.dark [data-shop-theme="ocean"] {
   --background: #020617;
   --foreground: #e2e8f0;
   --card: #0c1624;
@@ -189,8 +194,8 @@ html.dark [data-shop-theme="ocean"],
   --radius: 8px;
 }
 
-html.dark [data-shop-theme="forest"],
-.dark [data-shop-theme="forest"] {
+html.dark[data-shop-theme="forest"],
+html.dark [data-shop-theme="forest"] {
   --background: #1c1510;
   --foreground: #f5ebe0;
   --card: #261e18;

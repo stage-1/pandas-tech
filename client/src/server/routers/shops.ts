@@ -154,6 +154,53 @@ export const shopsRouter = router({
       return { theme_slug: input.theme_slug }
     }),
 
+  updateDetails: protectedProcedure
+    .input(z.object({ name: z.string().min(2).max(120) }))
+    .mutation(async ({ ctx, input }) => {
+      const name = input.name.trim()
+      const [ownerRow] = await ctx.db`
+        SELECT s.id
+        FROM public.shops s
+        INNER JOIN public.shop_memberships m
+          ON m.shop_id = s.id AND m.user_id = ${ctx.userId}
+        WHERE m.role = 'owner'
+        LIMIT 1
+      `
+      if (!ownerRow?.id) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Solo el dueño puede editar el nombre del taller.',
+        })
+      }
+      try {
+        await ctx.db`
+          UPDATE public.shops
+          SET name = ${name}, updated_at = now()
+          WHERE id = ${ownerRow.id}
+        `
+        console.log('[SHOP_DETAILS] name updated', ctx.userId, ownerRow.id)
+      } catch (err) {
+        if (isPostgresError(err)) {
+          console.error('[SHOP_DETAILS] PostgresError', {
+            code: err.code,
+            message: err.message,
+          })
+          if (err.code === '42501') {
+            throw new TRPCError({
+              code: 'FORBIDDEN',
+              message: 'No tienes permiso para actualizar el taller.',
+            })
+          }
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: err.message || 'Error al guardar el nombre.',
+          })
+        }
+        throw err
+      }
+      return { name }
+    }),
+
   join: protectedProcedure
     .input(z.object({ invite_code: z.string().min(1) }))
     .mutation(async () => {

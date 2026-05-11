@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Store } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,7 +26,7 @@ function normalizeSlug(theme_slug: unknown): ShopThemeSlug {
     : 'pandas'
 }
 
-export function SettingsShopSection() {
+export function ShopThemeSettings() {
   const utils = trpc.useUtils()
   const { data: shop, isPending } = trpc.shops.mine.useQuery()
   const [selectedSlug, setSelectedSlug] = useState<ShopThemeSlug | null>(null)
@@ -49,7 +48,7 @@ export function SettingsShopSection() {
     return (
       <Card className="border-border/90">
         <CardHeader>
-          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-6 w-48" />
           <Skeleton className="h-4 w-full max-w-md" />
         </CardHeader>
         <CardContent className="space-y-4">
@@ -63,9 +62,9 @@ export function SettingsShopSection() {
     return (
       <Card className="border-border/90">
         <CardHeader>
-          <CardTitle className="text-lg">Taller</CardTitle>
+          <CardTitle className="text-lg">Tema</CardTitle>
           <CardDescription>
-            Crea un taller para ver ajustes de tienda y tema.
+            Crea un taller para elegir el tema visual del equipo.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-3">
@@ -83,34 +82,15 @@ export function SettingsShopSection() {
 
   return (
     <Card className="border-border/90">
-      <CardHeader className="flex flex-row items-start gap-4 space-y-0 pb-4">
-        <div className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-          <Store className="size-5 text-muted-foreground" aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1 space-y-1">
-          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
-            <CardTitle className="text-lg">Taller</CardTitle>
-            <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Shop
-            </span>
-          </div>
-          <CardDescription>
-            <span className="font-medium text-foreground/90">{shop.name}</span>
-            {' · '}
-            Tema y apariencia compartidos con tu equipo.
-          </CardDescription>
-        </div>
+      <CardHeader className="space-y-1 pb-4">
+        <CardTitle className="text-lg">Tema visual</CardTitle>
+        <CardDescription>
+          {isOwner
+            ? 'Toca un tema para previsualizarlo; «Aplicar tema» lo guarda para todo el taller.'
+            : 'Vista previa de las paletas. Solo el dueño puede cambiar el tema activo.'}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 border-t border-border/80 pt-5">
-        <div>
-          <h3 className="text-sm font-semibold text-foreground">Tema visual</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {isOwner
-              ? 'Toca un tema para previsualizarlo; «Aplicar tema» lo guarda para todo el taller.'
-              : 'Vista previa de las paletas. Solo el dueño puede cambiar el tema activo.'}
-          </p>
-        </div>
-
         <div
           className="grid gap-4 sm:grid-cols-3"
           role={isOwner ? 'radiogroup' : undefined}
