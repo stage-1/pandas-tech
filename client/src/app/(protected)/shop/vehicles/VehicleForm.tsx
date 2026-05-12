@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Camera, Loader2 } from 'lucide-react'
+import { Camera, ChevronDown, ChevronUp, FileCheck, Loader2 } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { trpc } from '@/lib/trpc'
 import {
@@ -66,6 +66,14 @@ export type Vehicle = {
   manufacturer?: string | null
   plant_country?: string | null
   make_logo_url?: string | null
+  // property card fields
+  transit_license_no?: string | null
+  engine_number?: string | null
+  serial_number?: string | null
+  vehicle_class?: string | null
+  service_type?: string | null
+  axle_count?: number | null
+  registration_city?: string | null
 }
 
 export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
@@ -75,6 +83,10 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
   const [step, setStep] = useState(0)
   const [submitBlocked, setSubmitBlocked] = useState(false)
   const [scanId, setScanId] = useState<string | undefined>(undefined)
+  const [docSectionOpen, setDocSectionOpen] = useState(() =>
+    !!(vehicle?.transit_license_no || vehicle?.engine_number || vehicle?.serial_number ||
+       vehicle?.vehicle_class || vehicle?.service_type || vehicle?.axle_count || vehicle?.registration_city)
+  )
 
   const {
     register,
@@ -96,8 +108,24 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       license_plate: vehicle?.license_plate ?? '',
       notes: vehicle?.notes ?? '',
       customer_id: vehicle?.current_customer_id ?? undefined,
+      transit_license_no: vehicle?.transit_license_no ?? '',
+      engine_number: vehicle?.engine_number ?? '',
+      serial_number: vehicle?.serial_number ?? '',
+      vehicle_class: vehicle?.vehicle_class ?? '',
+      service_type: vehicle?.service_type ?? '',
+      axle_count: vehicle?.axle_count ?? undefined,
+      registration_city: vehicle?.registration_city ?? '',
+      body_type: vehicle?.body_type ?? '',
+      number_of_doors: vehicle?.number_of_doors ?? undefined,
+      engine_displacement_ccm: vehicle?.engine_displacement_ccm ?? undefined,
     },
   })
+
+  const watchedDocFields = watch([
+    'transit_license_no', 'engine_number', 'serial_number',
+    'vehicle_class', 'service_type', 'axle_count', 'registration_city',
+  ])
+  const populatedDocFieldCount = watchedDocFields.filter(v => v != null && v !== '').length
 
   const customerId = watch('customer_id')
   const selectedMake = watch('make')
@@ -139,6 +167,16 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       license_plate: data.license_plate || null,
       notes: data.notes || null,
       customer_id: data.customer_id || null,
+      transit_license_no: data.transit_license_no || null,
+      engine_number: data.engine_number || null,
+      serial_number: data.serial_number || null,
+      vehicle_class: data.vehicle_class || null,
+      service_type: data.service_type || null,
+      axle_count: data.axle_count ?? null,
+      registration_city: data.registration_city || null,
+      body_type: data.body_type || null,
+      number_of_doors: data.number_of_doors ?? null,
+      engine_displacement_ccm: data.engine_displacement_ccm ?? null,
     }
     if (isEdit) {
       updateVehicle.mutate({ id: vehicle!.id, ...nullified, scan_id: scanId })
@@ -203,7 +241,18 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                           }
                           if (fields.model_year) setValue('year', Number(fields.model_year))
                           if (fields.color)      setValue('color', String(fields.color))
+                          if (fields.transit_license_no) setValue('transit_license_no', String(fields.transit_license_no))
+                          if (fields.engine_number)      setValue('engine_number',       String(fields.engine_number))
+                          if (fields.serial_number)      setValue('serial_number',        String(fields.serial_number))
+                          if (fields.vehicle_class)      setValue('vehicle_class',        String(fields.vehicle_class))
+                          if (fields.service_type)       setValue('service_type',         String(fields.service_type))
+                          if (fields.body_type)          setValue('body_type',            String(fields.body_type))
+                          if (fields.displacement_cc)    setValue('engine_displacement_ccm', Number(fields.displacement_cc))
+                          if (fields.door_count)         setValue('number_of_doors',      Number(fields.door_count))
+                          if (fields.axle_count)         setValue('axle_count',           Number(fields.axle_count))
+                          if (fields.city)               setValue('registration_city',    String(fields.city))
                           setScanId(id)
+                          setDocSectionOpen(true)
                         }}
                         trigger={
                           <Button type="button" variant="ghost" size="xs" className="gap-1 text-muted-foreground">
@@ -235,6 +284,96 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                   className="mt-1.5 uppercase"
                 />
               </div>
+            </div>
+
+            {/* Collapsible property card fields */}
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => setDocSectionOpen(o => !o)}
+                className="flex items-center justify-between w-full py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <span className="flex items-center gap-1.5 font-medium">
+                  <FileCheck className="size-3.5" />
+                  Tarjeta de propiedad
+                </span>
+                <span className="flex items-center gap-2">
+                  {!docSectionOpen && populatedDocFieldCount > 0 && (
+                    <span className="text-xs bg-muted px-1.5 py-0.5 rounded-full">
+                      {populatedDocFieldCount} campos
+                    </span>
+                  )}
+                  {docSectionOpen
+                    ? <ChevronUp className="size-3.5" />
+                    : <ChevronDown className="size-3.5" />}
+                </span>
+              </button>
+
+              {docSectionOpen && (
+                <div className="mt-2 rounded-md border border-dashed border-border/70 bg-muted/30 p-4">
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <div>
+                      <Label htmlFor="transit_license_no" className="text-xs">No. Licencia de Tránsito</Label>
+                      <Input
+                        id="transit_license_no"
+                        {...register('transit_license_no')}
+                        className="mt-1 text-sm h-8"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="engine_number" className="text-xs">No. Motor</Label>
+                      <Input
+                        id="engine_number"
+                        {...register('engine_number')}
+                        className="mt-1 text-sm h-8 uppercase"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="serial_number" className="text-xs">No. Serie</Label>
+                      <Input
+                        id="serial_number"
+                        {...register('serial_number')}
+                        className="mt-1 text-sm h-8 uppercase"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="vehicle_class" className="text-xs">Clase de vehículo</Label>
+                      <Input
+                        id="vehicle_class"
+                        {...register('vehicle_class')}
+                        className="mt-1 text-sm h-8 uppercase"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="service_type" className="text-xs">Servicio</Label>
+                      <Input
+                        id="service_type"
+                        {...register('service_type')}
+                        className="mt-1 text-sm h-8 uppercase"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="registration_city" className="text-xs">Ciudad de matrícula</Label>
+                      <Input
+                        id="registration_city"
+                        {...register('registration_city')}
+                        className="mt-1 text-sm h-8"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="axle_count" className="text-xs">No. Ejes</Label>
+                      <Input
+                        id="axle_count"
+                        type="number"
+                        min={1}
+                        max={20}
+                        {...register('axle_count')}
+                        className="mt-1 text-sm h-8"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

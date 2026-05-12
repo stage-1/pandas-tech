@@ -573,56 +573,77 @@ export type Database = {
       }
       vehicles: {
         Row: {
+          axle_count: number | null
           color: string | null
           created_at: string
           current_customer_id: string | null
           deleted_at: string | null
+          engine_number: string | null
           id: string
           license_plate: string | null
           make: string | null
           model: string | null
           notes: string | null
+          registration_city: string | null
+          serial_number: string | null
+          service_type: string | null
           shop_id: string
           soat_expires_at: string | null
           tecnicomecanica_expires_at: string | null
+          transit_license_no: string | null
           trim: string | null
           updated_at: string
+          vehicle_class: string | null
           vin: string | null
           year: number | null
         }
         Insert: {
+          axle_count?: number | null
           color?: string | null
           created_at?: string
           current_customer_id?: string | null
           deleted_at?: string | null
+          engine_number?: string | null
           id?: string
           license_plate?: string | null
           make?: string | null
           model?: string | null
           notes?: string | null
+          registration_city?: string | null
+          serial_number?: string | null
+          service_type?: string | null
           shop_id: string
           soat_expires_at?: string | null
           tecnicomecanica_expires_at?: string | null
+          transit_license_no?: string | null
           trim?: string | null
           updated_at?: string
+          vehicle_class?: string | null
           vin?: string | null
           year?: number | null
         }
         Update: {
+          axle_count?: number | null
           color?: string | null
           created_at?: string
           current_customer_id?: string | null
           deleted_at?: string | null
+          engine_number?: string | null
           id?: string
           license_plate?: string | null
           make?: string | null
           model?: string | null
           notes?: string | null
+          registration_city?: string | null
+          serial_number?: string | null
+          service_type?: string | null
           shop_id?: string
           soat_expires_at?: string | null
           tecnicomecanica_expires_at?: string | null
+          transit_license_no?: string | null
           trim?: string | null
           updated_at?: string
+          vehicle_class?: string | null
           vin?: string | null
           year?: number | null
         }

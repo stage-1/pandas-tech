@@ -47,6 +47,17 @@ export const createVehicleSchema = z.object({
   license_plate: z.string().max(20).nullish(),
   notes:         z.string().max(2000).nullish(),
   customer_id:   z.string().uuid().nullish(),
+  // property card fields
+  transit_license_no:      z.string().max(50).nullish(),
+  engine_number:           z.string().max(50).nullish(),
+  serial_number:           z.string().max(50).nullish(),
+  vehicle_class:           z.string().max(60).nullish(),
+  service_type:            z.string().max(40).nullish(),
+  axle_count:              z.coerce.number().int().min(1).max(20).nullish(),
+  registration_city:       z.string().max(80).nullish(),
+  body_type:               z.string().max(60).nullish(),
+  number_of_doors:         z.coerce.number().int().min(1).max(20).nullish(),
+  engine_displacement_ccm: z.coerce.number().int().min(0).nullish(),
 })
 
 /** Parsed / API shape (schema output). */

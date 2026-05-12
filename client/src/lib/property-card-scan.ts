@@ -65,21 +65,21 @@ export type PropertyCardScanResult = {
 export const CONFIDENCE_THRESHOLD = 75
 
 export const FIELD_CONFIG: Record<PropertyCardFieldKey, { label: string; mapsToVehicle: boolean }> = {
-  transit_license_no: { label: 'No. Licencia',       mapsToVehicle: false },
+  transit_license_no: { label: 'No. Licencia',       mapsToVehicle: true  },
   plate:              { label: 'Placa',               mapsToVehicle: true  },
   make:               { label: 'Marca',               mapsToVehicle: true  },
-  vehicle_class:      { label: 'Clase',               mapsToVehicle: false },
-  service_type:       { label: 'Servicio',            mapsToVehicle: false },
-  engine_number:      { label: 'No. Motor',           mapsToVehicle: false },
+  vehicle_class:      { label: 'Clase',               mapsToVehicle: true  },
+  service_type:       { label: 'Servicio',            mapsToVehicle: true  },
+  engine_number:      { label: 'No. Motor',           mapsToVehicle: true  },
   chassis_number:     { label: 'No. Chasis (VIN)',    mapsToVehicle: true  },
-  serial_number:      { label: 'No. Serie',           mapsToVehicle: false },
-  body_type:          { label: 'Carrocería',          mapsToVehicle: false },
+  serial_number:      { label: 'No. Serie',           mapsToVehicle: true  },
+  body_type:          { label: 'Carrocería',          mapsToVehicle: true  },
   color:              { label: 'Color',               mapsToVehicle: true  },
-  displacement_cc:    { label: 'Cilindraje (cc)',     mapsToVehicle: false },
+  displacement_cc:    { label: 'Cilindraje (cc)',     mapsToVehicle: true  },
   model_year:         { label: 'Modelo (año)',        mapsToVehicle: true  },
-  door_count:         { label: 'No. Puertas',        mapsToVehicle: false },
-  axle_count:         { label: 'No. Ejes',           mapsToVehicle: false },
-  city:               { label: 'Ciudad',              mapsToVehicle: false },
+  door_count:         { label: 'No. Puertas',        mapsToVehicle: true  },
+  axle_count:         { label: 'No. Ejes',           mapsToVehicle: true  },
+  city:               { label: 'Ciudad',              mapsToVehicle: true  },
   issue_date:         { label: 'Fecha expedición',   mapsToVehicle: false },
 }
 

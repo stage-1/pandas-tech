@@ -37,13 +37,16 @@ export const vehiclesRouter = router({
           transmission, drive, number_of_gears,
           front_brakes, rear_brakes, abs, wheel_size, wheel_rims_size,
           front_suspension, rear_suspension, body_type, number_of_doors, number_of_seats,
-          manufacturer, plant_country, make_logo_url
+          manufacturer, plant_country, make_logo_url,
+          transit_license_no, engine_number, serial_number,
+          vehicle_class, service_type, axle_count, registration_city
         ) VALUES (
           ${shopId}, ${input.vin}, ${input.year ?? null}, ${input.make ?? null},
           ${input.model ?? null}, ${input.trim ?? null}, ${input.color ?? null},
           ${input.odometer ?? null}, ${input.license_plate ?? null}, ${input.notes ?? null},
           ${input.customer_id ?? null},
-          ${s?.engine_displacement_ccm ?? null}, ${s?.engine_cylinders ?? null},
+          ${input.engine_displacement_ccm ?? s?.engine_displacement_ccm ?? null},
+          ${s?.engine_cylinders ?? null},
           ${s?.engine_model ?? null}, ${s?.engine_power_kw ?? null},
           ${s?.fuel_type ?? null}, ${s?.fuel_system ?? null}, ${s?.engine_turbine ?? null},
           ${s?.engine_oil_capacity_l ?? null}, ${s?.engine_coolant_l ?? null},
@@ -51,8 +54,14 @@ export const vehiclesRouter = router({
           ${s?.front_brakes ?? null}, ${s?.rear_brakes ?? null}, ${s?.abs ?? null},
           ${s?.wheel_size ?? null}, ${s?.wheel_rims_size ?? null},
           ${s?.front_suspension ?? null}, ${s?.rear_suspension ?? null},
-          ${s?.body_type ?? null}, ${s?.number_of_doors ?? null}, ${s?.number_of_seats ?? null},
-          ${s?.manufacturer ?? null}, ${s?.plant_country ?? null}, ${s?.make_logo_url ?? null}
+          ${input.body_type ?? s?.body_type ?? null},
+          ${input.number_of_doors ?? s?.number_of_doors ?? null},
+          ${s?.number_of_seats ?? null},
+          ${s?.manufacturer ?? null}, ${s?.plant_country ?? null}, ${s?.make_logo_url ?? null},
+          ${input.transit_license_no ?? null}, ${input.engine_number ?? null},
+          ${input.serial_number ?? null}, ${input.vehicle_class ?? null},
+          ${input.service_type ?? null}, ${input.axle_count ?? null},
+          ${input.registration_city ?? null}
         )
         RETURNING *
       `
@@ -107,7 +116,7 @@ export const vehiclesRouter = router({
           odometer                  = ${input.odometer ?? null},
           notes                     = ${input.notes ?? null},
           current_customer_id       = ${input.customer_id ?? null},
-          engine_displacement_ccm   = ${s?.engine_displacement_ccm ?? null},
+          engine_displacement_ccm   = ${input.engine_displacement_ccm ?? s?.engine_displacement_ccm ?? null},
           engine_cylinders          = ${s?.engine_cylinders ?? null},
           engine_model              = ${s?.engine_model ?? null},
           engine_power_kw           = ${s?.engine_power_kw ?? null},
@@ -126,12 +135,19 @@ export const vehiclesRouter = router({
           wheel_rims_size           = ${s?.wheel_rims_size ?? null},
           front_suspension          = ${s?.front_suspension ?? null},
           rear_suspension           = ${s?.rear_suspension ?? null},
-          body_type                 = ${s?.body_type ?? null},
-          number_of_doors           = ${s?.number_of_doors ?? null},
+          body_type                 = ${input.body_type ?? s?.body_type ?? null},
+          number_of_doors           = ${input.number_of_doors ?? s?.number_of_doors ?? null},
           number_of_seats           = ${s?.number_of_seats ?? null},
           manufacturer              = ${s?.manufacturer ?? null},
           plant_country             = ${s?.plant_country ?? null},
           make_logo_url             = ${s?.make_logo_url ?? null},
+          transit_license_no        = ${input.transit_license_no ?? null},
+          engine_number             = ${input.engine_number ?? null},
+          serial_number             = ${input.serial_number ?? null},
+          vehicle_class             = ${input.vehicle_class ?? null},
+          service_type              = ${input.service_type ?? null},
+          axle_count                = ${input.axle_count ?? null},
+          registration_city         = ${input.registration_city ?? null},
           updated_at                = NOW()
         WHERE id = ${input.id}
           AND shop_id = ${shopId}
