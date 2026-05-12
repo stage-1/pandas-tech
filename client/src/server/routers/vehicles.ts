@@ -3,9 +3,12 @@ import { router, protectedProcedure } from '../trpc'
 import { createVehicleSchema, updateVehicleSchema, vehicleSpecsSchema } from '@/lib/vehicles'
 import { resolveShopId } from './_utils'
 
-const specsExtension = { specs: vehicleSpecsSchema.optional() }
-const createWithSpecs = createVehicleSchema.extend(specsExtension)
-const updateWithSpecs = updateVehicleSchema.extend(specsExtension)
+const scanExtension = {
+  specs:   vehicleSpecsSchema.optional(),
+  scan_id: z.string().uuid().optional(),
+}
+const createWithSpecs = createVehicleSchema.extend(scanExtension)
+const updateWithSpecs = updateVehicleSchema.extend(scanExtension)
 
 export const vehiclesRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
@@ -58,6 +61,14 @@ export const vehiclesRouter = router({
         await ctx.db`
           INSERT INTO public.vehicle_ownerships (vehicle_id, customer_id)
           VALUES (${vehicle.id}, ${input.customer_id})
+        `
+      }
+
+      if (input.scan_id) {
+        await ctx.db`
+          UPDATE public.property_card_scans
+          SET vehicle_id = ${vehicle.id}, status = 'applied'
+          WHERE id = ${input.scan_id} AND shop_id = ${shopId}
         `
       }
 
@@ -134,6 +145,15 @@ export const vehiclesRouter = router({
           ON CONFLICT DO NOTHING
         `
       }
+
+      if (input.scan_id) {
+        await ctx.db`
+          UPDATE public.property_card_scans
+          SET vehicle_id = ${vehicle.id}, status = 'applied'
+          WHERE id = ${input.scan_id} AND shop_id = ${shopId}
+        `
+      }
+
       return vehicle
     }),
 

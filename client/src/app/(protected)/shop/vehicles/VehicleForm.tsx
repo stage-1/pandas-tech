@@ -24,9 +24,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { VehiclePicker, CustomerPicker } from '@/components/vehicles/vehicle-pickers'
-import { VinScanner } from '@/components/vehicles/vin-scanner'
-import { VehicleSpecsCard } from '@/components/vehicles/vehicle-specs-card'
-import { type VehicleSpecs } from '@/lib/vehicles'
+import { PropertyCardScanner } from '@/components/vehicles/property-card-scanner'
+import { normalizeMake } from '@/lib/make-normalizer'
 
 export type Vehicle = {
   id: string
@@ -75,24 +74,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
   const isMobile = useIsMobile()
   const [step, setStep] = useState(0)
   const [submitBlocked, setSubmitBlocked] = useState(false)
-  const [vinSpecs, setVinSpecs] = useState<VehicleSpecs | null>(() => {
-    if (!vehicle) return null
-    const s: VehicleSpecs = {}
-    const fields: (keyof VehicleSpecs)[] = [
-      'engine_displacement_ccm', 'engine_cylinders', 'engine_model', 'engine_power_kw',
-      'fuel_type', 'fuel_system', 'engine_turbine', 'engine_oil_capacity_l', 'engine_coolant_l',
-      'transmission', 'drive', 'number_of_gears',
-      'front_brakes', 'rear_brakes', 'abs', 'wheel_size', 'wheel_rims_size',
-      'front_suspension', 'rear_suspension', 'body_type', 'number_of_doors', 'number_of_seats',
-      'manufacturer', 'plant_country', 'make_logo_url',
-    ]
-    let hasData = false
-    for (const f of fields) {
-      const v = (vehicle as Record<string, unknown>)[f]
-      if (v != null) { (s as Record<string, unknown>)[f] = v; hasData = true }
-    }
-    return hasData ? s : null
-  })
+  const [scanId, setScanId] = useState<string | undefined>(undefined)
 
   const {
     register,
@@ -159,9 +141,9 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
       customer_id: data.customer_id || null,
     }
     if (isEdit) {
-      updateVehicle.mutate({ id: vehicle!.id, ...nullified, specs: vinSpecs ?? undefined })
+      updateVehicle.mutate({ id: vehicle!.id, ...nullified, scan_id: scanId })
     } else {
-      createVehicle.mutate({ vin: data.vin, ...nullified, specs: vinSpecs ?? undefined })
+      createVehicle.mutate({ vin: data.vin, ...nullified, scan_id: scanId })
     }
   }
 
@@ -208,25 +190,29 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                 <div className="flex items-center justify-between mb-1.5">
                   <Label htmlFor="vin">VIN {!isEdit && '*'}</Label>
                   {!isEdit && (
-                    <VinScanner
-                      onVinDecoded={(vin, specs) => {
-                        setValue('vin', vin)
-                        trigger('vin')
-                        if (specs) {
-                          setVinSpecs(specs)
-                          if (specs.make)  setValue('make', specs.make)
-                          if (specs.model) setValue('model', specs.model)
-                          if (specs.year)  setValue('year', specs.year)
-                          if (specs.trim)  setValue('trim', specs.trim)
+                    <div className="flex items-center gap-2">
+                      <PropertyCardScanner
+                        onPropertyCardScanned={({ fields, scanId: id }) => {
+                          const vin = typeof fields.chassis_number === 'string' ? fields.chassis_number : ''
+                          if (vin) { setValue('vin', vin); trigger('vin') }
+                          if (fields.plate)      setValue('license_plate', String(fields.plate))
+                          if (fields.make) {
+                            const normalized = normalizeMake(String(fields.make), MAKES)
+                            setValue('make', normalized ?? String(fields.make))
+                            setValue('model', '')
+                          }
+                          if (fields.model_year) setValue('year', Number(fields.model_year))
+                          if (fields.color)      setValue('color', String(fields.color))
+                          setScanId(id)
+                        }}
+                        trigger={
+                          <Button type="button" variant="ghost" size="xs" className="gap-1 text-muted-foreground">
+                            <Camera className="size-3.5" />
+                            Tarjeta
+                          </Button>
                         }
-                      }}
-                      trigger={
-                        <Button type="button" variant="ghost" size="xs" className="gap-1 text-muted-foreground">
-                          <Camera className="size-3.5" />
-                          Escanear
-                        </Button>
-                      }
-                    />
+                      />
+                    </div>
                   )}
                 </div>
                 <Input
@@ -284,6 +270,7 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                     options={MAKES}
                     value={selectedMake}
                     placeholder="Seleccionar marca"
+                    allowCustom
                     onChange={(v) => {
                       setValue('make', v ?? '')
                       setValue('model', '')
@@ -339,7 +326,6 @@ export function VehicleForm({ vehicle }: { vehicle?: Vehicle }) {
                 <FieldError message={errors.odometer?.message} />
               </div>
             </div>
-            {vinSpecs && <div className="mt-4"><VehicleSpecsCard specs={vinSpecs} /></div>}
           </div>
 
           {/* Step 3: Adicional */}

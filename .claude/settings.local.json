@@ -34,7 +34,11 @@
       "Bash(npx shadcn@latest add command)",
       "Bash(node -e \"console.log\\(require\\('./node_modules/zod/package.json'\\).version\\)\")",
       "Bash(node -e \"console.log\\(require\\('./node_modules/@hookform/resolvers/package.json'\\).version\\)\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\swim\\\\Documents\\\\Code\\\\Github\\\\pandas-tech\" -Recurse -Directory -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "Bash(xargs grep -l \"use server\")",
+      "mcp__d9752853-5fb0-43cd-a21a-d4137c193016__list_migrations"
     ]
   }
 }

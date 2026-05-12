@@ -1,5 +1,6 @@
-// Generated from makes_and_models.json — do not edit manually.
-// Re-generate: node scripts/generate-vehicle-data.js
+// Generated from makes_and_models.json — originally auto-generated.
+// Manually extended with LATAM/Colombia market makes (RENAULT, VOLKSWAGEN, CHERY, etc.)
+// Source JSON and generate script no longer present in repo; this file is now the source of truth.
 
 export const MAKES: string[] = [
   "ACURA",
@@ -9,13 +10,17 @@ export const MAKES: string[] = [
   "AUDI",
   "BENTLEY",
   "BMW",
+  "BYD",
   "BUGATTI",
   "BUICK",
   "CADILLAC",
+  "CHERY",
   "CHEVROLET",
   "CHRYSLER",
+  "CITROEN",
   "DAEWOO",
   "DAIHATSU",
+  "DFSK",
   "DAIMLER",
   "DATSUN",
   "DELOREAN",
@@ -24,13 +29,17 @@ export const MAKES: string[] = [
   "FIAT",
   "FISKER",
   "FORD",
+  "GEELY",
   "GEO",
   "GMC",
+  "GWM",
   "HONDA",
+  "HAVAL",
   "HUMMER",
   "HYUNDAI",
   "INFINITI",
   "ISUZU",
+  "JAC",
   "JAGUAR",
   "JEEP",
   "KARMA",
@@ -39,8 +48,10 @@ export const MAKES: string[] = [
   "LAND ROVER",
   "LEXUS",
   "LINCOLN",
+  "LIFAN",
   "LOTUS",
   "LUCID",
+  "MAHINDRA",
   "MASERATI",
   "MAYBACH",
   "MAZDA",
@@ -53,6 +64,7 @@ export const MAKES: string[] = [
   "OLDSMOBILE",
   "PETERBILT",
   "PEUGEOT",
+  "RENAULT",
   "PLYMOUTH",
   "PONTIAC",
   "PORSCHE",
@@ -61,6 +73,9 @@ export const MAKES: string[] = [
   "ROLLS-ROYCE",
   "SAAB",
   "SATURN",
+  "SEAT",
+  "SKODA",
+  "SSANGYONG",
   "SHELBY",
   "SMART",
   "SPYKER",
@@ -69,6 +84,7 @@ export const MAKES: string[] = [
   "TESLA",
   "TOYOTA",
   "TRIUMPH",
+  "VOLKSWAGEN",
   "VOLVO",
   "YUGO"
 ]
@@ -1889,6 +1905,66 @@ export const MODELS_BY_MAKE: Record<string, string[]> = {
     "Yugo 45",
     "Yugo 55",
     "Yugo 65"
+  ],
+
+  // ── LATAM / Colombia market makes ──────────────────────────────────────────
+  "RENAULT": [
+    "Captur", "Clio", "Duster", "Fluence", "Kangoo", "Kardian", "Koleos",
+    "Kwid", "Logan", "Megane", "Oroch", "Sandero", "Scenic", "Stepway",
+    "Symbol", "Twingo", "Zoe"
+  ],
+  "VOLKSWAGEN": [
+    "Amarok", "Beetle", "Caravelle", "Golf", "Jetta", "Multivan", "Passat",
+    "Phaeton", "Polo", "T-Cross", "T-Roc", "Taos", "Tiguan", "Touareg",
+    "Touran", "Transporter", "Vento", "Virtus"
+  ],
+  "CHERY": [
+    "Arrizo 5", "Arrizo 6", "Arrizo 8", "Fulwin", "QQ", "Tiggo 2",
+    "Tiggo 2 Pro", "Tiggo 3", "Tiggo 4", "Tiggo 4 Pro", "Tiggo 5",
+    "Tiggo 7", "Tiggo 7 Pro", "Tiggo 8", "Tiggo 8 Pro"
+  ],
+  "JAC": [
+    "iEV6E", "iEV7S", "J2", "J3", "J4", "J7", "S3", "S4", "S5", "S7",
+    "Sei 2", "Sei 3", "Sei 4", "T6", "T8", "X200"
+  ],
+  "HAVAL": [
+    "Dargo", "F7", "H1", "H2", "H4", "H6", "H9", "Jolion", "M6", "Shenshou"
+  ],
+  "GWM": [
+    "Haval H2", "Haval H6", "Haval Jolion", "Poer", "Wingle 5", "Wingle 7"
+  ],
+  "BYD": [
+    "Atto 3", "Dolphin", "F3", "Han", "King", "Seal", "Song", "Song Plus",
+    "Tan", "Tang", "Yuan Plus"
+  ],
+  "GEELY": [
+    "Azkarra", "Coolray", "EC7", "Emgrand", "Emgrand X7", "MK", "Okavango",
+    "Tugella", "Vision"
+  ],
+  "MAHINDRA": [
+    "Bolero", "KUV100", "Roxor", "Scorpio", "Scorpio N", "TUV300",
+    "XUV300", "XUV400", "XUV500", "XUV700"
+  ],
+  "SSANGYONG": [
+    "Actyon", "Actyon Sports", "Korando", "Musso", "Rexton", "Rodius",
+    "Tivoli", "Tivoli XLV", "Torres"
+  ],
+  "CITROEN": [
+    "Berlingo", "C-Elysée", "C3", "C3 Aircross", "C4", "C4 Cactus",
+    "C5 Aircross", "Jumper", "Jumpy", "Spacetourer"
+  ],
+  "SKODA": [
+    "Fabia", "Karoq", "Kodiaq", "Octavia", "Rapid", "Scala", "Superb", "Yeti"
+  ],
+  "SEAT": [
+    "Arona", "Ateca", "Ibiza", "Leon", "Tarraco"
+  ],
+  "DFSK": [
+    "C31", "C35", "EC35", "Glory 330", "Glory 500", "Glory 560", "Glory 580",
+    "K01H", "V21", "V27"
+  ],
+  "LIFAN": [
+    "320", "520", "620", "720", "820", "Foison", "Myway", "X50", "X60", "X70"
   ]
 }
 
